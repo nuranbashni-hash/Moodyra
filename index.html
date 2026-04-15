@@ -1,0 +1,520 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Moodyra — Feel Your Mood</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+
+<body>
+
+<!-- ============================================================
+     NAVIGATION BAR — fixed at the top of every page
+     ============================================================ -->
+<nav>
+  <div class="nav-logo" onclick="showPage('home')">
+    <img src="logo.png" alt="Moodyra logo" onerror="this.style.display='none'" />
+    <span>MOODYRA</span>
+  </div>
+  <div class="nav-links">
+    <button data-i18n="home" onclick="showPage('home')">Home</button>
+    <button data-i18n="about" onclick="showPage('about')">About</button>
+    <button class="btn-student" onclick="showPage('student')">📚 <span data-i18n="students">Students</span></button>
+
+    <!-- Language toggle -->
+    <button id="lang-btn" class="nav-toggle-btn" onclick="toggleLang()" title="تغيير اللغة / Toggle language">AR</button>
+
+    <!-- Login button — hidden when user is logged in -->
+    <button id="nav-login-btn" class="nav-login-btn" data-i18n="login" onclick="openAuthModal()">👤 Login</button>
+
+    <!-- User avatar + dropdown — hidden when logged out -->
+    <div id="nav-user-wrap" class="nav-user-wrap" style="display:none;">
+      <button class="nav-user-btn" onclick="toggleUserMenu()">
+        <span id="nav-user-initial" class="nav-user-initial">U</span>
+        <span id="nav-user-name"    class="nav-user-name">User</span>
+      </button>
+      <!-- Dropdown with name, username, logout -->
+      <div id="user-dropdown" class="user-dropdown" style="display:none;">
+        <div id="dd-name"     class="dd-name"></div>
+        <div id="dd-username" class="dd-username"></div>
+        <button class="dd-logout" onclick="authLogout()">🚪 Log Out</button>
+      </div>
+    </div>
+  </div>
+</nav>
+
+<!-- ============================================================
+     AUTH MODAL — Login / Sign Up
+     Clicking the dark overlay closes the modal.
+     ============================================================ -->
+<div id="auth-overlay" class="auth-overlay" style="display:none;" onclick="closeAuthModal()">
+  <div class="auth-modal" onclick="event.stopPropagation()">
+
+    <!-- Close button -->
+    <button class="auth-close" onclick="closeAuthModal()">✕</button>
+
+    <!-- Icon + title change between login and signup modes -->
+    <div id="auth-icon"     class="auth-icon">👋</div>
+    <h2  id="auth-title"    class="auth-modal-title">Welcome back!</h2>
+    <p   id="auth-subtitle" class="auth-modal-sub">Log in to track your mood journey</p>
+
+    <!-- Name field — only visible in signup mode -->
+    <div id="auth-name-wrap" style="display:none;">
+      <input id="auth-name" type="text" class="auth-input"
+             placeholder="Your name (e.g. Sara)" />
+    </div>
+
+    <input id="auth-username" type="text"     class="auth-input" placeholder="Username"                      autocomplete="username" />
+    <input id="auth-password" type="password" class="auth-input" placeholder="Password (min. 6 characters)" autocomplete="current-password" />
+
+    <!-- Error message — shown when login/signup fails -->
+    <p id="auth-error" class="auth-error" style="display:none;"></p>
+
+    <!-- Submit button -->
+    <button class="timer-btn auth-submit-btn" onclick="handleAuthSubmit()">
+      <span id="auth-submit-text">Log In 🚀</span>
+    </button>
+
+    <!-- Switch between Login ↔ Sign Up -->
+    <p class="auth-switch-row">
+      <span id="auth-switch-label">Don't have an account?</span>
+      <button id="auth-switch-btn" class="auth-switch-btn" onclick="switchAuthMode()">Sign up</button>
+    </p>
+
+  </div>
+</div>
+
+
+<!-- ============================================================
+     HOME PAGE
+     ============================================================ -->
+<div id="page-home" class="page bg-home">
+  <div class="orbs-container">
+    <div class="orb orb-1"></div>
+    <div class="orb orb-2"></div>
+    <div class="orb orb-3"></div>
+    <div class="orb orb-4"></div>
+    <div class="orb orb-5"></div>
+    <div class="orb orb-6"></div>
+  </div>
+
+  <div class="page-content">
+    <div class="home-hero">
+      <h1 data-i18n="feelingToday">How are you feeling today?</h1>
+      <div class="mood-pills">
+        <button class="mood-pill" onclick="openMood('happy')"><span class="mood-icon">😊</span> <span data-i18n="happy">Happy</span></button>
+        <button class="mood-pill" onclick="openMood('sad')"><span class="mood-icon">😔</span> <span data-i18n="sad">Sad</span></button>
+        <button class="mood-pill" onclick="openMood('calm')"><span class="mood-icon">😌</span> <span data-i18n="calm">Calm</span></button>
+        <button class="mood-pill" onclick="openMood('angry')"><span class="mood-icon">😡</span> <span data-i18n="angry">Angry</span></button>
+        <button class="mood-pill" onclick="openMood('tired')"><span class="mood-icon">😴</span> <span data-i18n="tired">Tired</span></button>
+      </div>
+    </div>
+
+    <!-- Mood history — filled by JavaScript, hidden until user visits a mood -->
+    <div id="history-widget" class="history-widget glass" style="display:none;"></div>
+
+    <button class="comfort-btn-main" onclick="toggleComfort()">💖 <span data-i18n="needComfort">Make me feel better</span></button>
+    <div id="comfort-panel" class="comfort-panel">
+      <div class="comfort-panel-inner glass">
+        <p data-i18n="chooseBetter">Choose something to feel better:</p>
+        <div class="comfort-grid" id="comfort-grid-items">
+          <div class="comfort-item">✨ You are stronger than you think</div>
+          <div class="comfort-item">🎧 Listen to your favorite song</div>
+          <div class="comfort-item">🌿 Take a deep breath</div>
+          <div class="comfort-item">🍫 Eat something you love</div>
+          <div class="comfort-item">📞 Talk to someone you trust</div>
+          <div class="comfort-item">💖 This feeling will pass</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="student-card glass" onclick="showPage('student')">
+      <span class="s-icon">📚</span>
+      <div class="s-text">
+        <div class="s-title" data-i18n="students">Student Mode</div>
+        <div class="s-sub" data-i18n="studentSub">Focus timer · Study tips · Exam stress relief</div>
+      </div>
+      <span class="s-arrow">→</span>
+    </div>
+  </div>
+</div>
+
+
+<!-- ============================================================
+     HAPPY MOOD PAGE
+     ============================================================ -->
+<div id="page-happy" class="page bg-happy">
+  <div class="page-content">
+    <div class="mood-header">
+      <h1 style="background:linear-gradient(to right,#ff758c,#ff7eb3);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;">Keep shining ✨</h1>
+      <p class="subtitle" style="color:#d35400;">Do something you love today 💛</p>
+      <button class="back-btn" style="background:rgba(255,255,255,0.5);color:#555;border-color:rgba(255,255,255,0.6);" onclick="showPage('home')">⬅ Back</button>
+    </div>
+    <div class="two-col mb-24">
+      <div class="glass card">
+        <h3 class="quotes-title" style="color:#e67e22;"></h3>
+        <ul class="quotes-list"></ul>
+      </div>
+      <div class="glass card">
+        <h3 class="journal-title" style="color:#e67e22;"></h3>
+        <textarea class="journal-area light"></textarea>
+        <div class="save-row">
+          <button class="save-btn" style="background:linear-gradient(to right,#ff758c,#ff7eb3);color:#fff;"></button>
+          <span class="saved-msg" style="color:#e67e22;"></span>
+        </div>
+        <div class="saved-entries"></div>
+      </div>
+    </div>
+    <div class="two-col mb-24">
+      <div class="memories-section glass card" style="display:none;">
+        <h3 class="memories-title" style="color:#e67e22;"></h3>
+        <div class="saved-entries"></div>
+      </div>
+      <div class="glass card">
+        <h3 class="tips-title" style="color:#e67e22;"></h3>
+        <ul class="tips-list"></ul>
+      </div>
+    </div>
+    <div class="glass music-section mb-24">
+      <h3 style="color:#e67e22;">🎵 Music for your mood</h3>
+      <div class="music-grid"></div>
+    </div>
+  </div>
+</div>
+
+
+<!-- ============================================================
+     SAD MOOD PAGE
+     ============================================================ -->
+<div id="page-sad" class="page bg-sad">
+  <div class="page-content">
+    <div class="mood-header">
+      <h1>It's okay to feel sad 💙</h1>
+      <p class="subtitle">You don't have to be strong all the time 🫂</p>
+      <button class="back-btn" onclick="showPage('home')">⬅ Back</button>
+    </div>
+    <div class="two-col mb-24">
+      <div class="glass-dark card"><h3 class="quotes-title" style="color:#bde0fe;"></h3><ul class="quotes-list"></ul></div>
+      <div class="glass-dark card">
+        <h3 class="journal-title" style="color:#bde0fe;"></h3>
+        <textarea class="journal-area"></textarea>
+        <div class="save-row"><button class="save-btn" style="background:#3b82f6;color:#fff;"></button><span class="saved-msg" style="color:#bde0fe;"></span></div>
+        <div class="saved-entries"></div>
+      </div>
+    </div>
+    <div class="two-col mb-24">
+      <div class="memories-section glass-dark card" style="display:none;"><h3 class="memories-title" style="color:#bde0fe;"></h3><div class="saved-entries"></div></div>
+      <div class="glass-dark card"><h3 class="tips-title" style="color:#bde0fe;"></h3><ul class="tips-list"></ul></div>
+    </div>
+    <div class="glass-dark music-section mb-24"><h3>🎵 Music for your mood</h3><div class="music-grid"></div></div>
+  </div>
+</div>
+
+
+<!-- ============================================================
+     CALM MOOD PAGE
+     ============================================================ -->
+<div id="page-calm" class="page bg-calm">
+  <div class="page-content">
+    <div class="mood-header">
+      <h1>Relax &amp; Breathe 🌿</h1>
+      <p class="subtitle">Take a moment for yourself 💙</p>
+      <button class="back-btn" onclick="showPage('home')">⬅ Back</button>
+    </div>
+    <div class="two-col mb-24">
+      <div class="glass-dark card"><h3 class="quotes-title" style="color:#e0f7fa;"></h3><ul class="quotes-list"></ul></div>
+      <div class="glass-dark card">
+        <h3 class="journal-title" style="color:#e0f7fa;"></h3>
+        <textarea class="journal-area"></textarea>
+        <div class="save-row"><button class="save-btn" style="background:#1d3557;color:#fff;"></button><span class="saved-msg" style="color:#e0f7fa;"></span></div>
+        <div class="saved-entries"></div>
+      </div>
+    </div>
+    <div class="two-col mb-24">
+      <div class="memories-section glass-dark card" style="display:none;"><h3 class="memories-title" style="color:#e0f7fa;"></h3><div class="saved-entries"></div></div>
+      <div class="glass-dark card"><h3 class="tips-title" style="color:#e0f7fa;"></h3><ul class="tips-list"></ul></div>
+    </div>
+    <div class="glass-dark music-section mb-24"><h3>🎵 Music for your mood</h3><div class="music-grid"></div></div>
+  </div>
+</div>
+
+
+<!-- ============================================================
+     ANGRY MOOD PAGE
+     ============================================================ -->
+<div id="page-angry" class="page bg-angry">
+  <div class="page-content">
+    <div class="mood-header">
+      <h1>Let it out 😤</h1>
+      <p class="subtitle">Your feelings are valid ❤️‍🔥</p>
+      <button class="back-btn" onclick="showPage('home')">⬅ Back</button>
+    </div>
+    <div class="two-col mb-24">
+      <div class="glass-dark card"><h3 class="quotes-title" style="color:#fca5a5;"></h3><ul class="quotes-list"></ul></div>
+      <div class="glass-dark card">
+        <h3 class="journal-title" style="color:#fca5a5;"></h3>
+        <textarea class="journal-area"></textarea>
+        <div class="save-row"><button class="save-btn" style="background:#ef4444;color:#fff;"></button><span class="saved-msg" style="color:#fca5a5;"></span></div>
+        <div class="saved-entries"></div>
+      </div>
+    </div>
+    <div class="two-col mb-24">
+      <div class="memories-section glass-dark card" style="display:none;"><h3 class="memories-title" style="color:#fca5a5;"></h3><div class="saved-entries"></div></div>
+      <div class="glass-dark card"><h3 class="tips-title" style="color:#fca5a5;"></h3><ul class="tips-list"></ul></div>
+    </div>
+    <div class="glass-dark music-section mb-24"><h3>🎵 Music for your mood</h3><div class="music-grid"></div></div>
+  </div>
+</div>
+
+
+<!-- ============================================================
+     TIRED MOOD PAGE
+     ============================================================ -->
+<div id="page-tired" class="page bg-tired">
+  <div class="page-content">
+    <div class="mood-header">
+      <h1>Rest a little 😴</h1>
+      <p class="subtitle">You've done enough for today 💙</p>
+      <button class="back-btn" onclick="showPage('home')">⬅ Back</button>
+    </div>
+    <div class="two-col mb-24">
+      <div class="glass-dark card"><h3 class="quotes-title" style="color:#e2e8f0;"></h3><ul class="quotes-list"></ul></div>
+      <div class="glass-dark card">
+        <h3 class="journal-title" style="color:#e2e8f0;"></h3>
+        <textarea class="journal-area"></textarea>
+        <div class="save-row"><button class="save-btn" style="background:#34495e;color:#fff;"></button><span class="saved-msg" style="color:#e2e8f0;"></span></div>
+        <div class="saved-entries"></div>
+      </div>
+    </div>
+    <div class="two-col mb-24">
+      <div class="memories-section glass-dark card" style="display:none;"><h3 class="memories-title" style="color:#e2e8f0;"></h3><div class="saved-entries"></div></div>
+      <div class="glass-dark card"><h3 class="tips-title" style="color:#e2e8f0;"></h3><ul class="tips-list"></ul></div>
+    </div>
+    <div class="glass-dark music-section mb-24"><h3>🎵 Music for your mood</h3><div class="music-grid"></div></div>
+  </div>
+</div>
+
+
+<!-- ============================================================
+     STUDENT PAGE
+     ============================================================ -->
+<div id="page-student" class="page bg-student">
+  <div class="page-content">
+
+    <div class="student-header">
+      <h1>Student Mode 📚</h1>
+      <p>Your study companion — tools and tips to study smarter 🎓</p>
+      <br/>
+      <button class="back-btn" onclick="showPage('home')">⬅ Back to Home</button>
+    </div>
+
+    <!-- ── STUDY TIPS BY MOOD ──────────────────────────── -->
+    <div class="glass-dark card mb-24">
+      <h3 class="section-title">📖 Study Tips Based on Your Mood</h3>
+      <p style="text-align:center;color:rgba(255,255,255,0.6);font-size:0.85rem;margin-bottom:16px;">
+        How are you feeling right now? Pick your mood for personalized study advice.
+      </p>
+      <div class="mood-selector">
+        <button class="mood-sel-btn" data-mood="happy" onclick="selectStudyMood('happy')">😊 Happy</button>
+        <button class="mood-sel-btn" data-mood="sad"   onclick="selectStudyMood('sad')">😔 Sad</button>
+        <button class="mood-sel-btn" data-mood="calm"  onclick="selectStudyMood('calm')">😌 Calm</button>
+        <button class="mood-sel-btn" data-mood="angry" onclick="selectStudyMood('angry')">😡 Angry</button>
+        <button class="mood-sel-btn" data-mood="tired" onclick="selectStudyMood('tired')">😴 Tired</button>
+      </div>
+      <div id="study-tips-result" class="tips-result"></div>
+    </div>
+
+    <!-- ── FOCUS TIMER (full width) ───────────────────── -->
+    <!--
+      This is the upgraded Focus Timer — it replaces the old Pomodoro.
+      It has 5 phases:
+        idle       → user picks 25 or 45 min, clicks Start
+        focusing   → timer counts down
+        focus-done → session ended: motivational message + save achievement
+        breaking   → break countdown (5 or 10 min)
+        break-done → break over: "Break finished. Ready to focus again?"
+    -->
+    <div class="glass-dark card mb-24 focus-timer-wrap" id="focus-timer-card">
+
+      <!-- Confetti particles are injected here by JavaScript -->
+      <div id="focus-confetti" class="focus-confetti"></div>
+
+      <h3 class="section-title">🎯 Focus Timer</h3>
+
+      <!-- DURATION PICKER — shown only when idle -->
+      <div id="focus-duration-row" class="focus-btn-row">
+        <button onclick="setFocusDuration(25)" id="fd-25" class="duration-btn active">⏱ 25 min</button>
+        <button onclick="setFocusDuration(45)" id="fd-45" class="duration-btn">⏳ 45 min</button>
+      </div>
+
+      <!-- BREAK BANNER — shown only during break -->
+      <div id="break-banner" class="break-banner" style="display:none;">
+        ☕ Break Time — <span id="break-duration-label">5</span> minutes
+      </div>
+
+      <!-- TIMER DISPLAY — the big countdown number -->
+      <div id="focus-display" class="focus-timer-display">25:00</div>
+      <p id="focus-sublabel" class="timer-sublabel">25-minute session</p>
+
+      <!-- CONTROL BUTTONS — change depending on current phase -->
+      <div class="timer-btns">
+        <button id="focus-main-btn"  class="timer-btn"           onclick="focusMainAction()">▶ Start Focus</button>
+        <button id="focus-reset-btn" class="timer-btn secondary" onclick="resetFocusTimer()" style="display:none;">↺ Reset</button>
+      </div>
+
+      <!-- SESSION COUNTER — shows 🌟 for each completed session -->
+      <div id="focus-sessions" class="sessions-row"></div>
+
+      <!-- POST-FOCUS PANEL — appears after session ends -->
+      <div id="focus-done-panel" style="display:none;">
+
+        <!-- Motivational message (randomly picked from 9 messages) -->
+        <div id="focus-message-box" class="focus-message-box"></div>
+
+        <!-- Achievement input -->
+        <div class="achievement-section">
+          <h4>✍️ What did you achieve?</h4>
+          <p class="achievement-hint">Write anything — even small wins count! 🌱</p>
+          <textarea id="achievement-input" class="focus-textarea" rows="3"
+            placeholder="e.g. Finished chapter 3, solved 10 math problems..."></textarea>
+
+          <!-- Save button + confirmation message -->
+          <div class="achievement-save-row">
+            <button class="timer-btn" onclick="saveAchievement()">💾 Save Achievement</button>
+            <span id="saved-flash" style="display:none;color:#86efac;font-weight:600;font-size:0.88rem;">✅ Saved! Starting break…</span>
+          </div>
+
+          <!-- Break duration picker -->
+          <div class="break-pick-row">
+            <span class="break-pick-label">Break length:</span>
+            <button onclick="setBreakDuration(5)"  id="bd-5"  class="break-pick-btn active">☕ 5 min</button>
+            <button onclick="setBreakDuration(10)" id="bd-10" class="break-pick-btn">🛋️ 10 min</button>
+          </div>
+
+          <!-- Skip saving and go straight to break -->
+          <button onclick="startBreakTimer()" class="skip-link">Skip → start break now</button>
+        </div>
+      </div>
+
+      <!-- BREAK-DONE PANEL — appears after break ends -->
+      <div id="break-done-panel" style="display:none;" class="break-done-panel">
+        <div style="font-size:2.5rem;margin-bottom:8px;">🌟</div>
+        <p class="break-done-title">Break finished. Ready to focus again?</p>
+        <p class="break-done-sub">You've rested — now let's keep the momentum going!</p>
+        <button class="timer-btn" onclick="startNewSession()">🎯 Start New Session</button>
+      </div>
+
+      <!-- ACHIEVEMENTS LIST — persists in localStorage -->
+      <div id="achievements-section" style="display:none;" class="achievements-section">
+        <div class="achievements-header">
+          <span id="achievements-title">🏅 Your Achievements</span>
+          <button onclick="clearAchievements()" class="clear-achievements-btn">Clear all</button>
+        </div>
+        <div id="achievements-list" class="achievements-list"></div>
+      </div>
+
+    </div><!-- end focus-timer-card -->
+
+    <!-- ── BREATHING EXERCISE ──────────────────────────── -->
+    <div class="glass-dark card mb-24">
+      <div class="breath-wrap">
+        <h3 class="section-title" style="margin-bottom:4px;">🫁 Breathing Exercise</h3>
+        <p style="color:rgba(255,255,255,0.6);font-size:0.8rem;text-align:center;">
+          4-7-8 breathing technique to reduce exam anxiety
+        </p>
+        <div id="breath-circle" class="breath-circle">🌬️</div>
+        <p id="breath-label"       class="breath-label">Press Start</p>
+        <p id="breath-instruction" class="breath-instruction">4-7-8 breathing to reduce anxiety</p>
+        <p id="breath-count"       class="breath-count"></p>
+        <button id="breath-btn" class="timer-btn" onclick="toggleBreathing()">▶ Start Breathing</button>
+      </div>
+    </div>
+
+    <!-- ── EXAM STRESS RELIEF TIPS ─────────────────────── -->
+    <h2 class="section-title mb-20">💡 Exam Stress Relief Tips</h2>
+    <div class="exam-grid mb-24">
+      <div class="exam-card"><div class="e-icon">📖</div><h4>Review, don't re-read</h4><p>Close your book and try to recall key points first. Only look when you're stuck.</p></div>
+      <div class="exam-card"><div class="e-icon">🧩</div><h4>Practice past papers</h4><p>Past exam questions are the best predictor of what's coming. Time yourself.</p></div>
+      <div class="exam-card"><div class="e-icon">🗣️</div><h4>Teach it out loud</h4><p>Explain the topic as if teaching a friend. If you can teach it, you know it.</p></div>
+      <div class="exam-card"><div class="e-icon">💤</div><h4>Sleep before the exam</h4><p>Memory consolidates during sleep. A rested brain outperforms an all-nighter.</p></div>
+      <div class="exam-card"><div class="e-icon">🥤</div><h4>Stay hydrated</h4><p>Dehydration reduces focus by up to 20%. Keep a water bottle at your desk.</p></div>
+      <div class="exam-card"><div class="e-icon">✅</div><h4>Done is better than perfect</h4><p>Attempt every question. A partial answer is always better than a blank.</p></div>
+    </div>
+
+    <!-- ── MOTIVATIONAL AFFIRMATIONS ──────────────────── -->
+    <div class="glass-dark card mb-24">
+      <h3 class="section-title">🌟 You've Got This</h3>
+      <div class="affirmations-grid">
+        <div class="affirmation">I am prepared and capable 💪</div>
+        <div class="affirmation">Every study session counts ✅</div>
+        <div class="affirmation">Mistakes help me learn faster 🧠</div>
+        <div class="affirmation">I deserve rest and success 🌙</div>
+        <div class="affirmation">One step at a time is enough 🚶</div>
+        <div class="affirmation">My effort will pay off 🌱</div>
+      </div>
+    </div>
+
+    <!-- ── CHATGPT SHORTCUTS ───────────────────────────── -->
+    <div class="glass-dark card mb-24 text-center">
+      <h3 class="section-title">🤖 Ask ChatGPT</h3>
+      <p style="color:rgba(255,255,255,0.65);font-size:0.88rem;margin-bottom:18px;">
+        Have a question? Want to summarize a topic? Open ChatGPT directly
+      </p>
+      <div class="chatgpt-grid">
+        <a class="chatgpt-card" href="https://chat.openai.com/?q=Explain+this+topic+in+a+simple+way%3A+" target="_blank"><span class="cg-emoji">💡</span><span>Explain this topic to me</span></a>
+        <a class="chatgpt-card" href="https://chat.openai.com/?q=Summarize+this+text+in+clear+bullet+points%3A+" target="_blank"><span class="cg-emoji">📝</span><span>Summarize this text</span></a>
+        <a class="chatgpt-card" href="https://chat.openai.com/?q=Give+me+5+review+questions+about+this+topic%3A+" target="_blank"><span class="cg-emoji">❓</span><span>Give me review questions</span></a>
+      </div>
+      <a class="open-chatgpt" href="https://chat.openai.com" target="_blank">🤖 Open ChatGPT ↗</a>
+    </div>
+
+  </div>
+</div>
+
+
+<!-- ============================================================
+     ABOUT PAGE
+     ============================================================ -->
+<div id="page-about" class="page bg-home">
+  <div class="orbs-container">
+    <div class="orb orb-1"></div>
+    <div class="orb orb-2"></div>
+    <div class="orb orb-3"></div>
+  </div>
+  <div class="page-content">
+    <div class="about-wrap">
+      <h1>About Moodyra 🌈</h1>
+      <p class="about-subtitle">A mood-based wellness website for students</p>
+      <div class="about-cards">
+        <div class="glass about-card"><div class="ac-icon">🎯</div><h3>Our Goal</h3><p>Help students recognize and manage their emotions through personalized content, music, and study tools.</p></div>
+        <div class="glass about-card"><div class="ac-icon">🌈</div><h3>5 Moods</h3><p>Each mood — Happy, Sad, Calm, Angry, Tired — has its own page with matching colors, quotes, and music.</p></div>
+        <div class="glass about-card"><div class="ac-icon">📚</div><h3>Student Tools</h3><p>Focus timer, breathing exercises, study tips by mood, and quick access to ChatGPT for study help.</p></div>
+        <div class="glass about-card"><div class="ac-icon">🔒</div><h3>Privacy First</h3><p>Everything is saved in your browser only. No account needed, no data sent to any server.</p></div>
+      </div>
+
+      <!-- Team section -->
+      <div class="about-team">
+        <h2 class="about-team-title">👩‍💻 Meet the Team</h2>
+        <p class="about-team-sub">Made with ❤️ for a university wellness project</p>
+        <div class="about-team-members">
+          <div class="team-member">
+            <div class="team-avatar">N</div>
+            <p class="team-name">Noran Hussien</p>
+          </div>
+          <div class="team-member">
+            <div class="team-avatar">F</div>
+            <p class="team-name">Fatima Essa</p>
+          </div>
+        </div>
+      </div>
+
+      <button class="back-btn" style="margin-top:30px;" onclick="showPage('home')">⬅ Back to Home</button>
+    </div>
+  </div>
+</div>
+
+
+<script src="script.js"></script>
+</body>
+</html>
