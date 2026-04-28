@@ -1,1404 +1,1578 @@
-@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700;900&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap');
-
-* {
-  margin: 0;
-  padding: 0;
-  box-sizing: border-box;
-}
-
-body {
-  font-family: 'Plus Jakarta Sans', sans-serif;
-  min-height: 100vh;
-  overflow-x: hidden;
-}
-
-h1, h2, h3, h4 {
-  font-family: 'Playfair Display', serif;
-}
-
-.page {
-  display: none;
-  min-height: 100vh;
-  padding: 90px 20px 60px;
-  transition: background 0.8s ease;
-}
-
-.page.active {
-  display: block;
-}
-
-.bg-home {
-  background: linear-gradient(-45deg, #fddde6, #e0c3fc, #c2e9fb, #fddde6);
-  background-size: 300% 300%;
-  animation: gradientShift 12s ease infinite;
-}
-
-@keyframes gradientShift {
-  0%   { background-position: 0% 50%; }
-  50%  { background-position: 100% 50%; }
-  100% { background-position: 0% 50%; }
-}
-
-.bg-happy   { background: linear-gradient(135deg, #ffecd2 0%, #fcb69f 100%); }
-.bg-sad     { background: linear-gradient(to bottom, #1e3c72 0%, #2a5298 100%); }
-.bg-calm    { background: linear-gradient(to bottom, #a8dadc 0%, #457b9d 100%); }
-.bg-angry   { background: linear-gradient(to bottom, #2b0000 0%, #8b0000 100%); }
-.bg-tired   { background: linear-gradient(to bottom, #2c3e50 0%, #4ca1af 100%); }
-.bg-student { background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%); }
-
-.glass {
-  background: rgba(255, 255, 255, 0.18);
-  backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
-  border: 1px solid rgba(255, 255, 255, 0.28);
-  border-radius: 24px;
-}
-
-.glass-dark {
-  background: rgba(255, 255, 255, 0.10);
-  backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
-  border: 1px solid rgba(255, 255, 255, 0.15);
-  border-radius: 24px;
-}
-
-.orbs-container {
-  position: fixed;
-  inset: 0;
-  overflow: hidden;
-  z-index: 0;
-  pointer-events: none;
-}
-
-.orb {
-  position: absolute;
-  border-radius: 50%;
-  filter: blur(50px);
-  animation: orbFloat linear infinite;
-}
-
-@keyframes orbFloat {
-  0%   { transform: translate(0, 0) scale(1); }
-  25%  { transform: translate(30px, -25px) scale(1.08); }
-  50%  { transform: translate(-20px, 20px) scale(0.94); }
-  75%  { transform: translate(15px, -10px) scale(1.04); }
-  100% { transform: translate(0, 0) scale(1); }
-}
-
-.orb-1 { width:300px; height:300px; left:10%; top:15%; background:rgba(255,182,193,0.35); animation-duration:18s; }
-.orb-2 { width:200px; height:200px; left:75%; top:10%; background:rgba(176,196,255,0.35); animation-duration:22s; animation-delay:3s; }
-.orb-3 { width:250px; height:250px; left:55%; top:60%; background:rgba(200,162,255,0.30); animation-duration:20s; animation-delay:6s; }
-.orb-4 { width:180px; height:180px; left:85%; top:70%; background:rgba(255,218,185,0.35); animation-duration:25s; animation-delay:2s; }
-.orb-5 { width:220px; height:220px; left:20%; top:75%; background:rgba(152,230,200,0.28); animation-duration:19s; animation-delay:8s; }
-.orb-6 { width:150px; height:150px; left:45%; top:25%; background:rgba(255,200,220,0.30); animation-duration:16s; animation-delay:4s; }
-
-nav {
-  position: fixed;
-  top: 0;
-  left: 0;
-  right: 0;
-  z-index: 999;
-  background: rgba(255, 255, 255, 0.22);
-  backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
-  border-bottom: 1px solid rgba(255, 255, 255, 0.3);
-  padding: 14px 32px;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-}
-
-.nav-logo {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  cursor: pointer;
-}
-
-.nav-logo img {
-  height: 40px;
-  width: auto;
-}
-
-.nav-logo span {
-  font-family: 'Playfair Display', serif;
-  font-size: 20px;
-  font-weight: 700;
-  color: #444;
-  letter-spacing: 1px;
-}
-
-.nav-links {
-  display: flex;
-  gap: 6px;
-  align-items: center;
-}
-
-.nav-links button {
-  padding: 8px 18px;
-  border: none;
-  border-radius: 50px;
-  background: transparent;
-  font-family: 'Plus Jakarta Sans', sans-serif;
-  font-size: 14px;
-  font-weight: 600;
-  color: #444;
-  cursor: pointer;
-  transition: background 0.2s;
-}
-
-.nav-links button:hover {
-  background: rgba(255, 255, 255, 0.45);
-}
-
-.nav-links .btn-student {
-  background: rgba(255, 255, 255, 0.25);
-  display: flex;
-  align-items: center;
-  gap: 5px;
-}
-
-.nav-links .btn-student:hover {
-  background: rgba(255, 255, 255, 0.5);
-}
-
-.nav-login-btn {
-  padding: 8px 18px;
-  border: none;
-  border-radius: 50px;
-  background: rgba(255,255,255,0.25);
-  font-family: 'Plus Jakarta Sans', sans-serif;
-  font-size: 14px;
-  font-weight: 600;
-  color: #444;
-  cursor: pointer;
-  transition: background 0.2s;
-  display: flex;
-  align-items: center;
-  gap: 5px;
-}
-
-.nav-login-btn:hover { background: rgba(255,255,255,0.5); }
-
-.nav-toggle-btn {
-  padding: 6px 13px;
-  border: 1.5px solid rgba(255,255,255,0.3);
-  border-radius: 50px;
-  background: rgba(255,255,255,0.15);
-  font-family: 'Plus Jakarta Sans', sans-serif;
-  font-size: 12px;
-  font-weight: 700;
-  color: #444;
-  cursor: pointer;
-  transition: background 0.2s, transform 0.15s;
-  letter-spacing: 0.5px;
-}
-
-.nav-toggle-btn:hover {
-  background: rgba(255,255,255,0.4);
-  transform: scale(1.06);
-}
-
-.nav-user-wrap { position: relative; }
-
-.nav-user-btn {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  padding: 6px 14px 6px 6px;
-  border: none;
-  border-radius: 50px;
-  background: rgba(255,255,255,0.25);
-  cursor: pointer;
-  transition: background 0.2s;
-  font-family: 'Plus Jakarta Sans', sans-serif;
-  font-size: 14px;
-  font-weight: 600;
-  color: #444;
-}
-
-.nav-user-btn:hover { background: rgba(255,255,255,0.45); }
-
-.nav-user-initial {
-  width: 30px;
-  height: 30px;
-  border-radius: 50%;
-  background: linear-gradient(135deg, #f472b6, #a855f7);
-  color: #fff;
-  font-size: 13px;
-  font-weight: 700;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
-.user-dropdown {
-  position: absolute;
-  top: 46px;
-  right: 0;
-  min-width: 170px;
-  border-radius: 18px;
-  overflow: hidden;
-  box-shadow: 0 8px 32px rgba(0,0,0,0.25);
-  background: rgba(20,20,40,0.95);
-  border: 1px solid rgba(255,255,255,0.12);
-  z-index: 300;
-}
-
-.dd-name {
-  padding: 12px 16px 2px;
-  color: #fff;
-  font-weight: 700;
-  font-size: 0.88rem;
-}
-
-.dd-username {
-  padding: 0 16px 10px;
-  color: rgba(255,255,255,0.45);
-  font-size: 0.78rem;
-  border-bottom: 1px solid rgba(255,255,255,0.1);
-}
-
-.dd-logout {
-  display: block;
-  width: 100%;
-  padding: 12px 16px;
-  background: none;
-  border: none;
-  text-align: left;
-  color: #fca5a5;
-  font-family: 'Plus Jakarta Sans', sans-serif;
-  font-weight: 600;
-  font-size: 0.85rem;
-  cursor: pointer;
-  transition: background 0.2s;
-}
-
-.dd-logout:hover { background: rgba(239,68,68,0.15); }
-
-.auth-overlay {
-  position: fixed;
-  inset: 0;
-  z-index: 200;
-  background: rgba(0,0,0,0.55);
-  backdrop-filter: blur(6px);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  padding: 20px;
-}
-
-.auth-modal {
-  position: relative;
-  width: 100%;
-  max-width: 420px;
-  border-radius: 28px;
-  padding: 36px 32px 28px;
-  background: linear-gradient(135deg, #1a1a2e 0%, #16213e 80%);
-  border: 1px solid rgba(255,255,255,0.14);
-  box-shadow: 0 24px 60px rgba(0,0,0,0.4);
-  display: flex;
-  flex-direction: column;
-  gap: 14px;
-  box-sizing: border-box;
-}
-
-.auth-close {
-  position: absolute;
-  top: 14px;
-  right: 18px;
-  background: none;
-  border: none;
-  color: rgba(255,255,255,0.4);
-  font-size: 1.2rem;
-  cursor: pointer;
-  transition: color 0.2s;
-}
-
-.auth-close:hover { color: rgba(255,255,255,0.8); }
-
-.auth-icon {
-  text-align: center;
-  font-size: 2.8rem;
-}
-
-.auth-modal-title {
-  font-family: 'Playfair Display', serif;
-  font-size: 1.6rem;
-  font-weight: 700;
-  color: #fff;
-  text-align: center;
-  margin: 0;
-}
-
-.auth-modal-sub {
-  color: rgba(255,255,255,0.55);
-  font-size: 0.85rem;
-  text-align: center;
-  margin: -6px 0 0;
-}
-
-.auth-input {
-  width: 100%;
-  padding: 13px 16px;
-  border-radius: 18px;
-  background: rgba(255,255,255,0.12);
-  border: 1px solid rgba(255,255,255,0.18);
-  color: #fff;
-  font-family: 'Plus Jakarta Sans', sans-serif;
-  font-size: 0.9rem;
-  font-weight: 500;
-  box-sizing: border-box;
-  transition: border-color 0.2s;
-}
-
-.auth-input::placeholder { color: rgba(255,255,255,0.38); }
-.auth-input:focus { outline: none; border-color: rgba(255,255,255,0.5); }
-
-.auth-error {
-  background: rgba(239,68,68,0.18);
-  color: #fca5a5;
-  border-radius: 14px;
-  padding: 10px 14px;
-  font-size: 0.83rem;
-  text-align: center;
-  margin: 0;
-}
-
-.auth-submit-btn {
-  width: 100%;
-  padding: 14px;
-  font-size: 1rem;
-  border-radius: 18px;
-  margin-top: 2px;
-}
-
-.auth-switch-row {
-  text-align: center;
-  color: rgba(255,255,255,0.5);
-  font-size: 0.85rem;
-  margin: 0;
-}
-
-.auth-switch-btn {
-  background: none;
-  border: none;
-  color: #fff;
-  font-weight: 700;
-  font-size: 0.85rem;
-  cursor: pointer;
-  font-family: 'Plus Jakarta Sans', sans-serif;
-  text-decoration: underline;
-  padding: 0;
-  margin-left: 4px;
-}
-
-.page-content {
-  max-width: 900px;
-  margin: 0 auto;
-  position: relative;
-  z-index: 10;
-}
-
-.center { text-align: center; }
-
-.home-hero {
-  text-align: center;
-  padding: 40px 0 20px;
-}
-
-.home-hero h1 {
-  font-size: clamp(2rem, 5vw, 3.8rem);
-  color: #444;
-  margin-bottom: 40px;
-  font-weight: 600;
-}
-
-.mood-pills {
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: center;
-  gap: 14px;
-  margin-bottom: 60px;
-}
-
-.mood-pill {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  padding: 14px 24px;
-  background: rgba(255, 255, 255, 0.80);
-  backdrop-filter: blur(8px);
-  border: none;
-  border-radius: 50px;
-  font-family: 'Plus Jakarta Sans', sans-serif;
-  font-size: 1.05rem;
-  font-weight: 600;
-  color: #444;
-  cursor: pointer;
-  box-shadow: 0 2px 10px rgba(0,0,0,0.08);
-  transition: transform 0.2s, box-shadow 0.2s;
-}
-
-.mood-pill:hover {
-  transform: scale(1.05);
-  box-shadow: 0 8px 24px rgba(0,0,0,0.14);
-}
-
-.mood-pill .mood-icon { font-size: 1.5rem; }
-
-.comfort-btn-main {
-  display: block;
-  margin: 0 auto 20px;
-  padding: 16px 36px;
-  background: rgba(255,255,255,0.25);
-  backdrop-filter: blur(8px);
-  border: 1px solid rgba(255,255,255,0.4);
-  border-radius: 50px;
-  font-family: 'Playfair Display', serif;
-  font-size: 1.2rem;
-  color: #555;
-  cursor: pointer;
-  transition: background 0.2s, transform 0.2s;
-  box-shadow: 0 2px 10px rgba(0,0,0,0.07);
-}
-
-.comfort-btn-main:hover {
-  background: rgba(255,255,255,0.45);
-  transform: scale(1.02);
-}
-
-.comfort-panel {
-  display: none;
-  margin: 16px auto;
-  max-width: 640px;
-}
-
-.comfort-panel.open { display: block; }
-
-.comfort-panel-inner { padding: 28px; }
-
-.comfort-panel p {
-  text-align: center;
-  color: #666;
-  font-size: 1rem;
-  margin-bottom: 18px;
-}
-
-.comfort-grid {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 12px;
-}
-
-.comfort-item {
-  padding: 14px 18px;
-  background: rgba(255,255,255,0.45);
-  border-radius: 16px;
-  text-align: center;
-  font-weight: 600;
-  color: #555;
-  font-size: 0.95rem;
-  transition: background 0.2s;
-}
-
-.comfort-item:hover { background: rgba(255,255,255,0.70); }
-
-.student-card {
-  max-width: 480px;
-  margin: 30px auto 0;
-  padding: 20px 28px;
-  display: flex;
-  align-items: center;
-  gap: 16px;
-  cursor: pointer;
-  transition: background 0.2s, transform 0.2s;
-  box-shadow: 0 4px 16px rgba(0,0,0,0.08);
-}
-
-.student-card:hover {
-  background: rgba(255,255,255,0.50);
-  transform: scale(1.02);
-}
-
-.student-card .s-icon { font-size: 2rem; }
-
-.student-card .s-text .s-title {
-  font-family: 'Playfair Display', serif;
-  font-size: 1.1rem;
-  font-weight: 700;
-  color: #444;
-}
-
-.student-card .s-text .s-sub {
-  font-size: 0.82rem;
-  color: #888;
-  margin-top: 2px;
-}
-
-.student-card .s-arrow {
-  margin-left: auto;
-  color: #aaa;
-  font-size: 1.3rem;
-}
-
-.history-widget {
-  max-width: 640px;
-  margin: 0 auto 30px;
-  padding: 24px 28px;
-}
-
-.history-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 14px;
-}
-
-.history-header h3 { font-size: 1.1rem; color: #444; }
-
-.history-clear {
-  font-size: 0.78rem;
-  color: #aaa;
-  background: none;
-  border: none;
-  cursor: pointer;
-  padding: 4px 10px;
-  border-radius: 20px;
-  font-family: 'Plus Jakarta Sans', sans-serif;
-}
-
-.history-clear:hover { color: #e74c3c; background: rgba(231,76,60,0.06); }
-
-.history-top {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  background: rgba(255,255,255,0.55);
-  padding: 12px 16px;
-  border-radius: 16px;
-  margin-bottom: 14px;
-}
-
-.history-top .top-emoji  { font-size: 1.6rem; }
-.history-top .top-label  { font-size: 0.72rem; color: #888; font-weight: 600; }
-.history-top .top-name   { font-weight: 700; color: #333; font-size: 0.95rem; }
-.history-top .trophy     { margin-left: auto; font-size: 1.4rem; }
-
-.history-bubbles {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 8px;
-  margin-bottom: 10px;
-}
-
-.history-bubble {
-  display: flex;
-  align-items: center;
-  gap: 5px;
-  padding: 6px 14px;
-  border-radius: 50px;
-  font-size: 0.82rem;
-  font-weight: 600;
-}
-
-.history-bubble .b-time { color: #999; font-weight: 400; font-size: 0.75rem; }
-
-.history-note { text-align: center; font-size: 0.72rem; color: #bbb; }
-
-.mood-header { text-align: center; margin-bottom: 30px; }
-
-.mood-header h1 {
-  font-size: clamp(2rem, 5vw, 3.5rem);
-  color: #fff;
-  margin-bottom: 10px;
-}
-
-.mood-header .subtitle {
-  font-size: 1.1rem;
-  color: rgba(255,255,255,0.80);
-  margin-bottom: 20px;
-}
-
-.back-btn {
-  display: inline-block;
-  padding: 9px 22px;
-  background: rgba(255,255,255,0.18);
-  border: 1px solid rgba(255,255,255,0.28);
-  border-radius: 50px;
-  color: #fff;
-  font-family: 'Plus Jakarta Sans', sans-serif;
-  font-size: 0.9rem;
-  font-weight: 500;
-  cursor: pointer;
-  transition: background 0.2s;
-  text-decoration: none;
-}
-
-.back-btn:hover { background: rgba(255,255,255,0.30); }
-
-.two-col {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 22px;
-  margin-bottom: 22px;
-}
-
-@media (max-width: 640px) {
-  .two-col        { grid-template-columns: 1fr; }
-  .comfort-grid   { grid-template-columns: 1fr; }
-  .music-grid     { grid-template-columns: 1fr 1fr; }
-}
-
-.card { padding: 28px; }
-
-.card h3 {
-  font-size: 1.25rem;
-  margin-bottom: 16px;
-}
-
-.card ul {
-  list-style: none;
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
-}
-
-.card ul li {
-  padding: 11px 15px;
-  border-radius: 14px;
-  font-size: 0.95rem;
-  line-height: 1.5;
-}
-
-.journal-area {
-  width: 100%;
-  min-height: 120px;
-  padding: 14px;
-  border-radius: 16px;
-  border: 1px solid rgba(255,255,255,0.25);
-  background: rgba(255,255,255,0.12);
-  font-family: 'Plus Jakarta Sans', sans-serif;
-  font-size: 0.95rem;
-  color: #fff;
-  resize: none;
-  outline: none;
-  margin-bottom: 14px;
-  transition: border-color 0.2s;
-}
-
-.journal-area::placeholder { color: rgba(255,255,255,0.45); }
-.journal-area:focus         { border-color: rgba(255,255,255,0.5); }
-
-.journal-area.light {
-  background: rgba(255,255,255,0.50);
-  color: #555;
-  border: 1px solid rgba(255,255,255,0.4);
-}
-
-.journal-area.light::placeholder { color: rgba(0,0,0,0.3); }
-
-.save-btn {
-  padding: 12px 30px;
-  border: none;
-  border-radius: 50px;
-  font-family: 'Plus Jakarta Sans', sans-serif;
-  font-size: 1rem;
-  font-weight: 700;
-  cursor: pointer;
-  box-shadow: 0 4px 14px rgba(0,0,0,0.15);
-  transition: transform 0.2s, box-shadow 0.2s;
-}
-
-.save-btn:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 6px 18px rgba(0,0,0,0.20);
-}
-
-.saved-msg {
-  display: none;
-  font-weight: 600;
-  font-size: 0.92rem;
-  margin-left: 14px;
-}
-
-.save-row {
-  display: flex;
-  align-items: center;
-}
-
-.saved-entries {
-  display: flex;
-  flex-direction: column;
-  gap: 9px;
-  margin-top: 14px;
-}
-
-.saved-entry {
-  padding: 11px 15px;
-  border-radius: 14px;
-  font-size: 0.9rem;
-  background: rgba(255,255,255,0.12);
-  color: rgba(255,255,255,0.85);
-}
-
-.saved-entry.light {
-  background: rgba(255,255,255,0.55);
-  color: #555;
-}
-
-.music-section {
-  padding: 26px 28px;
-  margin-bottom: 20px;
-}
-
-.music-section h3 {
-  font-size: 1.25rem;
-  margin-bottom: 16px;
-  color: #fff;
-}
-
-.music-grid {
-  display: grid;
-  grid-template-columns: repeat(4, 1fr);
-  gap: 12px;
-}
-
-.music-card {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 7px;
-  padding: 16px 10px;
-  border-radius: 18px;
-  background: rgba(255,255,255,0.10);
-  text-decoration: none;
-  cursor: pointer;
-  transition: background 0.2s, transform 0.2s;
-  text-align: center;
-}
-
-.music-card:hover {
-  background: rgba(255,255,255,0.22);
-  transform: translateY(-3px);
-}
-
-.music-card .mc-emoji { font-size: 2rem; }
-.music-card .mc-genre { font-size: 0.82rem; font-weight: 700; color: rgba(255,255,255,0.9); }
-.music-card .mc-play  { font-size: 0.72rem; color: rgba(255,255,255,0.55); }
-
-.music-card.light          { background: rgba(255,255,255,0.45); }
-.music-card.light:hover    { background: rgba(255,255,255,0.70); }
-.music-card.light .mc-genre { color: #c0392b; }
-.music-card.light .mc-play  { color: #888; }
-
-.student-header { text-align: center; margin-bottom: 28px; }
-
-.student-header h1 {
-  font-size: clamp(2rem, 5vw, 3.5rem);
-  color: #fff;
-  margin-bottom: 8px;
-}
-
-.student-header p { color: rgba(255,255,255,0.65); font-size: 1rem; }
-
-.section-title {
-  font-family: 'Playfair Display', serif;
-  font-size: 1.3rem;
-  color: #fff;
-  text-align: center;
-  margin-bottom: 16px;
-}
-
-.mood-selector {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 10px;
-  justify-content: center;
-  margin-bottom: 18px;
-}
-
-.mood-sel-btn {
-  padding: 10px 20px;
-  background: rgba(255,255,255,0.14);
-  border: none;
-  border-radius: 50px;
-  color: #fff;
-  font-family: 'Plus Jakarta Sans', sans-serif;
-  font-weight: 600;
-  font-size: 0.92rem;
-  cursor: pointer;
-  transition: background 0.2s;
-}
-
-.mood-sel-btn:hover,
-.mood-sel-btn.active {
-  background: rgba(255,255,255,0.90);
-  color: #1a1a2e;
-}
-
-.tips-result {
-  display: none;
-  border-radius: 18px;
-  padding: 20px 24px;
-}
-
-.tips-result.show { display: block; }
-
-.tips-result h4 {
-  font-family: 'Plus Jakarta Sans', sans-serif;
-  font-weight: 700;
-  color: #fff;
-  margin-bottom: 12px;
-  font-size: 0.95rem;
-}
-
-.tips-result ul                { list-style: none; display: flex; flex-direction: column; gap: 8px; }
-.tips-result ul li             { background: rgba(0,0,0,0.15); padding: 10px 14px; border-radius: 12px; color: rgba(255,255,255,0.9); font-size: 0.88rem; }
-
-.focus-timer-wrap {
-  position: relative;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 18px;
-  overflow: hidden;
-}
-
-.focus-confetti {
-  position: absolute;
-  top: 0; left: 0;
-  width: 100%; height: 100%;
-  pointer-events: none;
-  z-index: 10;
-}
-
-.confetti-piece {
-  position: absolute;
-  top: -12px;
-  width: 10px; height: 10px;
-  border-radius: 2px;
-  animation: confettiFall 2.2s ease-in forwards;
-}
-
-@keyframes confettiFall {
-  0%   { transform: translateY(0) rotate(0deg);    opacity: 1; }
-  100% { transform: translateY(500px) rotate(720deg); opacity: 0; }
-}
-
-.focus-btn-row {
-  display: flex;
-  gap: 10px;
-}
-
-.duration-btn {
-  padding: 8px 20px;
-  background: rgba(255,255,255,0.18);
-  border: none;
-  border-radius: 50px;
-  color: #fff;
-  font-family: 'Plus Jakarta Sans', sans-serif;
-  font-size: 0.85rem;
-  font-weight: 600;
-  cursor: pointer;
-  transition: background 0.2s;
-}
-
-.duration-btn.active {
-  background: #fff;
-  color: #1a1a2e;
-}
-
-.break-banner {
-  background: linear-gradient(135deg, #7c3aed, #a855f7);
-  color: #fff;
-  font-weight: 700;
-  font-size: 1rem;
-  padding: 10px 28px;
-  border-radius: 50px;
-  text-align: center;
-}
-
-.focus-timer-display {
-  font-family: 'Courier New', monospace;
-  font-size: 4.5rem;
-  font-weight: 700;
-  color: #fff;
-  letter-spacing: 3px;
-}
-
-.timer-sublabel {
-  font-size: 0.8rem;
-  color: rgba(255,255,255,0.55);
-  margin-top: -12px;
-}
-
-.timer-btns { display: flex; gap: 10px; }
-
-.timer-btn {
-  padding: 11px 26px;
-  background: #fff;
-  color: #1a1a2e;
-  border: none;
-  border-radius: 50px;
-  font-family: 'Plus Jakarta Sans', sans-serif;
-  font-weight: 700;
-  font-size: 0.95rem;
-  cursor: pointer;
-  transition: transform 0.15s;
-  box-shadow: 0 4px 12px rgba(0,0,0,0.15);
-}
-
-.timer-btn:hover { transform: scale(1.05); }
-
-.timer-btn.secondary {
-  background: rgba(255,255,255,0.20);
-  color: #fff;
-  box-shadow: none;
-}
-
-.sessions-row {
-  font-size: 0.88rem;
-  color: rgba(255,255,255,0.65);
-  min-height: 22px;
-  text-align: center;
-}
-
-.focus-done-panel {
-  width: 100%;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 18px;
-}
-
-.focus-message-box {
-  background: linear-gradient(135deg, rgba(124,58,237,0.35), rgba(168,85,247,0.25));
-  border: 1px solid rgba(168,85,247,0.4);
-  border-radius: 20px;
-  padding: 20px 24px;
-  text-align: center;
-  width: 100%;
-  box-sizing: border-box;
-}
-
-.focus-message-box .msg-emoji { font-size: 2rem; display: block; margin-bottom: 8px; }
-.focus-message-box .msg-text  { color: #fff; font-size: 0.95rem; font-weight: 600; line-height: 1.5; }
-
-.achievement-section {
-  width: 100%;
-  background: rgba(255,255,255,0.07);
-  border-radius: 20px;
-  padding: 20px 22px;
-  box-sizing: border-box;
-  display: flex;
-  flex-direction: column;
-  gap: 12px;
-}
-
-.achievement-section h4 {
-  color: #fff;
-  font-family: 'Plus Jakarta Sans', sans-serif;
-  font-weight: 700;
-  font-size: 0.95rem;
-  margin: 0;
-}
-
-.achievement-hint {
-  color: rgba(255,255,255,0.5);
-  font-size: 0.8rem;
-  margin: -6px 0 0;
-}
-
-.focus-textarea {
-  width: 100%;
-  background: rgba(255,255,255,0.12);
-  border: 1px solid rgba(255,255,255,0.2);
-  border-radius: 14px;
-  color: #fff;
-  font-family: 'Plus Jakarta Sans', sans-serif;
-  font-size: 0.9rem;
-  padding: 12px 14px;
-  resize: vertical;
-  box-sizing: border-box;
-}
-
-.focus-textarea::placeholder { color: rgba(255,255,255,0.35); }
-.focus-textarea:focus { outline: none; border-color: rgba(255,255,255,0.45); }
-
-.achievement-save-row {
-  display: flex;
-  align-items: center;
-  gap: 14px;
-  flex-wrap: wrap;
-}
-
-.break-pick-row {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  flex-wrap: wrap;
-  padding-top: 4px;
-  border-top: 1px solid rgba(255,255,255,0.1);
-}
-
-.break-pick-label {
-  color: rgba(255,255,255,0.5);
-  font-size: 0.8rem;
-}
-
-.break-pick-btn {
-  padding: 6px 16px;
-  background: rgba(255,255,255,0.15);
-  border: none;
-  border-radius: 50px;
-  color: #fff;
-  font-family: 'Plus Jakarta Sans', sans-serif;
-  font-size: 0.8rem;
-  font-weight: 600;
-  cursor: pointer;
-  transition: background 0.2s;
-}
-
-.break-pick-btn.active {
-  background: rgba(124,58,237,0.8);
-}
-
-.skip-link {
-  background: none;
-  border: none;
-  color: rgba(255,255,255,0.45);
-  font-size: 0.78rem;
-  cursor: pointer;
-  text-decoration: underline;
-  padding: 0;
-  font-family: 'Plus Jakarta Sans', sans-serif;
-  align-self: flex-start;
-}
-
-.skip-link:hover { color: rgba(255,255,255,0.75); }
-
-.break-done-panel {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 10px;
-  padding: 24px;
-  background: linear-gradient(135deg, rgba(16,185,129,0.25), rgba(5,150,105,0.2));
-  border: 1px solid rgba(16,185,129,0.35);
-  border-radius: 20px;
-  width: 100%;
-  box-sizing: border-box;
-  text-align: center;
-}
-
-.break-done-title {
-  font-family: 'Playfair Display', serif;
-  font-size: 1.2rem;
-  font-weight: 700;
-  color: #fff;
-  margin: 0;
-}
-
-.break-done-sub {
-  color: rgba(255,255,255,0.65);
-  font-size: 0.85rem;
-  margin: 0 0 6px;
-}
-
-.achievements-section {
-  width: 100%;
-  border-top: 1px solid rgba(255,255,255,0.12);
-  padding-top: 18px;
-}
-
-.achievements-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 12px;
-}
-
-#achievements-title {
-  color: rgba(255,255,255,0.85);
-  font-family: 'Plus Jakarta Sans', sans-serif;
-  font-weight: 700;
-  font-size: 0.9rem;
-}
-
-.clear-achievements-btn {
-  background: rgba(239,68,68,0.25);
-  border: none;
-  border-radius: 50px;
-  color: #fca5a5;
-  font-size: 0.75rem;
-  font-weight: 600;
-  padding: 5px 14px;
-  cursor: pointer;
-  font-family: 'Plus Jakarta Sans', sans-serif;
-  transition: background 0.2s;
-}
-
-.clear-achievements-btn:hover { background: rgba(239,68,68,0.45); }
-
-.achievements-list {
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
-}
-
-.achievement-item {
-  background: rgba(255,255,255,0.08);
-  border-radius: 14px;
-  padding: 12px 16px;
-}
-
-.achievement-item .ach-text {
-  color: #fff;
-  font-size: 0.88rem;
-  margin-bottom: 4px;
-}
-
-.achievement-item .ach-meta {
-  color: rgba(255,255,255,0.4);
-  font-size: 0.75rem;
-}
-
-.breath-wrap {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 14px;
-  padding: 28px;
-}
-
-.breath-circle {
-  width: 120px;
-  height: 120px;
-  border-radius: 50%;
-  background: rgba(255,255,255,0.22);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 2.5rem;
-  transition: transform 1s ease, background-color 1s ease;
-}
-
-.breath-label {
-  font-family: 'Playfair Display', serif;
-  font-size: 1.2rem;
-  font-weight: 700;
-  color: #fff;
-}
-
-.breath-instruction {
-  font-size: 0.82rem;
-  color: rgba(255,255,255,0.60);
-  text-align: center;
-}
-
-.breath-count {
-  font-size: 2rem;
-  font-weight: 700;
-  color: #fff;
-  min-height: 44px;
-}
-
-.exam-grid {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 16px;
-  margin-bottom: 22px;
-}
-
-@media (max-width: 640px) {
-  .exam-grid  { grid-template-columns: 1fr; }
-  .music-grid { grid-template-columns: 1fr 1fr; }
-  .two-col    { grid-template-columns: 1fr; }
-}
-
-.exam-card {
-  background: rgba(255,255,255,0.10);
-  border-radius: 18px;
-  padding: 20px 16px;
-}
-
-.exam-card .e-icon { font-size: 1.8rem; margin-bottom: 8px; }
-.exam-card h4      { font-family:'Plus Jakarta Sans',sans-serif; font-weight:700; color:#fff; font-size:0.88rem; margin-bottom:5px; }
-.exam-card p       { color:rgba(255,255,255,0.65); font-size:0.80rem; line-height:1.5; }
-
-.affirmations-grid {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 11px;
-}
-
-.affirmation {
-  background: rgba(255,255,255,0.10);
-  padding: 15px 18px;
-  border-radius: 16px;
-  color: #fff;
-  font-weight: 600;
-  font-size: 0.9rem;
-  text-align: center;
-}
-
-.chatgpt-grid {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 12px;
-  margin-bottom: 18px;
-}
-
-.chatgpt-card {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 8px;
-  padding: 18px 12px;
-  background: rgba(255,255,255,0.10);
-  border-radius: 18px;
-  text-decoration: none;
-  color: #fff;
-  font-size: 0.88rem;
-  font-weight: 600;
-  text-align: center;
-  transition: background 0.2s, transform 0.2s;
-}
-
-.chatgpt-card:hover {
-  background: rgba(255,255,255,0.20);
-  transform: translateY(-3px);
-}
-
-.cg-emoji { font-size: 1.8rem; }
-
-.open-chatgpt {
-  display: inline-block;
-  margin-top: 4px;
-  padding: 10px 28px;
-  background: rgba(255,255,255,0.18);
-  border-radius: 50px;
-  color: #fff;
-  font-weight: 600;
-  font-size: 0.9rem;
-  text-decoration: none;
-  transition: background 0.2s;
-}
-
-.open-chatgpt:hover { background: rgba(255,255,255,0.30); }
-
-.text-center { text-align: center; }
-
-.about-wrap {
-  max-width: 700px;
-  margin: 0 auto;
-  text-align: center;
-  padding-top: 20px;
-}
-
-.about-wrap h1 {
-  font-size: clamp(2rem, 5vw, 3rem);
-  color: #444;
-  margin-bottom: 10px;
-}
-
-.about-subtitle {
-  color: #666;
-  font-size: 1.1rem;
-  margin-bottom: 40px;
-}
-
-.about-cards {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 20px;
-  margin-bottom: 30px;
-}
-
-@media (max-width: 640px) {
-  .about-cards { grid-template-columns: 1fr; }
-}
-
-.about-card {
-  padding: 28px 22px;
-  text-align: left;
-}
-
-.ac-icon {
-  font-size: 2rem;
-  margin-bottom: 12px;
-}
-
-.about-card h3 {
-  font-size: 1.15rem;
-  color: #333;
-  margin-bottom: 8px;
-}
-
-.about-card p {
-  font-size: 0.9rem;
-  color: #666;
-  line-height: 1.6;
-}
-
-.about-team {
-  text-align: center;
-  margin-top: 36px;
-  padding: 36px 24px;
-  background: rgba(255,255,255,0.55);
-  border-radius: 28px;
-  backdrop-filter: blur(10px);
-  border: 1px solid rgba(255,255,255,0.7);
-}
-
-.about-team-title {
-  font-family: 'Playfair Display', serif;
-  font-size: 1.5rem;
-  font-weight: 700;
-  color: #333;
-  margin-bottom: 6px;
-}
-
-.about-team-sub {
-  color: #888;
-  font-size: 0.85rem;
-  margin-bottom: 28px;
-}
-
-.about-team-members {
-  display: flex;
-  justify-content: center;
-  gap: 40px;
-  flex-wrap: wrap;
-}
-
-.team-member {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 12px;
-}
-
-.team-avatar {
-  width: 66px;
-  height: 66px;
-  border-radius: 50%;
-  background: linear-gradient(135deg, #f472b6, #a855f7);
-  color: #fff;
-  font-size: 1.7rem;
-  font-weight: 700;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  box-shadow: 0 6px 20px rgba(168,85,247,0.35);
-}
-
-.team-name {
-  font-weight: 700;
-  color: #333;
-  font-size: 1rem;
-}
-
-.mb-20 { margin-bottom: 20px; }
-.mb-24 { margin-bottom: 24px; }
+var MOODS = {
+
+  happy: {
+    heading:            "Keep shining ✨",
+    subtitle:           "Do something you love today 💛",
+    backBtn:            "⬅ Back",
+    musicTitle:         "🎵 Music for your mood",
+    quotes: [
+      "Smile more, worry less 💛",
+      "Happiness looks good on you ✨",
+      "Do what makes your soul shine 🌼",
+      "Small moments, big happiness 💫",
+      "Today is a good day 🌞"
+    ],
+    tips: [
+      "• Listen to your favorite song 🎵",
+      "• Go for a walk 🚶‍♀️",
+      "• Call someone you love ☎️"
+    ],
+    music: [
+      { genre: "Indie Pop",       emoji: "🎸", query: "indie pop happy playlist" },
+      { genre: "Dance / Upbeat",  emoji: "💃", query: "upbeat feel good music" },
+      { genre: "Summer Vibes",    emoji: "☀️", query: "summer vibes playlist" },
+      { genre: "Feel Good Hits",  emoji: "🎉", query: "feel good happy hits playlist" }
+    ],
+    quotesTitle:        "✨ Happy Vibes",
+    journalTitle:       "💭 Write something happy",
+    journalPlaceholder: "Write what made you happy today...",
+    tipsTitle:          "🌼 Things to do",
+    savedText:          "✅ Saved successfully 💖",
+    saveBtnText:        "Save ✨",
+    savedMemoriesTitle: "💖 Your Memories",
+    isLight: true
+  },
+
+  sad: {
+    heading:            "It's okay to feel sad 💙",
+    subtitle:           "You don't have to be strong all the time 🫂",
+    backBtn:            "⬅ Back",
+    musicTitle:         "🎵 Music for your mood",
+    quotes: [
+      "This feeling will pass 💙",
+      "You are not alone 🫂",
+      "It's okay to cry sometimes 💧",
+      "Take your time to heal 🌙",
+      "You matter, always 🤍"
+    ],
+    tips: [
+      "• Talk to someone you trust 💬",
+      "• Listen to soft music 🎧",
+      "• Give yourself time 🤍"
+    ],
+    music: [
+      { genre: "Acoustic & Soft", emoji: "🎸", query: "acoustic sad soft playlist" },
+      { genre: "Lo-fi Chill",     emoji: "🌙", query: "lofi chill sad playlist" },
+      { genre: "Healing Songs",   emoji: "🫂", query: "healing emotional music playlist" },
+      { genre: "Rainy Day",       emoji: "🌧️", query: "rainy day sad songs playlist" }
+    ],
+    quotesTitle:        "💧 Soft Words",
+    journalTitle:       "💭 Let your feelings out",
+    journalPlaceholder: "Write what's making you sad...",
+    tipsTitle:          "🌙 Gentle care",
+    savedText:          "💙 Saved safely",
+    saveBtnText:        "Save 💙",
+    savedMemoriesTitle: "🫂 Your Feelings",
+    isLight: false
+  },
+
+  calm: {
+    heading:            "Relax & Breathe 🌿",
+    subtitle:           "Take a moment for yourself 💙",
+    backBtn:            "⬅ Back",
+    musicTitle:         "🎵 Music for your mood",
+    quotes: [
+      "Breathe in, breathe out 🌿",
+      "Peace begins with you 🤍",
+      "Slow down, you're doing fine 🌊",
+      "Quiet mind, calm soul 🌙",
+      "Just relax 💙"
+    ],
+    tips: [
+      "• Listen to calm music 🎧",
+      "• Take deep breaths 🧘‍♀️",
+      "• Sit quietly for a moment 🌙"
+    ],
+    music: [
+      { genre: "Lo-fi Hip Hop",  emoji: "🎧", query: "lofi hip hop chill beats" },
+      { genre: "Nature Sounds",  emoji: "🌿", query: "nature sounds relaxing music" },
+      { genre: "Meditation",     emoji: "🧘", query: "meditation calm music" },
+      { genre: "Ambient Piano",  emoji: "🎹", query: "ambient piano calm playlist" }
+    ],
+    quotesTitle:        "🌙 Calm Vibes",
+    journalTitle:       "💭 Clear your mind",
+    journalPlaceholder: "Write what's on your mind...",
+    tipsTitle:          "🌿 Things to do",
+    savedText:          "✅ Saved successfully 💖",
+    saveBtnText:        "Save ✨",
+    savedMemoriesTitle: "💖 Your Thoughts",
+    isLight: false
+  },
+
+  angry: {
+    heading:            "Let it out 😤",
+    subtitle:           "Your feelings are valid ❤️‍🔥",
+    backBtn:            "⬅ Back",
+    musicTitle:         "🎵 Music for your mood",
+    quotes: [
+      "It's okay to feel angry 😤",
+      "Breathe before you react 🌬️",
+      "Let it out, don't hold it in 💥",
+      "You are in control 🔥",
+      "This feeling will pass ❤️‍🔥"
+    ],
+    tips: [
+      "• Take deep breaths 🌬️",
+      "• Walk away for a moment 🚶‍♀️",
+      "• Listen to music 🎧"
+    ],
+    music: [
+      { genre: "Rock / Metal",       emoji: "🤘", query: "rock metal release anger playlist" },
+      { genre: "Empowerment Rap",    emoji: "🔥", query: "empowerment rap powerful playlist" },
+      { genre: "Workout Hype",       emoji: "💪", query: "workout hype music playlist" },
+      { genre: "Classical Intense",  emoji: "🎻", query: "intense classical music playlist" }
+    ],
+    quotesTitle:        "🔥 Angry Vibes",
+    journalTitle:       "💭 Vent your thoughts",
+    journalPlaceholder: "Write what's making you angry...",
+    tipsTitle:          "⚡ Cool down",
+    savedText:          "💥 Released successfully",
+    saveBtnText:        "Release 💥",
+    savedMemoriesTitle: "🧠 Released Thoughts",
+    isLight: false
+  },
+
+  tired: {
+    heading:            "Rest a little 😴",
+    subtitle:           "You've done enough for today 💙",
+    backBtn:            "⬅ Back",
+    musicTitle:         "🎵 Music for your mood",
+    quotes: [
+      "It's okay to rest 😴",
+      "You don't have to do everything today 💙",
+      "Slow down and breathe 🌙",
+      "Rest is productive too ✨",
+      "Take care of yourself 🤍"
+    ],
+    tips: [
+      "• Take a short nap 🛌",
+      "• Drink something warm ☕",
+      "• Stay away from screens 📵"
+    ],
+    music: [
+      { genre: "Sleep Sounds",   emoji: "😴", query: "sleep sounds white noise relaxing" },
+      { genre: "Lo-fi Sleepy",   emoji: "🌙", query: "lofi sleepy tired music playlist" },
+      { genre: "Soft Acoustic",  emoji: "🎸", query: "soft acoustic calm tired music" },
+      { genre: "Binaural Beats", emoji: "🧠", query: "binaural beats deep relaxation" }
+    ],
+    quotesTitle:        "🌙 Tired Vibes",
+    journalTitle:       "💭 Let it out gently",
+    journalPlaceholder: "Write what's making you tired...",
+    tipsTitle:          "🌿 Rest ideas",
+    savedText:          "🌙 Saved successfully",
+    saveBtnText:        "Save 🌙",
+    savedMemoriesTitle: "💤 Your Thoughts",
+    isLight: false
+  }
+
+};
+
+var MOODS_AR = {
+
+  happy: {
+    heading:            "استمر في التألق ✨",
+    subtitle:           "افعل ما يجعل روحك تتألق 💛",
+    backBtn:            "⬅ العودة",
+    musicTitle:         "🎵 موسيقى تناسب مزاجك",
+    quotes: [
+      "ابتسم أكثر، قلق أقل 💛",
+      "السعادة تبدو رائعة عليك ✨",
+      "افعل ما يُضيء روحك 🌼",
+      "لحظات صغيرة، سعادة كبيرة 💫",
+      "اليوم يوم جميل 🌞"
+    ],
+    tips: [
+      "• استمع لأغنيتك المفضلة 🎵",
+      "• اخرج للمشي 🚶‍♀️",
+      "• تواصل مع شخص تحبه ☎️"
+    ],
+    music: [
+      { genre: "بوب مستقل",    emoji: "🎸", query: "indie pop happy playlist" },
+      { genre: "رقص / حماسي", emoji: "💃", query: "upbeat feel good music" },
+      { genre: "أجواء صيفية", emoji: "☀️", query: "summer vibes playlist" },
+      { genre: "أغاني البهجة", emoji: "🎉", query: "feel good happy hits playlist" }
+    ],
+    quotesTitle:        "✨ أجواء السعادة",
+    journalTitle:       "💭 اكتب شيئاً سعيداً",
+    journalPlaceholder: "اكتب ما جعلك سعيداً اليوم...",
+    tipsTitle:          "🌼 أشياء يمكنك فعلها",
+    savedText:          "✅ تم الحفظ 💖",
+    saveBtnText:        "احفظ ✨",
+    savedMemoriesTitle: "💖 ذكرياتك",
+    isLight: true
+  },
+
+  sad: {
+    heading:            "لا بأس أن تحزن 💙",
+    subtitle:           "لا يجب أن تكون قوياً دائماً 🫂",
+    backBtn:            "⬅ العودة",
+    musicTitle:         "🎵 موسيقى تناسب مزاجك",
+    quotes: [
+      "هذا الشعور سيمر 💙",
+      "لست وحدك 🫂",
+      "لا بأس بالبكاء أحياناً 💧",
+      "خذ وقتك للتعافي 🌙",
+      "أنت مهم دائماً 🤍"
+    ],
+    tips: [
+      "• تحدث مع شخص تثق به 💬",
+      "• استمع لموسيقى هادئة 🎧",
+      "• أعطِ نفسك وقتاً 🤍"
+    ],
+    music: [
+      { genre: "أكوستيك وناعم", emoji: "🎸", query: "acoustic sad soft playlist" },
+      { genre: "لو-فاي هادئ",   emoji: "🌙", query: "lofi chill sad playlist" },
+      { genre: "أغاني شفاء",    emoji: "🫂", query: "healing emotional music playlist" },
+      { genre: "يوم ممطر",      emoji: "🌧️", query: "rainy day sad songs playlist" }
+    ],
+    quotesTitle:        "💧 كلمات ناعمة",
+    journalTitle:       "💭 أخرج مشاعرك",
+    journalPlaceholder: "اكتب ما يجعلك حزيناً...",
+    tipsTitle:          "🌙 اعتنِ بنفسك",
+    savedText:          "💙 تم الحفظ بأمان",
+    saveBtnText:        "احفظ 💙",
+    savedMemoriesTitle: "🫂 مشاعرك",
+    isLight: false
+  },
+
+  calm: {
+    heading:            "استرخِ وتنفس 🌿",
+    subtitle:           "خذ لحظة لنفسك 💙",
+    backBtn:            "⬅ العودة",
+    musicTitle:         "🎵 موسيقى تناسب مزاجك",
+    quotes: [
+      "تنفس للداخل، تنفس للخارج 🌿",
+      "السلام يبدأ منك 🤍",
+      "تمهّل، أنت بخير 🌊",
+      "عقل هادئ، روح مطمئنة 🌙",
+      "فقط استرخِ 💙"
+    ],
+    tips: [
+      "• استمع لموسيقى هادئة 🎧",
+      "• خذ أنفاساً عميقة 🧘‍♀️",
+      "• اجلس بهدوء لحظة 🌙"
+    ],
+    music: [
+      { genre: "لو-فاي هيب هوب", emoji: "🎧", query: "lofi hip hop chill beats" },
+      { genre: "أصوات الطبيعة",  emoji: "🌿", query: "nature sounds relaxing music" },
+      { genre: "تأمل",            emoji: "🧘", query: "meditation calm music" },
+      { genre: "بيانو هادئ",     emoji: "🎹", query: "ambient piano calm playlist" }
+    ],
+    quotesTitle:        "🌙 أجواء الهدوء",
+    journalTitle:       "💭 صفّ ذهنك",
+    journalPlaceholder: "اكتب ما يدور في ذهنك...",
+    tipsTitle:          "🌿 أشياء يمكنك فعلها",
+    savedText:          "✅ تم الحفظ 💖",
+    saveBtnText:        "احفظ ✨",
+    savedMemoriesTitle: "💖 أفكارك",
+    isLight: false
+  },
+
+  angry: {
+    heading:            "أخرج ما بداخلك 😤",
+    subtitle:           "مشاعرك صحيحة ❤️‍🔥",
+    backBtn:            "⬅ العودة",
+    musicTitle:         "🎵 موسيقى تناسب مزاجك",
+    quotes: [
+      "لا بأس بالشعور بالغضب 😤",
+      "تنفس قبل أن تتصرف 🌬️",
+      "أخرجه، لا تحتفظ به 💥",
+      "أنت تتحكم في نفسك 🔥",
+      "هذا الشعور سيمر ❤️‍🔥"
+    ],
+    tips: [
+      "• خذ أنفاساً عميقة 🌬️",
+      "• ابتعد لحظة 🚶‍♀️",
+      "• استمع لموسيقى 🎧"
+    ],
+    music: [
+      { genre: "روك / ميتال",   emoji: "🤘", query: "rock metal release anger playlist" },
+      { genre: "راب تحفيزي",    emoji: "🔥", query: "empowerment rap powerful playlist" },
+      { genre: "موسيقى رياضية", emoji: "💪", query: "workout hype music playlist" },
+      { genre: "كلاسيكي مكثف", emoji: "🎻", query: "intense classical music playlist" }
+    ],
+    quotesTitle:        "🔥 أجواء الغضب",
+    journalTitle:       "💭 فرّغ ما بداخلك",
+    journalPlaceholder: "اكتب ما يغضبك...",
+    tipsTitle:          "⚡ تبريد الأعصاب",
+    savedText:          "💥 تم التفريغ",
+    saveBtnText:        "أفرغ 💥",
+    savedMemoriesTitle: "🧠 أفكار مُفرَّغة",
+    isLight: false
+  },
+
+  tired: {
+    heading:            "خذ قسطاً من الراحة 😴",
+    subtitle:           "لقد فعلت الكثير اليوم 💙",
+    backBtn:            "⬅ العودة",
+    musicTitle:         "🎵 موسيقى تناسب مزاجك",
+    quotes: [
+      "لا بأس بالراحة 😴",
+      "لا يجب أن تفعل كل شيء اليوم 💙",
+      "تمهّل وتنفس 🌙",
+      "الراحة أيضاً إنتاج ✨",
+      "اعتنِ بنفسك 🤍"
+    ],
+    tips: [
+      "• خذ قيلولة قصيرة 🛌",
+      "• اشرب شيئاً دافئاً ☕",
+      "• ابتعد عن الشاشات 📵"
+    ],
+    music: [
+      { genre: "أصوات النوم",  emoji: "😴", query: "sleep sounds white noise relaxing" },
+      { genre: "لو-فاي نعسان", emoji: "🌙", query: "lofi sleepy tired music playlist" },
+      { genre: "أكوستيك ناعم", emoji: "🎸", query: "soft acoustic calm tired music" },
+      { genre: "موجات ثنائية", emoji: "🧠", query: "binaural beats deep relaxation" }
+    ],
+    quotesTitle:        "🌙 أجواء التعب",
+    journalTitle:       "💭 أخرجها بلطف",
+    journalPlaceholder: "اكتب ما يجعلك متعباً...",
+    tipsTitle:          "🌿 أفكار للراحة",
+    savedText:          "🌙 تم الحفظ",
+    saveBtnText:        "احفظ 🌙",
+    savedMemoriesTitle: "💤 أفكارك",
+    isLight: false
+  }
+
+};
+
+var HISTORY_KEY = "moodyra_mood_history";
+var MAX_HISTORY = 30;
+
+var MOOD_META = {
+  happy: { emoji: "😊", color: "#fcb69f" },
+  sad:   { emoji: "😔", color: "#a1c4fd" },
+  calm:  { emoji: "😌", color: "#a8dadc" },
+  angry: { emoji: "😡", color: "#f85032" },
+  tired: { emoji: "😴", color: "#c3cfe2" }
+};
+
+function logMood(mood) {
+  var entry    = { mood: mood, timestamp: Date.now() };
+  var existing = JSON.parse(localStorage.getItem(HISTORY_KEY) || "[]");
+  var updated  = [entry].concat(existing).slice(0, MAX_HISTORY);
+  localStorage.setItem(HISTORY_KEY, JSON.stringify(updated));
+  renderHistoryWidget();
+}
+
+function getMoodHistory() {
+  return JSON.parse(localStorage.getItem(HISTORY_KEY) || "[]");
+}
+
+function clearHistory() {
+  localStorage.removeItem(HISTORY_KEY);
+  renderHistoryWidget();
+}
+
+function timeAgo(timestamp) {
+  var diff = Date.now() - timestamp;
+  var mins = Math.floor(diff / 60000);
+  var hrs  = Math.floor(diff / 3600000);
+  var days = Math.floor(diff / 86400000);
+
+  if (currentLang === "ar") {
+    if (mins < 1)  return "الآن";
+    if (mins < 60) return "منذ " + mins + "د";
+    if (hrs  < 24) return "منذ " + hrs  + "س";
+    return "منذ " + days + "ي";
+  }
+
+  if (mins < 1)  return "just now";
+  if (mins < 60) return mins + "m ago";
+  if (hrs  < 24) return hrs  + "h ago";
+  return days + "d ago";
+}
+
+function getTopMood(history) {
+  var counts = {};
+
+  history.forEach(function(entry) {
+    counts[entry.mood] = (counts[entry.mood] || 0) + 1;
+  });
+
+  var topMood  = null;
+  var topCount = 0;
+  Object.keys(counts).forEach(function(mood) {
+    if (counts[mood] > topCount) {
+      topMood  = mood;
+      topCount = counts[mood];
+    }
+  });
+
+  return topMood ? [topMood, topCount] : null;
+}
+
+function renderHistoryWidget() {
+  var widget = document.getElementById("history-widget");
+  if (!widget) return;
+
+  var history = getMoodHistory();
+
+  if (history.length === 0) {
+    widget.style.display = "none";
+    return;
+  }
+
+  widget.style.display = "block";
+
+  var isAr = (currentLang === "ar");
+
+  function moodLabel(moodId) {
+    return (TRANSLATIONS[currentLang] && TRANSLATIONS[currentLang][moodId]) || moodId;
+  }
+
+  var topMood = getTopMood(history);
+  var topHtml = "";
+  if (topMood) {
+    var meta = MOOD_META[topMood[0]];
+    topHtml =
+      '<div class="history-top">' +
+        '<span class="top-emoji">' + meta.emoji + '</span>' +
+        '<div>' +
+          '<div class="top-label">' + (isAr ? "المزاج الأكثر تكراراً" : "Most common mood") + '</div>' +
+          '<div class="top-name">' + moodLabel(topMood[0]) +
+            ' <span style="color:#bbb;font-weight:400;font-size:0.85rem">(' + topMood[1] + '×)</span>' +
+          '</div>' +
+        '</div>' +
+        '<span class="trophy">🏆</span>' +
+      '</div>';
+  }
+
+  var recent     = history.slice(0, 10);
+  var bubblesHtml = recent.map(function(entry) {
+    var meta = MOOD_META[entry.mood] || { emoji: "🌀", color: "#ccc" };
+    return (
+      '<div class="history-bubble" style="' +
+        'background:' + meta.color + '44;' +
+        'border:1.5px solid ' + meta.color + '">' +
+        '<span>' + meta.emoji + '</span>' +
+        '<span>' + moodLabel(entry.mood) + '</span>' +
+        '<span class="b-time">' + timeAgo(entry.timestamp) + '</span>' +
+      '</div>'
+    );
+  }).join("");
+
+  widget.innerHTML =
+    '<div class="history-header">' +
+      '<h3>📊 ' + (isAr ? "سجل المزاج" : "Mood History") + '</h3>' +
+      '<button class="history-clear" onclick="clearHistory()">' + (isAr ? "مسح" : "Clear") + '</button>' +
+    '</div>' +
+    topHtml +
+    '<div class="history-bubbles">' + bubblesHtml + '</div>' +
+    '<p class="history-note">' + (isAr ? "محفوظ في متصفحك · يُمسح عند مسح بيانات المتصفح" : "Saved in your browser · clears when you clear browser data") + '</p>';
+}
+
+function showPage(pageId) {
+
+  document.querySelectorAll(".page").forEach(function(page) {
+    page.classList.remove("active");
+  });
+
+  var target = document.getElementById("page-" + pageId);
+  if (target) {
+    target.classList.add("active");
+  }
+
+  window.scrollTo(0, 0);
+}
+
+function openMood(mood) {
+  logMood(mood);
+  showPage(mood);
+  fillMoodPage(mood);
+}
+
+function fillMoodPage(mood) {
+  var data = (currentLang === "ar" && MOODS_AR[mood]) ? MOODS_AR[mood] : MOODS[mood];
+  var page = document.getElementById("page-" + mood);
+  if (!page || !data) return;
+
+  var isLight = data.isLight;
+
+  function itemBg() {
+    return isLight ? "background:rgba(255,255,255,0.40)" : "background:rgba(255,255,255,0.12)";
+  }
+
+  var h1El        = page.querySelector("h1");
+  var subtitleEl  = page.querySelector(".subtitle");
+  var backBtnEl   = page.querySelector(".back-btn");
+  var musicTitleEl = page.querySelector(".music-section h3");
+  if (h1El        && data.heading)    h1El.textContent        = data.heading;
+  if (subtitleEl  && data.subtitle)   subtitleEl.textContent  = data.subtitle;
+  if (backBtnEl   && data.backBtn)    backBtnEl.textContent   = data.backBtn;
+  if (musicTitleEl && data.musicTitle) musicTitleEl.textContent = data.musicTitle;
+
+  var quotesTitle = page.querySelector(".quotes-title");
+  var quotesList  = page.querySelector(".quotes-list");
+  if (quotesTitle) quotesTitle.textContent = data.quotesTitle;
+  if (quotesList) {
+    quotesList.innerHTML = data.quotes.map(function(q) {
+      return '<li style="' + itemBg() + '">' + q + '</li>';
+    }).join("");
+  }
+
+  var tipsTitle = page.querySelector(".tips-title");
+  var tipsList  = page.querySelector(".tips-list");
+  if (tipsTitle) tipsTitle.textContent = data.tipsTitle;
+  if (tipsList) {
+    tipsList.innerHTML = data.tips.map(function(t) {
+      return '<li style="' + itemBg() + '">' + t + '</li>';
+    }).join("");
+  }
+
+  var musicGrid = page.querySelector(".music-grid");
+  if (musicGrid) {
+    var playLabel = currentLang === "ar" ? "▶ شغّل على يوتيوب" : "▶ Play on YouTube";
+    musicGrid.innerHTML = data.music.map(function(m) {
+      var cardClass = "music-card" + (isLight ? " light" : "");
+      return (
+        '<a class="' + cardClass + '" ' +
+           'href="https:
+           'target="_blank" rel="noopener noreferrer">' +
+          '<span class="mc-emoji">' + m.emoji    + '</span>' +
+          '<span class="mc-genre">' + m.genre    + '</span>' +
+          '<span class="mc-play">'  + playLabel  + '</span>' +
+        '</a>'
+      );
+    }).join("");
+  }
+
+  var journalTitle  = page.querySelector(".journal-title");
+  var journalArea   = page.querySelector(".journal-area");
+  var saveBtn       = page.querySelector(".save-btn");
+  var savedMsg      = page.querySelector(".saved-msg");
+  var savedEntries  = page.querySelector(".saved-entries");
+  var memoriesTitle = page.querySelector(".memories-title");
+
+  if (journalTitle)  journalTitle.textContent  = data.journalTitle;
+  if (journalArea)   journalArea.placeholder   = data.journalPlaceholder;
+  if (saveBtn)       saveBtn.textContent       = data.saveBtnText;
+  if (memoriesTitle) memoriesTitle.textContent = data.savedMemoriesTitle;
+
+  if (journalArea)  journalArea.value         = "";
+  if (savedMsg)     savedMsg.style.display    = "none";
+  if (savedEntries) savedEntries.innerHTML    = "";
+
+  if (saveBtn && journalArea && savedMsg && savedEntries) {
+
+    saveBtn.onclick = function() {
+      var text = journalArea.value.trim();
+      if (!text) return;
+
+      var entry       = document.createElement("div");
+      entry.className = "saved-entry" + (isLight ? " light" : "");
+      entry.textContent = "• " + text;
+      savedEntries.insertBefore(entry, savedEntries.firstChild);
+
+      var memoriesSection = page.querySelector(".memories-section");
+      if (memoriesSection) memoriesSection.style.display = "block";
+
+      journalArea.value = "";
+
+      savedMsg.textContent    = data.savedText;
+      savedMsg.style.display  = "inline";
+      setTimeout(function() {
+        savedMsg.style.display = "none";
+      }, 3000);
+    };
+  }
+}
+
+function toggleComfort() {
+  var panel = document.getElementById("comfort-panel");
+  if (!panel) return;
+  panel.classList.toggle("open");
+}
+
+var MOTIVATIONAL = [
+  { text: "Amazing work! Every focused minute brings you closer to your goal.", emoji: "🏆" },
+  { text: "You did it! Consistent effort is the secret to success. Keep going!", emoji: "🔥" },
+  { text: "Session complete! You're building incredible study habits.", emoji: "✨" },
+  { text: "Brilliant focus! Your brain is stronger than you think.", emoji: "💡" },
+  { text: "Well done! You've earned every second of the break ahead.", emoji: "🎉" },
+  { text: "Incredible discipline! One session at a time is how champions study.", emoji: "⭐" },
+  { text: "Look at you go! Small steps every day lead to giant results.", emoji: "🚀" },
+  { text: "You showed up and did the work — that's what matters most.", emoji: "💎" },
+  { text: "Another session down! Your future self is already thanking you.", emoji: "🙌" }
+];
+
+var CONFETTI_COLORS = [
+  "#ff6b6b","#feca57","#48dbfb","#ff9ff3",
+  "#54a0ff","#5f27cd","#00d2d3","#1dd1a1"
+];
+
+var ACHIEVEMENTS_KEY = "moodyra_achievements";
+
+var focus = {
+  duration:      25 * 60,
+  breakDuration: 5  * 60,
+  timeLeft:      25 * 60,
+  phase:         "idle",
+  interval:      null,
+  sessions:      0,
+  lastMsgIdx:    -1
+};
+
+function focusTone(ac, freq, startTime, vol, decay, type) {
+  type = type || "sine";
+  var osc  = ac.createOscillator();
+  var gain = ac.createGain();
+  osc.connect(gain);
+  gain.connect(ac.destination);
+  osc.type = type;
+  osc.frequency.value = freq;
+  gain.gain.setValueAtTime(0, startTime);
+  gain.gain.linearRampToValueAtTime(vol, startTime + 0.05);
+  gain.gain.exponentialRampToValueAtTime(0.001, startTime + decay);
+  osc.start(startTime);
+  osc.stop(startTime + decay);
+}
+
+function playDing() {
+  try {
+    var ac = new (window.AudioContext || window.webkitAudioContext)();
+    [880, 1108, 1318].forEach(function(f, i) {
+      focusTone(ac, f, ac.currentTime + i * 0.18, 0.3, 1.4);
+    });
+  } catch(e) {}
+}
+
+function playBreakSound() {
+  try {
+    var ac = new (window.AudioContext || window.webkitAudioContext)();
+    [523, 440, 349, 294].forEach(function(f, i) {
+      focusTone(ac, f, ac.currentTime + i * 0.22, 0.22, 1.6);
+    });
+  } catch(e) {}
+}
+
+function playSuccess() {
+  try {
+    var ac = new (window.AudioContext || window.webkitAudioContext)();
+    [659, 784, 1047].forEach(function(f, i) {
+      focusTone(ac, f, ac.currentTime + i * 0.1, 0.2, 0.8);
+    });
+  } catch(e) {}
+}
+
+function playReadyChime() {
+  try {
+    var ac = new (window.AudioContext || window.webkitAudioContext)();
+    [523, 659, 784, 1047].forEach(function(f, i) {
+      focusTone(ac, f, ac.currentTime + i * 0.14, 0.18, 1.2);
+    });
+  } catch(e) {}
+}
+
+function launchConfetti() {
+  var container = document.getElementById("focus-confetti");
+  if (!container) return;
+
+  container.innerHTML = "";
+
+  for (var i = 0; i < 40; i++) {
+    var piece = document.createElement("div");
+    piece.className = "confetti-piece";
+    piece.style.left            = Math.random() * 100 + "%";
+    piece.style.backgroundColor = CONFETTI_COLORS[i % CONFETTI_COLORS.length];
+    piece.style.animationDelay  = (Math.random() * 0.8) + "s";
+    piece.style.width           = (8 + Math.random() * 8) + "px";
+    piece.style.height          = (8 + Math.random() * 8) + "px";
+    container.appendChild(piece);
+  }
+
+  setTimeout(function() {
+    if (container) container.innerHTML = "";
+  }, 3000);
+}
+
+function focusSetPhase(phase) {
+  focus.phase = phase;
+
+  var durationRow  = document.getElementById("focus-duration-row");
+  var breakBanner  = document.getElementById("break-banner");
+  var display      = document.getElementById("focus-display");
+  var sublabel     = document.getElementById("focus-sublabel");
+  var mainBtn      = document.getElementById("focus-main-btn");
+  var resetBtn     = document.getElementById("focus-reset-btn");
+  var donePanel    = document.getElementById("focus-done-panel");
+  var breakDonePanel = document.getElementById("break-done-panel");
+
+  if (durationRow)    durationRow.style.display    = "none";
+  if (breakBanner)    breakBanner.style.display    = "none";
+  if (donePanel)      donePanel.style.display      = "none";
+  if (breakDonePanel) breakDonePanel.style.display = "none";
+  if (resetBtn)       resetBtn.style.display       = "none";
+
+  if (phase === "idle") {
+
+    if (durationRow) durationRow.style.display = "flex";
+    if (mainBtn) {
+      mainBtn.style.display   = "";
+      mainBtn.textContent     = "▶ Start Focus";
+    }
+    if (sublabel) sublabel.textContent = focus.duration / 60 + "-minute session";
+    updateFocusDisplay();
+
+  } else if (phase === "focusing") {
+
+    if (mainBtn) {
+      mainBtn.style.display = "";
+      mainBtn.textContent   = "⏸ Pause";
+    }
+    if (resetBtn) resetBtn.style.display = "";
+    if (sublabel) sublabel.textContent   = "Stay focused 🎯";
+
+  } else if (phase === "paused") {
+
+    if (mainBtn) {
+      mainBtn.style.display = "";
+      mainBtn.textContent   = "▶ Resume";
+    }
+    if (resetBtn) resetBtn.style.display = "";
+    if (sublabel) sublabel.textContent   = "Session paused";
+
+  } else if (phase === "focus-done") {
+
+    if (mainBtn) mainBtn.style.display = "none";
+    if (donePanel) donePanel.style.display = "";
+
+    if (sublabel) sublabel.textContent = "🎊 Session complete!";
+
+    var msgBox = document.getElementById("focus-message-box");
+    if (msgBox) {
+      var idx;
+      do { idx = Math.floor(Math.random() * MOTIVATIONAL.length); }
+      while (idx === focus.lastMsgIdx);
+      focus.lastMsgIdx = idx;
+      var msg = MOTIVATIONAL[idx];
+      msgBox.innerHTML =
+        '<span class="msg-emoji">' + msg.emoji + '</span>' +
+        '<span class="msg-text">'  + msg.text  + '</span>';
+    }
+
+    var ta = document.getElementById("achievement-input");
+    if (ta) ta.value = "";
+    var flash = document.getElementById("saved-flash");
+    if (flash) flash.style.display = "none";
+
+  } else if (phase === "breaking") {
+
+    if (mainBtn) mainBtn.style.display = "none";
+    if (breakBanner) {
+      breakBanner.style.display = "";
+      var label = document.getElementById("break-duration-label");
+      if (label) label.textContent = focus.breakDuration / 60;
+    }
+    if (sublabel) sublabel.textContent = "Take a breather ☕";
+
+  } else if (phase === "break-done") {
+
+    if (mainBtn) mainBtn.style.display = "none";
+    if (breakDonePanel) breakDonePanel.style.display = "";
+    if (sublabel) sublabel.textContent = "Break finished!";
+  }
+}
+
+function updateFocusDisplay() {
+  var mins = String(Math.floor(focus.timeLeft / 60)).padStart(2, "0");
+  var secs = String(focus.timeLeft % 60).padStart(2, "0");
+  var el = document.getElementById("focus-display");
+  if (el) el.textContent = mins + ":" + secs;
+}
+
+function setFocusDuration(mins) {
+  if (focus.phase !== "idle") return;
+  focus.duration = mins * 60;
+  focus.timeLeft = mins * 60;
+  updateFocusDisplay();
+
+  var btn25 = document.getElementById("fd-25");
+  var btn45 = document.getElementById("fd-45");
+  if (btn25) btn25.classList.toggle("active", mins === 25);
+  if (btn45) btn45.classList.toggle("active", mins === 45);
+
+  var sublabel = document.getElementById("focus-sublabel");
+  if (sublabel) sublabel.textContent = mins + "-minute session";
+}
+
+function setBreakDuration(mins) {
+  focus.breakDuration = mins * 60;
+
+  var bd5  = document.getElementById("bd-5");
+  var bd10 = document.getElementById("bd-10");
+  if (bd5)  bd5.classList.toggle("active",  mins === 5);
+  if (bd10) bd10.classList.toggle("active", mins === 10);
+}
+
+function focusMainAction() {
+  if (focus.phase === "idle") {
+    startFocusCounting();
+
+  } else if (focus.phase === "focusing") {
+
+    clearInterval(focus.interval);
+    focusSetPhase("paused");
+
+  } else if (focus.phase === "paused") {
+
+    startFocusCounting();
+  }
+}
+
+function startFocusCounting() {
+  focusSetPhase("focusing");
+
+  focus.interval = setInterval(function() {
+    focus.timeLeft--;
+    updateFocusDisplay();
+
+    if (focus.timeLeft <= 0) {
+
+      clearInterval(focus.interval);
+      focus.sessions++;
+      focusUpdateSessions();
+      playDing();
+      launchConfetti();
+      focusSetPhase("focus-done");
+    }
+  }, 1000);
+}
+
+function resetFocusTimer() {
+  clearInterval(focus.interval);
+  focus.timeLeft = focus.duration;
+  focusSetPhase("idle");
+}
+
+function saveAchievement() {
+  var ta   = document.getElementById("achievement-input");
+  var text = ta ? ta.value.trim() : "";
+  if (!text) {
+
+    startBreakTimer();
+    return;
+  }
+
+  var existing = [];
+  try { existing = JSON.parse(localStorage.getItem(ACHIEVEMENTS_KEY) || "[]"); } catch(e) {}
+
+  existing.unshift({
+    text:    text,
+    date:    new Date().toLocaleDateString(),
+    session: focus.sessions
+  });
+
+  localStorage.setItem(ACHIEVEMENTS_KEY, JSON.stringify(existing));
+
+  playSuccess();
+  var flash = document.getElementById("saved-flash");
+  if (flash) flash.style.display = "";
+
+  setTimeout(startBreakTimer, 1200);
+
+  renderAchievements();
+}
+
+function startBreakTimer() {
+  clearInterval(focus.interval);
+  focus.timeLeft = focus.breakDuration;
+  focusSetPhase("breaking");
+  playBreakSound();
+  updateFocusDisplay();
+
+  focus.interval = setInterval(function() {
+    focus.timeLeft--;
+    updateFocusDisplay();
+
+    if (focus.timeLeft <= 0) {
+
+      clearInterval(focus.interval);
+      playReadyChime();
+      focusSetPhase("break-done");
+
+      var el = document.getElementById("focus-display");
+      if (el) el.textContent = "00:00";
+    }
+  }, 1000);
+}
+
+function startNewSession() {
+  focus.timeLeft = focus.duration;
+  focusSetPhase("idle");
+}
+
+function focusUpdateSessions() {
+  var row = document.getElementById("focus-sessions");
+  if (!row) return;
+  if (focus.sessions === 0) { row.textContent = ""; return; }
+  var stars = "";
+  for (var i = 0; i < focus.sessions; i++) { stars += "🌟 "; }
+  row.innerHTML = "Sessions completed: " + stars;
+}
+
+function renderAchievements() {
+  var section = document.getElementById("achievements-section");
+  var list    = document.getElementById("achievements-list");
+  var title   = document.getElementById("achievements-title");
+  if (!section || !list) return;
+
+  var items = [];
+  try { items = JSON.parse(localStorage.getItem(ACHIEVEMENTS_KEY) || "[]"); } catch(e) {}
+
+  if (items.length === 0) {
+    section.style.display = "none";
+    return;
+  }
+
+  section.style.display = "";
+  if (title) title.textContent = "🏅 Your Achievements (" + items.length + ")";
+
+  list.innerHTML = items.map(function(item) {
+    return (
+      '<div class="achievement-item">' +
+        '<div class="ach-text">' + escapeHtml(item.text) + '</div>' +
+        '<div class="ach-meta">Session ' + item.session + ' · ' + item.date + '</div>' +
+      '</div>'
+    );
+  }).join("");
+}
+
+function clearAchievements() {
+  localStorage.removeItem(ACHIEVEMENTS_KEY);
+  renderAchievements();
+}
+
+function escapeHtml(str) {
+  return str.replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;");
+}
+
+var BREATH_PHASES = [
+  {
+    label:       "Breathe In",
+    duration:    4,
+    color:       "#a8dadc",
+    instruction: "Inhale slowly through your nose...",
+    scale:       1.4
+  },
+  {
+    label:       "Hold",
+    duration:    7,
+    color:       "#e2b4f0",
+    instruction: "Hold your breath gently...",
+    scale:       1.4
+  },
+  {
+    label:       "Breathe Out",
+    duration:    8,
+    color:       "#fcb69f",
+    instruction: "Exhale slowly through your mouth...",
+    scale:       1.0
+  }
+];
+
+var breath = {
+  active:   false,
+  phase:    0,
+  count:    4,
+  interval: null
+};
+
+function updateBreathDisplay() {
+  var current = BREATH_PHASES[breath.phase];
+  var circle  = document.getElementById("breath-circle");
+  var label   = document.getElementById("breath-label");
+  var instr   = document.getElementById("breath-instruction");
+  var count   = document.getElementById("breath-count");
+
+  if (circle) {
+    circle.style.backgroundColor = current.color;
+    circle.style.transform       = "scale(" + current.scale + ")";
+    circle.textContent           = "";
+  }
+  if (label) label.textContent = current.label;
+  if (instr) instr.textContent = current.instruction;
+  if (count) count.textContent = breath.count;
+}
+
+function toggleBreathing() {
+  breath.active = !breath.active;
+  var btn = document.getElementById("breath-btn");
+
+  if (breath.active) {
+
+    if (btn) btn.textContent = TRANSLATIONS[currentLang].breathStop;
+    breath.phase = 0;
+    breath.count = BREATH_PHASES[0].duration;
+    updateBreathDisplay();
+
+    breath.interval = setInterval(function() {
+      breath.count--;
+
+      if (breath.count <= 0) {
+
+        breath.phase = (breath.phase + 1) % BREATH_PHASES.length;
+        breath.count = BREATH_PHASES[breath.phase].duration;
+      }
+
+      updateBreathDisplay();
+    }, 1000);
+
+  } else {
+
+    if (btn) btn.textContent = TRANSLATIONS[currentLang].breathStart;
+    clearInterval(breath.interval);
+
+    var circle = document.getElementById("breath-circle");
+    if (circle) {
+      circle.style.transform       = "scale(1)";
+      circle.style.backgroundColor = "rgba(255,255,255,0.22)";
+      circle.textContent           = "🌬️";
+    }
+
+    var label = document.getElementById("breath-label");
+    var instr = document.getElementById("breath-instruction");
+    var count = document.getElementById("breath-count");
+    if (label) label.textContent = TRANSLATIONS[currentLang].breathIdle;
+    if (instr) instr.textContent = TRANSLATIONS[currentLang].breathingSub;
+    if (count) count.textContent = "";
+  }
+}
+
+var studyTips = {
+  happy: {
+    gradient: "linear-gradient(135deg,#ffecd2,#fcb69f)",
+    tips: [
+      "🔥 Great energy! Tackle your hardest subject first",
+      "📝 Write a summary of what you've already learned",
+      "🎯 Set ambitious goals — you're in the zone today",
+      "🤝 Study with a friend and quiz each other",
+      "💡 This is the best time to learn something new"
+    ]
+  },
+  sad: {
+    gradient: "linear-gradient(135deg,#1e3c72,#2a5298)",
+    tips: [
+      "🎧 Put on calm background music and just review notes",
+      "📖 Try passive reading — no pressure to memorize",
+      "✏️ Doodle diagrams or mind maps instead of reading",
+      "🧘 Give yourself a 10-min break between every topic",
+      "💬 Talk through concepts out loud"
+    ]
+  },
+  calm: {
+    gradient: "linear-gradient(135deg,#a8dadc,#457b9d)",
+    tips: [
+      "📚 Perfect time for deep reading and focused study",
+      "🗂️ Organize your notes and create neat summaries",
+      "🧠 Review difficult concepts while your mind is clear",
+      "📅 Plan your study schedule for the week",
+      "✍️ Write practice answers slowly and carefully"
+    ]
+  },
+  angry: {
+    gradient: "linear-gradient(135deg,#5c0000,#8b0000)",
+    tips: [
+      "🚶 Step away for 10 minutes before opening your books",
+      "💥 Channel the energy into intense practice problems",
+      "🌬️ Do 3 deep breaths before each study session",
+      "⏱️ Use short Focus Timer sessions — don't force long blocks",
+      "📵 Put your phone away — distractions make it worse"
+    ]
+  },
+  tired: {
+    gradient: "linear-gradient(135deg,#2c3e50,#4ca1af)",
+    tips: [
+      "⏱️ Use the Focus Timer: only 25 min focus, then a full break",
+      "☕ Have a light snack and water before studying",
+      "🔁 Review old material instead of learning new things",
+      "🎙️ Listen to recorded lectures instead of reading",
+      "🛌 A 20-min nap beats 2 hours of bad studying"
+    ]
+  }
+};
+
+var studyTips_AR = {
+  happy: {
+    gradient: "linear-gradient(135deg,#ffecd2,#fcb69f)",
+    tips: [
+      "🔥 طاقتك رائعة! ابدأ بالمادة الأصعب أولاً",
+      "📝 اكتب ملخصاً لما تعلمته حتى الآن",
+      "🎯 ضع أهدافاً طموحة — أنت في قمة تركيزك",
+      "🤝 ادرس مع صديق واختبرا بعضكما",
+      "💡 هذا أفضل وقت لتعلم شيء جديد"
+    ]
+  },
+  sad: {
+    gradient: "linear-gradient(135deg,#1e3c72,#2a5298)",
+    tips: [
+      "🎧 شغّل موسيقى هادئة في الخلفية وراجع ملاحظاتك فقط",
+      "📖 اقرأ بشكل خفيف — لا ضغط للحفظ الآن",
+      "✏️ ارسم مخططات أو خرائط ذهنية بدلاً من القراءة",
+      "🧘 خذ استراحة ١٠ دقائق بين كل موضوع",
+      "💬 اشرح المفاهيم بصوت عالٍ لنفسك"
+    ]
+  },
+  calm: {
+    gradient: "linear-gradient(135deg,#a8dadc,#457b9d)",
+    tips: [
+      "📚 وقت مثالي للقراءة العميقة والدراسة المركّزة",
+      "🗂️ رتّب ملاحظاتك وأنشئ ملخصات منظمة",
+      "🧠 راجع المفاهيم الصعبة وعقلك صافٍ",
+      "📅 خطّط جدول دراستك للأسبوع",
+      "✍️ اكتب إجابات تدريبية بهدوء وعناية"
+    ]
+  },
+  angry: {
+    gradient: "linear-gradient(135deg,#5c0000,#8b0000)",
+    tips: [
+      "🚶 ابتعد ١٠ دقائق قبل فتح كتبك",
+      "💥 حوّل هذه الطاقة إلى حل مسائل مكثّف",
+      "🌬️ خذ ٣ أنفاس عميقة قبل كل جلسة دراسة",
+      "⏱️ استخدم جلسات قصيرة في المؤقت — لا تُرغم نفسك",
+      "📵 ضع هاتفك جانباً — المشتتات تزيد الأمر سوءاً"
+    ]
+  },
+  tired: {
+    gradient: "linear-gradient(135deg,#2c3e50,#4ca1af)",
+    tips: [
+      "⏱️ استخدم المؤقت: ٢٥ دقيقة تركيز فقط ثم استراحة كاملة",
+      "☕ تناول وجبة خفيفة واشرب ماءً قبل الدراسة",
+      "🔁 راجع مادة قديمة بدلاً من تعلم أشياء جديدة",
+      "🎙️ استمع لمحاضرات مسجّلة بدلاً من القراءة",
+      "🛌 قيلولة ٢٠ دقيقة أفضل من ساعتين دراسة بلا تركيز"
+    ]
+  }
+};
+
+function selectStudyMood(mood) {
+  document.querySelectorAll(".mood-sel-btn").forEach(function(btn) {
+    btn.classList.toggle("active", btn.dataset.mood === mood);
+  });
+
+  var isAr  = currentLang === "ar";
+  var data   = isAr ? studyTips_AR[mood] : studyTips[mood];
+  var result = document.getElementById("study-tips-result");
+  if (!result || !data) return;
+
+  var moodLabels = isAr ? {
+    happy: "سعيد 😊",
+    sad:   "حزين 😔",
+    calm:  "هادئ 😌",
+    angry: "غاضب 😡",
+    tired: "متعب 😴"
+  } : {
+    happy: "Happy 😊",
+    sad:   "Sad 😔",
+    calm:  "Calm 😌",
+    angry: "Angry 😡",
+    tired: "Tired 😴"
+  };
+
+  var heading = isAr
+    ? "نصائح الدراسة حين تشعر أنك " + moodLabels[mood]
+    : "Study tips when you feel " + moodLabels[mood];
+
+  result.style.background = data.gradient;
+  result.innerHTML =
+    '<h4>' + heading + ':</h4>' +
+    '<ul>' +
+      data.tips.map(function(tip) { return "<li>" + tip + "</li>"; }).join("") +
+    '</ul>';
+
+  result.classList.add("show");
+}
+
+var USERS_KEY   = "moodyra_users";
+var SESSION_KEY = "moodyra_session";
+
+var authMode = "login";
+
+var currentUser = null;
+
+function getUsers() {
+  try { return JSON.parse(localStorage.getItem(USERS_KEY) || "{}"); }
+  catch(e) { return {}; }
+}
+
+function saveUsers(users) {
+  localStorage.setItem(USERS_KEY, JSON.stringify(users));
+}
+
+function openAuthModal() {
+  authMode = "login";
+  updateAuthModalUI();
+  clearAuthFields();
+  var overlay = document.getElementById("auth-overlay");
+  if (overlay) overlay.style.display = "flex";
+}
+
+function closeAuthModal() {
+  var overlay = document.getElementById("auth-overlay");
+  if (overlay) overlay.style.display = "none";
+}
+
+function switchAuthMode() {
+  authMode = (authMode === "login") ? "signup" : "login";
+  updateAuthModalUI();
+  clearAuthFields();
+}
+
+function updateAuthModalUI() {
+  var isLogin = (authMode === "login");
+
+  document.getElementById("auth-icon").textContent     = isLogin ? "👋" : "✨";
+  document.getElementById("auth-title").textContent    = isLogin ? "Welcome back!" : "Create your account";
+  document.getElementById("auth-subtitle").textContent = isLogin
+    ? "Log in to track your mood journey"
+    : "Join Moodyra and start your wellness journey";
+  document.getElementById("auth-submit-text").textContent  = isLogin ? "Log In 🚀" : "Create Account ✨";
+  document.getElementById("auth-switch-label").textContent = isLogin ? "Don't have an account?" : "Already have an account?";
+  document.getElementById("auth-switch-btn").textContent   = isLogin ? "Sign up" : "Log in";
+
+  var nameWrap = document.getElementById("auth-name-wrap");
+  if (nameWrap) nameWrap.style.display = isLogin ? "none" : "";
+
+  showAuthError("");
+}
+
+function clearAuthFields() {
+  ["auth-name","auth-username","auth-password"].forEach(function(id) {
+    var el = document.getElementById(id);
+    if (el) el.value = "";
+  });
+  showAuthError("");
+}
+
+function showAuthError(msg) {
+  var el = document.getElementById("auth-error");
+  if (!el) return;
+  if (msg) {
+    el.textContent    = msg;
+    el.style.display  = "";
+  } else {
+    el.style.display  = "none";
+    el.textContent    = "";
+  }
+}
+
+function handleAuthSubmit() {
+  var username = (document.getElementById("auth-username").value || "").trim().toLowerCase();
+  var password = (document.getElementById("auth-password").value || "");
+  var name     = (document.getElementById("auth-name")     ? document.getElementById("auth-name").value.trim() : "");
+
+  var error = (authMode === "login")
+    ? authLogin(username, password)
+    : authSignup(name, username, password);
+
+  if (error) {
+    showAuthError(error);
+  } else {
+    closeAuthModal();
+  }
+}
+
+function authLogin(username, password) {
+  if (!username || !password) return "Please fill in all fields.";
+  var users = getUsers();
+  var record = users[username];
+  if (!record) return "Account not found. Please sign up first.";
+  if (record.password !== password) return "Incorrect password. Please try again.";
+
+  currentUser = { username: username, name: record.name };
+  localStorage.setItem(SESSION_KEY, JSON.stringify(currentUser));
+  updateNavAuth();
+  return null;
+}
+
+function authSignup(name, username, password) {
+  if (!name)            return "Please enter your name.";
+  if (username.length < 3) return "Username must be at least 3 characters.";
+  if (password.length < 6) return "Password must be at least 6 characters.";
+
+  var users = getUsers();
+  if (users[username])  return "Username already taken. Please choose another.";
+
+  users[username] = { name: name, password: password };
+  saveUsers(users);
+
+  currentUser = { username: username, name: name };
+  localStorage.setItem(SESSION_KEY, JSON.stringify(currentUser));
+  updateNavAuth();
+  return null;
+}
+
+function authLogout() {
+  currentUser = null;
+  localStorage.removeItem(SESSION_KEY);
+  updateNavAuth();
+
+  var dd = document.getElementById("user-dropdown");
+  if (dd) dd.style.display = "none";
+}
+
+function toggleUserMenu() {
+  var dd = document.getElementById("user-dropdown");
+  if (!dd) return;
+  dd.style.display = (dd.style.display === "none" || !dd.style.display) ? "" : "none";
+}
+
+document.addEventListener("click", function(e) {
+  var wrap = document.getElementById("nav-user-wrap");
+  if (wrap && !wrap.contains(e.target)) {
+    var dd = document.getElementById("user-dropdown");
+    if (dd) dd.style.display = "none";
+  }
+});
+
+function updateNavAuth() {
+  var loginBtn  = document.getElementById("nav-login-btn");
+  var userWrap  = document.getElementById("nav-user-wrap");
+  var initial   = document.getElementById("nav-user-initial");
+  var nameEl    = document.getElementById("nav-user-name");
+  var ddName    = document.getElementById("dd-name");
+  var ddUser    = document.getElementById("dd-username");
+
+  if (currentUser) {
+
+    if (loginBtn) loginBtn.style.display = "none";
+    if (userWrap) userWrap.style.display = "";
+    if (initial)  initial.textContent    = currentUser.name.charAt(0).toUpperCase();
+    if (nameEl)   nameEl.textContent     = currentUser.name;
+    if (ddName)   ddName.textContent     = currentUser.name;
+    if (ddUser)   ddUser.textContent     = "@" + currentUser.username;
+  } else {
+
+    if (loginBtn) loginBtn.style.display = "";
+    if (userWrap) userWrap.style.display = "none";
+  }
+}
+
+function loadSession() {
+  try { currentUser = JSON.parse(localStorage.getItem(SESSION_KEY) || "null"); }
+  catch(e) { currentUser = null; }
+  updateNavAuth();
+}
+
+var TRANSLATIONS = {
+  en: {
+    home: "Home",
+    about: "About",
+    students: "Students",
+    login: "👤 Login",
+    feelingToday: "How are you feeling today?",
+    happy: "Happy",
+    sad: "Sad",
+    calm: "Calm",
+    angry: "Angry",
+    tired: "Tired",
+    needComfort: "Make me feel better",
+    chooseBetter: "Choose something to feel better:",
+    studentSub: "Focus timer · Study tips · Exam stress relief",
+
+    aboutTitle:        "About Moodyra 🌈",
+    aboutSub:          "A mood-based wellness website for university students",
+    goalTitle:         "Our Goal",
+    goalDesc:          "Help students manage their emotions and mental wellbeing through music, journaling, and self-care tools.",
+    fiveMoodsTitle:    "5 Moods",
+    fiveMoodsDesc:     "Each mood has its own playlist, journal, quotes, and personalized tips to match how you feel.",
+    toolsTitle:        "Student Tools",
+    toolsDesc:         "Focus timer, breathing exercises, exam tips, and daily affirmations — all designed for student life.",
+    privacyTitle:      "Privacy First",
+    privacyDesc:       "Everything is saved locally in your browser. No accounts needed, no data shared.",
+    meetTeam:          "👩‍💻 Meet the Team",
+    teamSub:           "Made with ❤️ by Noran Hussien & Fatima Essa — university students who believe in mental wellness.",
+    backHome:          "⬅ Back to Home",
+
+    studentTitle:      "Student Mode 📚",
+    studentDesc:       "Your study companion — tools and tips to study smarter 🎓",
+    studyTipsTitle:    "📖 Study Tips Based on Your Mood",
+    studyTipsSub:      "How are you feeling right now? Pick your mood for personalized study advice.",
+    focusTimerTitle:   "🎯 Focus Timer",
+    breathingTitle:    "🫁 Breathing Exercise",
+    breathingSub:      "4-7-8 breathing technique to reduce exam anxiety",
+    breathStart:       "▶ Start Breathing",
+    breathStop:        "⏹ Stop",
+    breathIdle:        "Press Start",
+    examTipsTitle:     "💡 Exam Stress Relief Tips",
+    examCard1Title:    "Review, don't re-read",
+    examCard1Desc:     "Close your book and try to recall key points first. Only look when you're stuck.",
+    examCard2Title:    "Practice past papers",
+    examCard2Desc:     "Past exam questions are the best predictor of what's coming. Time yourself.",
+    examCard3Title:    "Teach it out loud",
+    examCard3Desc:     "Explain the topic as if teaching a friend. If you can teach it, you know it.",
+    examCard4Title:    "Sleep before the exam",
+    examCard4Desc:     "Memory consolidates during sleep. A rested brain outperforms an all-nighter.",
+    examCard5Title:    "Stay hydrated",
+    examCard5Desc:     "Dehydration reduces focus by up to 20%. Keep a water bottle at your desk.",
+    examCard6Title:    "Done is better than perfect",
+    examCard6Desc:     "Attempt every question. A partial answer is always better than a blank.",
+    affirmTitle:       "🌟 You've Got This",
+    affirm1:           "I am prepared and capable 💪",
+    affirm2:           "Every study session counts ✅",
+    affirm3:           "Mistakes help me learn faster 🧠",
+    affirm4:           "I deserve rest and success 🌙",
+    affirm5:           "One step at a time is enough 🚶",
+    affirm6:           "My effort will pay off 🌱",
+    chatgptTitle:      "🤖 Ask ChatGPT",
+    chatgptDesc:       "Have a question? Want to summarize a topic? Open ChatGPT directly",
+    chatgptSC1:        "Explain this topic to me",
+    chatgptSC2:        "Summarize this text",
+    chatgptSC3:        "Give me review questions",
+    chatgptBtn:        "🤖 Open ChatGPT ↗",
+  },
+  ar: {
+    home: "الرئيسية",
+    about: "عن المشروع",
+    students: "الطلاب",
+    login: "👤 تسجيل الدخول",
+    feelingToday: "كيف حالك اليوم؟",
+    happy: "سعيد",
+    sad: "حزين",
+    calm: "هادئ",
+    angry: "غاضب",
+    tired: "متعب",
+    needComfort: "أحتاج دعماً",
+    chooseBetter: "اختر شيئاً لتشعر بتحسن:",
+    studentSub: "مؤقت التركيز · نصائح الدراسة · تخفيف ضغط الامتحانات",
+
+    aboutTitle:        "عن موديرا 🌈",
+    aboutSub:          "موقع عافية يعتمد على المزاج لطلاب الجامعة",
+    goalTitle:         "هدفنا",
+    goalDesc:          "مساعدة الطلاب على إدارة مشاعرهم وصحتهم النفسية من خلال الموسيقى واليوميات وأدوات العناية بالنفس.",
+    fiveMoodsTitle:    "٥ مزاجات",
+    fiveMoodsDesc:     "لكل مزاج قوائم تشغيل خاصة به ويوميات واقتباسات ونصائح مخصصة تناسب شعورك.",
+    toolsTitle:        "أدوات الطالب",
+    toolsDesc:         "مؤقت التركيز وتمارين التنفس ونصائح الامتحانات والتأكيدات اليومية — كلها مصممة لحياة الطالب.",
+    privacyTitle:      "الخصوصية أولاً",
+    privacyDesc:       "كل شيء محفوظ محلياً في متصفحك. لا حاجة لحسابات، ولا مشاركة بيانات.",
+    meetTeam:          "👩‍💻 تعرف على الفريق",
+    teamSub:           "صُنع بـ ❤️ من نوران حسين وفاطمة عيسى — طالبتان جامعيتان تؤمنان بالصحة النفسية.",
+    backHome:          "العودة للرئيسية ⬅",
+
+    studentTitle:      "وضع الطالب 📚",
+    studentDesc:       "رفيقك في الدراسة — أدوات ونصائح لتدرس بذكاء 🎓",
+    studyTipsTitle:    "📖 نصائح الدراسة حسب مزاجك",
+    studyTipsSub:      "كيف تشعر الآن؟ اختر مزاجك للحصول على نصائح مخصصة.",
+    focusTimerTitle:   "🎯 مؤقت التركيز",
+    breathingTitle:    "🫁 تمرين التنفس",
+    breathingSub:      "تقنية التنفس ٤-٧-٨ لتقليل قلق الامتحانات",
+    breathStart:       "▶ ابدأ التنفس",
+    breathStop:        "⏹ إيقاف",
+    breathIdle:        "اضغط ابدأ",
+    examTipsTitle:     "💡 نصائح تخفيف ضغط الامتحانات",
+    examCard1Title:    "راجع، لا تُعيد القراءة",
+    examCard1Desc:     "أغلق كتابك وحاول تذكر النقاط الرئيسية أولاً. انظر فقط حين تتعثر.",
+    examCard2Title:    "تدرّب على أسئلة سابقة",
+    examCard2Desc:     "أسئلة الامتحانات السابقة أفضل مؤشر لما سيأتي. وقّت نفسك.",
+    examCard3Title:    "اشرحها بصوت عالٍ",
+    examCard3Desc:     "اشرح الموضوع كأنك تعلّم صديقاً. إن استطعت تعليمه، فأنت تعرفه.",
+    examCard4Title:    "نم قبل الامتحان",
+    examCard4Desc:     "تتوطد الذاكرة أثناء النوم. دماغ مرتاح يتفوق على ليلة سهر.",
+    examCard5Title:    "اشرب ماءً كافياً",
+    examCard5Desc:     "الجفاف يقلل التركيز بنسبة ٢٠٪. احرص على زجاجة ماء على مكتبك.",
+    examCard6Title:    "المكتمل أفضل من المثالي",
+    examCard6Desc:     "أجب على كل سؤال. الإجابة الجزئية دائماً أفضل من الفراغ.",
+    affirmTitle:       "🌟 أنت قادر",
+    affirm1:           "أنا مستعد وقادر 💪",
+    affirm2:           "كل جلسة دراسة مهمة ✅",
+    affirm3:           "الأخطاء تساعدني على التعلم أسرع 🧠",
+    affirm4:           "أستحق الراحة والنجاح 🌙",
+    affirm5:           "خطوة واحدة في كل مرة كافية 🚶",
+    affirm6:           "جهدي سيؤتي ثماره 🌱",
+    chatgptTitle:      "🤖 اسأل ChatGPT",
+    chatgptDesc:       "عندك سؤال؟ تريد تلخيص موضوع؟ افتح ChatGPT مباشرةً",
+    chatgptSC1:        "اشرح لي هذا الموضوع",
+    chatgptSC2:        "لخّص هذا النص",
+    chatgptSC3:        "أعطني أسئلة مراجعة",
+    chatgptBtn:        "🤖 افتح ChatGPT ↗",
+  }
+};
+
+var COMFORT_ITEMS = {
+  en: [
+    "✨ You are stronger than you think",
+    "🎧 Listen to your favorite song",
+    "🌿 Take a deep breath",
+    "🍫 Eat something you love",
+    "📞 Talk to someone you trust",
+    "💖 This feeling will pass",
+  ],
+  ar: [
+    "✨ أنت أقوى مما تعتقد",
+    "🎧 استمع لأغنيتك المفضلة",
+    "🌿 خذ نفساً عميقاً",
+    "🍫 كل شيئاً تحبه",
+    "📞 تحدث مع شخص تثق به",
+    "💖 هذا الشعور سيمر",
+  ]
+};
+
+var currentLang = "en";
+
+function applyLang(lang) {
+  currentLang = lang;
+  localStorage.setItem("moodyra_lang", lang);
+
+  document.querySelectorAll("[data-i18n]").forEach(function(el) {
+    var key = el.getAttribute("data-i18n");
+    if (TRANSLATIONS[lang][key] !== undefined) {
+      el.textContent = TRANSLATIONS[lang][key];
+    }
+  });
+
+  var grid = document.getElementById("comfort-grid-items");
+  if (grid) {
+    grid.innerHTML = COMFORT_ITEMS[lang].map(function(item) {
+      return '<div class="comfort-item">' + item + '</div>';
+    }).join("");
+  }
+
+  var btn = document.getElementById("lang-btn");
+  if (btn) btn.textContent = lang === "en" ? "AR" : "EN";
+
+  document.documentElement.setAttribute("dir", lang === "ar" ? "rtl" : "ltr");
+  document.documentElement.setAttribute("lang", lang);
+
+  var moodEmojis = { happy:"😊", sad:"😔", calm:"😌", angry:"😡", tired:"😴" };
+  document.querySelectorAll(".mood-sel-btn").forEach(function(btn) {
+    var m = btn.getAttribute("data-mood");
+    if (m && TRANSLATIONS[lang][m]) {
+      btn.textContent = moodEmojis[m] + " " + TRANSLATIONS[lang][m];
+    }
+  });
+
+  renderHistoryWidget();
+
+  ["happy","sad","calm","angry","tired"].forEach(function(m) {
+    var pg = document.getElementById("page-" + m);
+    if (pg && pg.classList.contains("active")) {
+      fillMoodPage(m);
+    }
+  });
+
+  var breathBtn   = document.getElementById("breath-btn");
+  var breathLabel = document.getElementById("breath-label");
+  var T = TRANSLATIONS[lang];
+  if (breathBtn && breathBtn.dataset.running !== "true") {
+    breathBtn.textContent = T.breathStart;
+  } else if (breathBtn) {
+    breathBtn.textContent = T.breathStop;
+  }
+  if (breathLabel && !breathLabel.dataset.running) {
+    breathLabel.textContent = T.breathIdle;
+  }
+}
+
+function toggleLang() {
+  applyLang(currentLang === "en" ? "ar" : "en");
+}
+
+window.addEventListener("DOMContentLoaded", function() {
+  showPage("home");
+  renderHistoryWidget();
+  focusSetPhase("idle");
+  renderAchievements();
+  loadSession();
+  applyLang(currentLang);
+});
