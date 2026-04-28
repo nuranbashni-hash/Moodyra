@@ -1,1510 +1,1404 @@
-/* ============================================================
-   MOODYRA — script.js
-   All the JavaScript that makes the website interactive.
+@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700;900&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap');
 
-   HOW JAVASCRIPT WORKS HERE (beginner summary):
-   ─────────────────────────────────────────────
-   • We use plain JavaScript — no frameworks, no libraries.
-   • Functions are called directly from HTML using onclick="..."
-   • Data is stored in variables and saved to localStorage
-     (the browser's built-in storage — survives page refresh).
-   • setInterval() is used to count down timers every second.
-
-   TABLE OF CONTENTS
-   ─────────────────
-   1.  All mood content data (quotes, tips, music for each mood)
-   2.  Mood history (track which moods the user visited)
-   3.  Page navigation (showPage, openMood)
-   4.  Fill mood page content dynamically
-   5.  Home page comfort panel toggle
-   6.  Focus Timer (phases, sounds, confetti, achievements)
-   7.  Breathing exercise (4-7-8 technique)
-   8.  Student page study tips by mood
-   9.  Page initialization (runs when page first loads)
-   ============================================================ */
-
-
-/* ── 1. MOOD CONTENT DATA ────────────────────────────────── */
-/*
-   This object holds all the text content for each mood page.
-   Each mood has: quotes, tips, music tracks, and label text.
-   fillMoodPage() reads this and puts the content on the page.
-*/
-var MOODS = {
-
-  happy: {
-    quotes: [
-      "Smile more, worry less 💛",
-      "Happiness looks good on you ✨",
-      "Do what makes your soul shine 🌼",
-      "Small moments, big happiness 💫",
-      "Today is a good day 🌞"
-    ],
-    tips: [
-      "• Listen to your favorite song 🎵",
-      "• Go for a walk 🚶‍♀️",
-      "• Call someone you love ☎️"
-    ],
-    music: [
-      { genre: "Indie Pop",       emoji: "🎸", query: "indie pop happy playlist" },
-      { genre: "Dance / Upbeat",  emoji: "💃", query: "upbeat feel good music" },
-      { genre: "Summer Vibes",    emoji: "☀️", query: "summer vibes playlist" },
-      { genre: "Feel Good Hits",  emoji: "🎉", query: "feel good happy hits playlist" }
-    ],
-    quotesTitle:        "✨ Happy Vibes",
-    journalTitle:       "💭 Write something happy",
-    journalPlaceholder: "Write what made you happy today...",
-    tipsTitle:          "🌼 Things to do",
-    savedText:          "✅ Saved successfully 💖",
-    saveBtnText:        "Save ✨",
-    savedMemoriesTitle: "💖 Your Memories",
-    isLight: true   /* happy page has a light background, so cards use lighter colors */
-  },
-
-  sad: {
-    quotes: [
-      "This feeling will pass 💙",
-      "You are not alone 🫂",
-      "It's okay to cry sometimes 💧",
-      "Take your time to heal 🌙",
-      "You matter, always 🤍"
-    ],
-    tips: [
-      "• Talk to someone you trust 💬",
-      "• Listen to soft music 🎧",
-      "• Give yourself time 🤍"
-    ],
-    music: [
-      { genre: "Acoustic & Soft", emoji: "🎸", query: "acoustic sad soft playlist" },
-      { genre: "Lo-fi Chill",     emoji: "🌙", query: "lofi chill sad playlist" },
-      { genre: "Healing Songs",   emoji: "🫂", query: "healing emotional music playlist" },
-      { genre: "Rainy Day",       emoji: "🌧️", query: "rainy day sad songs playlist" }
-    ],
-    quotesTitle:        "💧 Soft Words",
-    journalTitle:       "💭 Let your feelings out",
-    journalPlaceholder: "Write what's making you sad...",
-    tipsTitle:          "🌙 Gentle care",
-    savedText:          "💙 Saved safely",
-    saveBtnText:        "Save 💙",
-    savedMemoriesTitle: "🫂 Your Feelings",
-    isLight: false
-  },
-
-  calm: {
-    quotes: [
-      "Breathe in, breathe out 🌿",
-      "Peace begins with you 🤍",
-      "Slow down, you're doing fine 🌊",
-      "Quiet mind, calm soul 🌙",
-      "Just relax 💙"
-    ],
-    tips: [
-      "• Listen to calm music 🎧",
-      "• Take deep breaths 🧘‍♀️",
-      "• Sit quietly for a moment 🌙"
-    ],
-    music: [
-      { genre: "Lo-fi Hip Hop",  emoji: "🎧", query: "lofi hip hop chill beats" },
-      { genre: "Nature Sounds",  emoji: "🌿", query: "nature sounds relaxing music" },
-      { genre: "Meditation",     emoji: "🧘", query: "meditation calm music" },
-      { genre: "Ambient Piano",  emoji: "🎹", query: "ambient piano calm playlist" }
-    ],
-    quotesTitle:        "🌙 Calm Vibes",
-    journalTitle:       "💭 Clear your mind",
-    journalPlaceholder: "Write what's on your mind...",
-    tipsTitle:          "🌿 Things to do",
-    savedText:          "✅ Saved successfully 💖",
-    saveBtnText:        "Save ✨",
-    savedMemoriesTitle: "💖 Your Thoughts",
-    isLight: false
-  },
-
-  angry: {
-    quotes: [
-      "It's okay to feel angry 😤",
-      "Breathe before you react 🌬️",
-      "Let it out, don't hold it in 💥",
-      "You are in control 🔥",
-      "This feeling will pass ❤️‍🔥"
-    ],
-    tips: [
-      "• Take deep breaths 🌬️",
-      "• Walk away for a moment 🚶‍♀️",
-      "• Listen to music 🎧"
-    ],
-    music: [
-      { genre: "Rock / Metal",       emoji: "🤘", query: "rock metal release anger playlist" },
-      { genre: "Empowerment Rap",    emoji: "🔥", query: "empowerment rap powerful playlist" },
-      { genre: "Workout Hype",       emoji: "💪", query: "workout hype music playlist" },
-      { genre: "Classical Intense",  emoji: "🎻", query: "intense classical music playlist" }
-    ],
-    quotesTitle:        "🔥 Angry Vibes",
-    journalTitle:       "💭 Vent your thoughts",
-    journalPlaceholder: "Write what's making you angry...",
-    tipsTitle:          "⚡ Cool down",
-    savedText:          "💥 Released successfully",
-    saveBtnText:        "Release 💥",
-    savedMemoriesTitle: "🧠 Released Thoughts",
-    isLight: false
-  },
-
-  tired: {
-    quotes: [
-      "It's okay to rest 😴",
-      "You don't have to do everything today 💙",
-      "Slow down and breathe 🌙",
-      "Rest is productive too ✨",
-      "Take care of yourself 🤍"
-    ],
-    tips: [
-      "• Take a short nap 🛌",
-      "• Drink something warm ☕",
-      "• Stay away from screens 📵"
-    ],
-    music: [
-      { genre: "Sleep Sounds",   emoji: "😴", query: "sleep sounds white noise relaxing" },
-      { genre: "Lo-fi Sleepy",   emoji: "🌙", query: "lofi sleepy tired music playlist" },
-      { genre: "Soft Acoustic",  emoji: "🎸", query: "soft acoustic calm tired music" },
-      { genre: "Binaural Beats", emoji: "🧠", query: "binaural beats deep relaxation" }
-    ],
-    quotesTitle:        "🌙 Tired Vibes",
-    journalTitle:       "💭 Let it out gently",
-    journalPlaceholder: "Write what's making you tired...",
-    tipsTitle:          "🌿 Rest ideas",
-    savedText:          "🌙 Saved successfully",
-    saveBtnText:        "Save 🌙",
-    savedMemoriesTitle: "💤 Your Thoughts",
-    isLight: false
-  }
-
-}; /* end MOODS */
-
-
-/* ── 2. MOOD HISTORY ─────────────────────────────────────── */
-/*
-   Every time the user clicks a mood, we save it to localStorage.
-   This creates a history shown on the home page.
-
-   localStorage stores text only, so we use JSON.stringify()
-   to convert objects to text, and JSON.parse() to convert back.
-*/
-
-var HISTORY_KEY = "moodyra_mood_history"; /* key used in localStorage */
-var MAX_HISTORY = 30;                      /* keep only the last 30 entries */
-
-/* Emoji and color for each mood (used in history bubbles) */
-var MOOD_META = {
-  happy: { emoji: "😊", label: "Happy",  color: "#fcb69f" },
-  sad:   { emoji: "😔", label: "Sad",    color: "#a1c4fd" },
-  calm:  { emoji: "😌", label: "Calm",   color: "#a8dadc" },
-  angry: { emoji: "😡", label: "Angry",  color: "#f85032" },
-  tired: { emoji: "😴", label: "Tired",  color: "#c3cfe2" }
-};
-
-/*
-   Save a mood visit.
-   Adds the mood + current time to the front of the history array,
-   keeps only the last MAX_HISTORY entries, then saves to localStorage.
-*/
-function logMood(mood) {
-  var entry    = { mood: mood, timestamp: Date.now() }; /* Date.now() = current time in ms */
-  var existing = JSON.parse(localStorage.getItem(HISTORY_KEY) || "[]");
-  var updated  = [entry].concat(existing).slice(0, MAX_HISTORY);
-  localStorage.setItem(HISTORY_KEY, JSON.stringify(updated));
-  renderHistoryWidget(); /* update the widget on the home page */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
 }
 
-/* Read all mood history from localStorage */
-function getMoodHistory() {
-  return JSON.parse(localStorage.getItem(HISTORY_KEY) || "[]");
+body {
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  min-height: 100vh;
+  overflow-x: hidden;
 }
 
-/* Delete all mood history */
-function clearHistory() {
-  localStorage.removeItem(HISTORY_KEY);
-  renderHistoryWidget();
+h1, h2, h3, h4 {
+  font-family: 'Playfair Display', serif;
 }
 
-/*
-   Convert a timestamp (number of ms since 1970) to a readable string.
-   Examples: "just now", "5m ago", "2h ago", "3d ago"
-*/
-function timeAgo(timestamp) {
-  var diff = Date.now() - timestamp; /* how many ms ago */
-  var mins = Math.floor(diff / 60000);
-  var hrs  = Math.floor(diff / 3600000);
-  var days = Math.floor(diff / 86400000);
-
-  if (mins < 1)  return "just now";
-  if (mins < 60) return mins + "m ago";
-  if (hrs  < 24) return hrs  + "h ago";
-  return days + "d ago";
+.page {
+  display: none;
+  min-height: 100vh;
+  padding: 90px 20px 60px;
+  transition: background 0.8s ease;
 }
 
-/*
-   Find the mood the user visited most often.
-   Returns [moodName, count] or null if history is empty.
-*/
-function getTopMood(history) {
-  var counts = {};
-
-  /* Count how many times each mood appears */
-  history.forEach(function(entry) {
-    counts[entry.mood] = (counts[entry.mood] || 0) + 1;
-  });
-
-  /* Find the mood with the highest count */
-  var topMood  = null;
-  var topCount = 0;
-  Object.keys(counts).forEach(function(mood) {
-    if (counts[mood] > topCount) {
-      topMood  = mood;
-      topCount = counts[mood];
-    }
-  });
-
-  return topMood ? [topMood, topCount] : null;
+.page.active {
+  display: block;
 }
 
-/*
-   Build the mood history widget HTML and show it on the home page.
-   Called on page load and after every mood click.
-*/
-function renderHistoryWidget() {
-  var widget = document.getElementById("history-widget");
-  if (!widget) return;
-
-  var history = getMoodHistory();
-
-  /* If no history yet, hide the widget */
-  if (history.length === 0) {
-    widget.style.display = "none";
-    return;
-  }
-
-  widget.style.display = "block";
-
-  /* Build the "Most common mood" badge */
-  var topMood = getTopMood(history);
-  var topHtml = "";
-  if (topMood) {
-    var meta = MOOD_META[topMood[0]];
-    topHtml =
-      '<div class="history-top">' +
-        '<span class="top-emoji">' + meta.emoji + '</span>' +
-        '<div>' +
-          '<div class="top-label">Most common mood</div>' +
-          '<div class="top-name">' + meta.label +
-            ' <span style="color:#bbb;font-weight:400;font-size:0.85rem">(' + topMood[1] + '×)</span>' +
-          '</div>' +
-        '</div>' +
-        '<span class="trophy">🏆</span>' +
-      '</div>';
-  }
-
-  /* Build the recent mood bubbles (last 10 visits) */
-  var recent     = history.slice(0, 10);
-  var bubblesHtml = recent.map(function(entry) {
-    var meta = MOOD_META[entry.mood] || { emoji: "🌀", label: entry.mood, color: "#ccc" };
-    return (
-      '<div class="history-bubble" style="' +
-        'background:' + meta.color + '44;' +         /* 44 = 27% opacity in hex */
-        'border:1.5px solid ' + meta.color + '">' +
-        '<span>' + meta.emoji + '</span>' +
-        '<span>' + meta.label + '</span>' +
-        '<span class="b-time">' + timeAgo(entry.timestamp) + '</span>' +
-      '</div>'
-    );
-  }).join("");
-
-  /* Assemble the full widget HTML */
-  widget.innerHTML =
-    '<div class="history-header">' +
-      '<h3>📊 Mood History</h3>' +
-      '<button class="history-clear" onclick="clearHistory()">Clear</button>' +
-    '</div>' +
-    topHtml +
-    '<div class="history-bubbles">' + bubblesHtml + '</div>' +
-    '<p class="history-note">Saved in your browser · clears when you clear browser data</p>';
+.bg-home {
+  background: linear-gradient(-45deg, #fddde6, #e0c3fc, #c2e9fb, #fddde6);
+  background-size: 300% 300%;
+  animation: gradientShift 12s ease infinite;
 }
 
-
-/* ── 3. PAGE NAVIGATION ───────────────────────────────────── */
-/*
-   We have one HTML file with multiple <div id="page-..."> sections.
-   Only the section with class "active" is visible (see CSS).
-   showPage() hides all pages then shows the one we want.
-*/
-
-function showPage(pageId) {
-  /* Remove "active" from every page */
-  document.querySelectorAll(".page").forEach(function(page) {
-    page.classList.remove("active");
-  });
-
-  /* Add "active" to the chosen page */
-  var target = document.getElementById("page-" + pageId);
-  if (target) {
-    target.classList.add("active");
-  }
-
-  /* Scroll back to the top of the page */
-  window.scrollTo(0, 0);
+@keyframes gradientShift {
+  0%   { background-position: 0% 50%; }
+  50%  { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
 }
 
-/*
-   Open a mood page:
-   1. Log the visit to history
-   2. Navigate to the page
-   3. Fill it with the right content
-*/
-function openMood(mood) {
-  logMood(mood);
-  showPage(mood);
-  fillMoodPage(mood);
+.bg-happy   { background: linear-gradient(135deg, #ffecd2 0%, #fcb69f 100%); }
+.bg-sad     { background: linear-gradient(to bottom, #1e3c72 0%, #2a5298 100%); }
+.bg-calm    { background: linear-gradient(to bottom, #a8dadc 0%, #457b9d 100%); }
+.bg-angry   { background: linear-gradient(to bottom, #2b0000 0%, #8b0000 100%); }
+.bg-tired   { background: linear-gradient(to bottom, #2c3e50 0%, #4ca1af 100%); }
+.bg-student { background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%); }
+
+.glass {
+  background: rgba(255, 255, 255, 0.18);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid rgba(255, 255, 255, 0.28);
+  border-radius: 24px;
 }
 
-
-/* ── 4. FILL MOOD PAGE CONTENT ────────────────────────────── */
-/*
-   Each mood page has empty containers in the HTML (ul.quotes-list etc.).
-   This function reads from the MOODS data above and fills them in.
-   It also sets up the save button click handler for the journal.
-*/
-function fillMoodPage(mood) {
-  var data = MOODS[mood];
-  var page = document.getElementById("page-" + mood);
-  if (!page || !data) return; /* safety check */
-
-  var isLight = data.isLight; /* true for happy, false for all others */
-
-  /* Helper: returns the right background style for a list item */
-  function itemBg() {
-    return isLight ? "background:rgba(255,255,255,0.40)" : "background:rgba(255,255,255,0.12)";
-  }
-
-  /* ─ Fill QUOTES ─ */
-  var quotesTitle = page.querySelector(".quotes-title");
-  var quotesList  = page.querySelector(".quotes-list");
-  if (quotesTitle) quotesTitle.textContent = data.quotesTitle;
-  if (quotesList) {
-    quotesList.innerHTML = data.quotes.map(function(q) {
-      return '<li style="' + itemBg() + '">' + q + '</li>';
-    }).join("");
-  }
-
-  /* ─ Fill TIPS ─ */
-  var tipsTitle = page.querySelector(".tips-title");
-  var tipsList  = page.querySelector(".tips-list");
-  if (tipsTitle) tipsTitle.textContent = data.tipsTitle;
-  if (tipsList) {
-    tipsList.innerHTML = data.tips.map(function(t) {
-      return '<li style="' + itemBg() + '">' + t + '</li>';
-    }).join("");
-  }
-
-  /* ─ Fill MUSIC CARDS ─ */
-  var musicGrid = page.querySelector(".music-grid");
-  if (musicGrid) {
-    musicGrid.innerHTML = data.music.map(function(m) {
-      var cardClass = "music-card" + (isLight ? " light" : "");
-      return (
-        '<a class="' + cardClass + '" ' +
-           'href="https://www.youtube.com/results?search_query=' + encodeURIComponent(m.query) + '" ' +
-           'target="_blank" rel="noopener noreferrer">' +
-          '<span class="mc-emoji">' + m.emoji  + '</span>' +
-          '<span class="mc-genre">' + m.genre  + '</span>' +
-          '<span class="mc-play">▶ Play on YouTube</span>' +
-        '</a>'
-      );
-    }).join("");
-  }
-
-  /* ─ Set JOURNAL labels ─ */
-  var journalTitle  = page.querySelector(".journal-title");
-  var journalArea   = page.querySelector(".journal-area");
-  var saveBtn       = page.querySelector(".save-btn");
-  var savedMsg      = page.querySelector(".saved-msg");
-  var savedEntries  = page.querySelector(".saved-entries");
-  var memoriesTitle = page.querySelector(".memories-title");
-
-  if (journalTitle)  journalTitle.textContent  = data.journalTitle;
-  if (journalArea)   journalArea.placeholder   = data.journalPlaceholder;
-  if (saveBtn)       saveBtn.textContent       = data.saveBtnText;
-  if (memoriesTitle) memoriesTitle.textContent = data.savedMemoriesTitle;
-
-  /* Reset the journal to empty when switching moods */
-  if (journalArea)  journalArea.value         = "";
-  if (savedMsg)     savedMsg.style.display    = "none";
-  if (savedEntries) savedEntries.innerHTML    = "";
-
-  /* ─ Save button handler ─ */
-  if (saveBtn && journalArea && savedMsg && savedEntries) {
-    /* Remove any old onclick handler before setting a new one */
-    saveBtn.onclick = function() {
-      var text = journalArea.value.trim();
-      if (!text) return; /* don't save if the textarea is empty */
-
-      /* Create a new entry div and add it at the top of the list */
-      var entry       = document.createElement("div");
-      entry.className = "saved-entry" + (isLight ? " light" : "");
-      entry.textContent = "• " + text;
-      savedEntries.insertBefore(entry, savedEntries.firstChild);
-
-      /* Show the memories section (hidden by default) */
-      var memoriesSection = page.querySelector(".memories-section");
-      if (memoriesSection) memoriesSection.style.display = "block";
-
-      /* Clear the textarea */
-      journalArea.value = "";
-
-      /* Show "Saved!" message for 3 seconds, then hide it */
-      savedMsg.textContent    = data.savedText;
-      savedMsg.style.display  = "inline";
-      setTimeout(function() {
-        savedMsg.style.display = "none";
-      }, 3000);
-    };
-  }
+.glass-dark {
+  background: rgba(255, 255, 255, 0.10);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  border-radius: 24px;
 }
 
-
-/* ── 5. HOME PAGE — COMFORT PANEL TOGGLE ──────────────────── */
-/*
-   The "Make me feel better" button shows/hides a panel
-   by toggling the CSS class "open" (see .comfort-panel.open in CSS).
-*/
-function toggleComfort() {
-  var panel = document.getElementById("comfort-panel");
-  if (!panel) return;
-  panel.classList.toggle("open");
+.orbs-container {
+  position: fixed;
+  inset: 0;
+  overflow: hidden;
+  z-index: 0;
+  pointer-events: none;
 }
 
-
-/* ── 6. FOCUS TIMER ──────────────────────────────────────── */
-/*
-   The Focus Timer has 5 phases (like a state machine):
-   ─────────────────────────────────────────────────────
-   idle       → user picks focus duration, clicks "Start Focus"
-   focusing   → timer is counting down
-   focus-done → session ended: show motivation + achievement input
-   breaking   → break countdown (5 or 10 min)
-   break-done → break finished: "Break finished. Ready to focus again?"
-
-   State is stored in the `focus` object below.
-   All phases are controlled by focusSetPhase() which shows/hides
-   the right HTML elements and updates the buttons.
-*/
-
-/* ── Motivational messages — picked randomly after each session ── */
-var MOTIVATIONAL = [
-  { text: "Amazing work! Every focused minute brings you closer to your goal.", emoji: "🏆" },
-  { text: "You did it! Consistent effort is the secret to success. Keep going!", emoji: "🔥" },
-  { text: "Session complete! You're building incredible study habits.", emoji: "✨" },
-  { text: "Brilliant focus! Your brain is stronger than you think.", emoji: "💡" },
-  { text: "Well done! You've earned every second of the break ahead.", emoji: "🎉" },
-  { text: "Incredible discipline! One session at a time is how champions study.", emoji: "⭐" },
-  { text: "Look at you go! Small steps every day lead to giant results.", emoji: "🚀" },
-  { text: "You showed up and did the work — that's what matters most.", emoji: "💎" },
-  { text: "Another session down! Your future self is already thanking you.", emoji: "🙌" }
-];
-
-/* Confetti colours — one per piece */
-var CONFETTI_COLORS = [
-  "#ff6b6b","#feca57","#48dbfb","#ff9ff3",
-  "#54a0ff","#5f27cd","#00d2d3","#1dd1a1"
-];
-
-/* localStorage key for saved achievements */
-var ACHIEVEMENTS_KEY = "moodyra_achievements";
-
-/* All Focus Timer state in one object */
-var focus = {
-  duration:      25 * 60,  /* chosen focus duration in seconds (25 or 45 min) */
-  breakDuration: 5  * 60,  /* chosen break duration in seconds (5 or 10 min) */
-  timeLeft:      25 * 60,  /* current countdown in seconds */
-  phase:         "idle",   /* current phase: see state machine above */
-  interval:      null,     /* setInterval reference for the countdown */
-  sessions:      0,        /* number of focus sessions completed */
-  lastMsgIdx:    -1        /* index of last motivational message (avoids repeat) */
-};
-
-
-/* ── SOUNDS (Web Audio API — no mp3 files needed) ─────────── */
-/*
-   The Web Audio API lets us generate sounds in JavaScript.
-   We create an AudioContext, then connect oscillators (tone generators)
-   to it. Each sound is a few tones played in quick succession.
-*/
-
-/* Helper: create a single tone at a frequency */
-function focusTone(ac, freq, startTime, vol, decay, type) {
-  type = type || "sine";
-  var osc  = ac.createOscillator();
-  var gain = ac.createGain();
-  osc.connect(gain);
-  gain.connect(ac.destination);
-  osc.type = type;
-  osc.frequency.value = freq;
-  gain.gain.setValueAtTime(0, startTime);
-  gain.gain.linearRampToValueAtTime(vol, startTime + 0.05);
-  gain.gain.exponentialRampToValueAtTime(0.001, startTime + decay);
-  osc.start(startTime);
-  osc.stop(startTime + decay);
+.orb {
+  position: absolute;
+  border-radius: 50%;
+  filter: blur(50px);
+  animation: orbFloat linear infinite;
 }
 
-/* Bright A-major ding — played when focus session ends */
-function playDing() {
-  try {
-    var ac = new (window.AudioContext || window.webkitAudioContext)();
-    [880, 1108, 1318].forEach(function(f, i) {
-      focusTone(ac, f, ac.currentTime + i * 0.18, 0.3, 1.4);
-    });
-  } catch(e) {}
+@keyframes orbFloat {
+  0%   { transform: translate(0, 0) scale(1); }
+  25%  { transform: translate(30px, -25px) scale(1.08); }
+  50%  { transform: translate(-20px, 20px) scale(0.94); }
+  75%  { transform: translate(15px, -10px) scale(1.04); }
+  100% { transform: translate(0, 0) scale(1); }
 }
 
-/* Descending relaxing tones — played when break starts */
-function playBreakSound() {
-  try {
-    var ac = new (window.AudioContext || window.webkitAudioContext)();
-    [523, 440, 349, 294].forEach(function(f, i) {
-      focusTone(ac, f, ac.currentTime + i * 0.22, 0.22, 1.6);
-    });
-  } catch(e) {}
+.orb-1 { width:300px; height:300px; left:10%; top:15%; background:rgba(255,182,193,0.35); animation-duration:18s; }
+.orb-2 { width:200px; height:200px; left:75%; top:10%; background:rgba(176,196,255,0.35); animation-duration:22s; animation-delay:3s; }
+.orb-3 { width:250px; height:250px; left:55%; top:60%; background:rgba(200,162,255,0.30); animation-duration:20s; animation-delay:6s; }
+.orb-4 { width:180px; height:180px; left:85%; top:70%; background:rgba(255,218,185,0.35); animation-duration:25s; animation-delay:2s; }
+.orb-5 { width:220px; height:220px; left:20%; top:75%; background:rgba(152,230,200,0.28); animation-duration:19s; animation-delay:8s; }
+.orb-6 { width:150px; height:150px; left:45%; top:25%; background:rgba(255,200,220,0.30); animation-duration:16s; animation-delay:4s; }
+
+nav {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 999;
+  background: rgba(255, 255, 255, 0.22);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.3);
+  padding: 14px 32px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
 }
 
-/* Quick happy pop — played when achievement is saved */
-function playSuccess() {
-  try {
-    var ac = new (window.AudioContext || window.webkitAudioContext)();
-    [659, 784, 1047].forEach(function(f, i) {
-      focusTone(ac, f, ac.currentTime + i * 0.1, 0.2, 0.8);
-    });
-  } catch(e) {}
+.nav-logo {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  cursor: pointer;
 }
 
-/* Gentle rising chime — played when break ends */
-function playReadyChime() {
-  try {
-    var ac = new (window.AudioContext || window.webkitAudioContext)();
-    [523, 659, 784, 1047].forEach(function(f, i) {
-      focusTone(ac, f, ac.currentTime + i * 0.14, 0.18, 1.2);
-    });
-  } catch(e) {}
+.nav-logo img {
+  height: 40px;
+  width: auto;
 }
 
-
-/* ── CONFETTI ─────────────────────────────────────────────── */
-/*
-   Creates 40 coloured squares that fly down the screen.
-   Each piece is a <div> with a random colour, position,
-   and animation delay — then removed after 2.5 seconds.
-*/
-function launchConfetti() {
-  var container = document.getElementById("focus-confetti");
-  if (!container) return;
-
-  /* Remove any old confetti first */
-  container.innerHTML = "";
-
-  for (var i = 0; i < 40; i++) {
-    var piece = document.createElement("div");
-    piece.className = "confetti-piece";
-    piece.style.left            = Math.random() * 100 + "%";
-    piece.style.backgroundColor = CONFETTI_COLORS[i % CONFETTI_COLORS.length];
-    piece.style.animationDelay  = (Math.random() * 0.8) + "s";
-    piece.style.width           = (8 + Math.random() * 8) + "px";
-    piece.style.height          = (8 + Math.random() * 8) + "px";
-    container.appendChild(piece);
-  }
-
-  /* Clean up confetti after 3 seconds */
-  setTimeout(function() {
-    if (container) container.innerHTML = "";
-  }, 3000);
+.nav-logo span {
+  font-family: 'Playfair Display', serif;
+  font-size: 20px;
+  font-weight: 700;
+  color: #444;
+  letter-spacing: 1px;
 }
 
-
-/* ── PHASE MANAGER ───────────────────────────────────────── */
-/*
-   This function controls which parts of the UI are visible
-   based on the current phase.  Every phase change goes through here.
-*/
-function focusSetPhase(phase) {
-  focus.phase = phase;
-
-  /* Grab all the HTML elements we need */
-  var durationRow  = document.getElementById("focus-duration-row");
-  var breakBanner  = document.getElementById("break-banner");
-  var display      = document.getElementById("focus-display");
-  var sublabel     = document.getElementById("focus-sublabel");
-  var mainBtn      = document.getElementById("focus-main-btn");
-  var resetBtn     = document.getElementById("focus-reset-btn");
-  var donePanel    = document.getElementById("focus-done-panel");
-  var breakDonePanel = document.getElementById("break-done-panel");
-
-  /* Reset — hide everything first, then show only what's needed */
-  if (durationRow)    durationRow.style.display    = "none";
-  if (breakBanner)    breakBanner.style.display    = "none";
-  if (donePanel)      donePanel.style.display      = "none";
-  if (breakDonePanel) breakDonePanel.style.display = "none";
-  if (resetBtn)       resetBtn.style.display       = "none";
-
-  if (phase === "idle") {
-    /* Show the duration picker; main button says Start */
-    if (durationRow) durationRow.style.display = "flex";
-    if (mainBtn) {
-      mainBtn.style.display   = "";
-      mainBtn.textContent     = "▶ Start Focus";
-    }
-    if (sublabel) sublabel.textContent = focus.duration / 60 + "-minute session";
-    updateFocusDisplay();
-
-  } else if (phase === "focusing") {
-    /* Timer running — show Pause + Reset */
-    if (mainBtn) {
-      mainBtn.style.display = "";
-      mainBtn.textContent   = "⏸ Pause";
-    }
-    if (resetBtn) resetBtn.style.display = "";
-    if (sublabel) sublabel.textContent   = "Stay focused 🎯";
-
-  } else if (phase === "paused") {
-    /* Timer paused — show Resume + Reset */
-    if (mainBtn) {
-      mainBtn.style.display = "";
-      mainBtn.textContent   = "▶ Resume";
-    }
-    if (resetBtn) resetBtn.style.display = "";
-    if (sublabel) sublabel.textContent   = "Session paused";
-
-  } else if (phase === "focus-done") {
-    /* Show motivational message + achievement input */
-    if (mainBtn) mainBtn.style.display = "none";
-    if (donePanel) donePanel.style.display = "";
-    /* Hide the confetti container label */
-    if (sublabel) sublabel.textContent = "🎊 Session complete!";
-    /* Show a random motivational message */
-    var msgBox = document.getElementById("focus-message-box");
-    if (msgBox) {
-      var idx;
-      do { idx = Math.floor(Math.random() * MOTIVATIONAL.length); }
-      while (idx === focus.lastMsgIdx);
-      focus.lastMsgIdx = idx;
-      var msg = MOTIVATIONAL[idx];
-      msgBox.innerHTML =
-        '<span class="msg-emoji">' + msg.emoji + '</span>' +
-        '<span class="msg-text">'  + msg.text  + '</span>';
-    }
-    /* Clear the achievement textarea and flash message */
-    var ta = document.getElementById("achievement-input");
-    if (ta) ta.value = "";
-    var flash = document.getElementById("saved-flash");
-    if (flash) flash.style.display = "none";
-
-  } else if (phase === "breaking") {
-    /* Break countdown running */
-    if (mainBtn) mainBtn.style.display = "none";
-    if (breakBanner) {
-      breakBanner.style.display = "";
-      var label = document.getElementById("break-duration-label");
-      if (label) label.textContent = focus.breakDuration / 60;
-    }
-    if (sublabel) sublabel.textContent = "Take a breather ☕";
-
-  } else if (phase === "break-done") {
-    /* Break finished */
-    if (mainBtn) mainBtn.style.display = "none";
-    if (breakDonePanel) breakDonePanel.style.display = "";
-    if (sublabel) sublabel.textContent = "Break finished!";
-  }
+.nav-links {
+  display: flex;
+  gap: 6px;
+  align-items: center;
 }
 
-
-/* ── DISPLAY HELPER ──────────────────────────────────────── */
-/* Converts focus.timeLeft (seconds) to "MM:SS" and updates the screen */
-function updateFocusDisplay() {
-  var mins = String(Math.floor(focus.timeLeft / 60)).padStart(2, "0");
-  var secs = String(focus.timeLeft % 60).padStart(2, "0");
-  var el = document.getElementById("focus-display");
-  if (el) el.textContent = mins + ":" + secs;
+.nav-links button {
+  padding: 8px 18px;
+  border: none;
+  border-radius: 50px;
+  background: transparent;
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  font-size: 14px;
+  font-weight: 600;
+  color: #444;
+  cursor: pointer;
+  transition: background 0.2s;
 }
 
-
-/* ── DURATION PICKERS ─────────────────────────────────────── */
-
-/* Called by the 25 min / 45 min buttons */
-function setFocusDuration(mins) {
-  if (focus.phase !== "idle") return; /* only change when idle */
-  focus.duration = mins * 60;
-  focus.timeLeft = mins * 60;
-  updateFocusDisplay();
-
-  /* Highlight the correct button */
-  var btn25 = document.getElementById("fd-25");
-  var btn45 = document.getElementById("fd-45");
-  if (btn25) btn25.classList.toggle("active", mins === 25);
-  if (btn45) btn45.classList.toggle("active", mins === 45);
-
-  var sublabel = document.getElementById("focus-sublabel");
-  if (sublabel) sublabel.textContent = mins + "-minute session";
+.nav-links button:hover {
+  background: rgba(255, 255, 255, 0.45);
 }
 
-/* Called by the ☕ 5 min / 🛋️ 10 min break buttons */
-function setBreakDuration(mins) {
-  focus.breakDuration = mins * 60;
-
-  /* Highlight the correct break button */
-  var bd5  = document.getElementById("bd-5");
-  var bd10 = document.getElementById("bd-10");
-  if (bd5)  bd5.classList.toggle("active",  mins === 5);
-  if (bd10) bd10.classList.toggle("active", mins === 10);
+.nav-links .btn-student {
+  background: rgba(255, 255, 255, 0.25);
+  display: flex;
+  align-items: center;
+  gap: 5px;
 }
 
-
-/* ── MAIN BUTTON DISPATCHER ──────────────────────────────── */
-/*
-   The main button (Start / Pause / Resume) calls this function.
-   It checks the current phase and takes the right action.
-*/
-function focusMainAction() {
-  if (focus.phase === "idle") {
-    startFocusCounting();
-
-  } else if (focus.phase === "focusing") {
-    /* Pause the countdown */
-    clearInterval(focus.interval);
-    focusSetPhase("paused");
-
-  } else if (focus.phase === "paused") {
-    /* Resume the countdown */
-    startFocusCounting();
-  }
+.nav-links .btn-student:hover {
+  background: rgba(255, 255, 255, 0.5);
 }
 
-
-/* ── START COUNTING ──────────────────────────────────────── */
-/* Begins (or resumes) the focus countdown via setInterval */
-function startFocusCounting() {
-  focusSetPhase("focusing");
-
-  focus.interval = setInterval(function() {
-    focus.timeLeft--;
-    updateFocusDisplay();
-
-    if (focus.timeLeft <= 0) {
-      /* Focus session finished! */
-      clearInterval(focus.interval);
-      focus.sessions++;
-      focusUpdateSessions();
-      playDing();
-      launchConfetti();
-      focusSetPhase("focus-done");
-    }
-  }, 1000);
+.nav-login-btn {
+  padding: 8px 18px;
+  border: none;
+  border-radius: 50px;
+  background: rgba(255,255,255,0.25);
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  font-size: 14px;
+  font-weight: 600;
+  color: #444;
+  cursor: pointer;
+  transition: background 0.2s;
+  display: flex;
+  align-items: center;
+  gap: 5px;
 }
 
+.nav-login-btn:hover { background: rgba(255,255,255,0.5); }
 
-/* ── RESET ───────────────────────────────────────────────── */
-/* Stops the timer and returns everything to idle state */
-function resetFocusTimer() {
-  clearInterval(focus.interval);
-  focus.timeLeft = focus.duration;
-  focusSetPhase("idle");
+.nav-toggle-btn {
+  padding: 6px 13px;
+  border: 1.5px solid rgba(255,255,255,0.3);
+  border-radius: 50px;
+  background: rgba(255,255,255,0.15);
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  font-size: 12px;
+  font-weight: 700;
+  color: #444;
+  cursor: pointer;
+  transition: background 0.2s, transform 0.15s;
+  letter-spacing: 0.5px;
 }
 
-
-/* ── SAVE ACHIEVEMENT ────────────────────────────────────── */
-/*
-   Reads the textarea, saves the text (with timestamp) to
-   localStorage, then starts the break timer.
-*/
-function saveAchievement() {
-  var ta   = document.getElementById("achievement-input");
-  var text = ta ? ta.value.trim() : "";
-  if (!text) {
-    /* Nothing typed — just start the break */
-    startBreakTimer();
-    return;
-  }
-
-  /* Load existing achievements from localStorage */
-  var existing = [];
-  try { existing = JSON.parse(localStorage.getItem(ACHIEVEMENTS_KEY) || "[]"); } catch(e) {}
-
-  /* Add the new one with date + session number */
-  existing.unshift({
-    text:    text,
-    date:    new Date().toLocaleDateString(),
-    session: focus.sessions
-  });
-
-  /* Save back to localStorage */
-  localStorage.setItem(ACHIEVEMENTS_KEY, JSON.stringify(existing));
-
-  /* Play success sound and show "Saved!" flash */
-  playSuccess();
-  var flash = document.getElementById("saved-flash");
-  if (flash) flash.style.display = "";
-
-  /* Wait 1.2 seconds then start the break */
-  setTimeout(startBreakTimer, 1200);
-
-  /* Refresh the achievements list */
-  renderAchievements();
+.nav-toggle-btn:hover {
+  background: rgba(255,255,255,0.4);
+  transform: scale(1.06);
 }
 
+.nav-user-wrap { position: relative; }
 
-/* ── START BREAK ─────────────────────────────────────────── */
-/* Starts the break countdown (5 or 10 min) */
-function startBreakTimer() {
-  clearInterval(focus.interval); /* stop anything still running */
-  focus.timeLeft = focus.breakDuration;
-  focusSetPhase("breaking");
-  playBreakSound();
-  updateFocusDisplay();
-
-  focus.interval = setInterval(function() {
-    focus.timeLeft--;
-    updateFocusDisplay();
-
-    if (focus.timeLeft <= 0) {
-      /* Break finished! */
-      clearInterval(focus.interval);
-      playReadyChime();
-      focusSetPhase("break-done");
-      /* Show "00:00" */
-      var el = document.getElementById("focus-display");
-      if (el) el.textContent = "00:00";
-    }
-  }, 1000);
+.nav-user-btn {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 14px 6px 6px;
+  border: none;
+  border-radius: 50px;
+  background: rgba(255,255,255,0.25);
+  cursor: pointer;
+  transition: background 0.2s;
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  font-size: 14px;
+  font-weight: 600;
+  color: #444;
 }
 
+.nav-user-btn:hover { background: rgba(255,255,255,0.45); }
 
-/* ── START NEW SESSION ───────────────────────────────────── */
-/* Called by the "🎯 Start New Session" button after break ends */
-function startNewSession() {
-  focus.timeLeft = focus.duration;
-  focusSetPhase("idle");
+.nav-user-initial {
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #f472b6, #a855f7);
+  color: #fff;
+  font-size: 13px;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
-
-/* ── SESSION COUNTER ─────────────────────────────────────── */
-/* Shows one 🌟 per completed focus session */
-function focusUpdateSessions() {
-  var row = document.getElementById("focus-sessions");
-  if (!row) return;
-  if (focus.sessions === 0) { row.textContent = ""; return; }
-  var stars = "";
-  for (var i = 0; i < focus.sessions; i++) { stars += "🌟 "; }
-  row.innerHTML = "Sessions completed: " + stars;
+.user-dropdown {
+  position: absolute;
+  top: 46px;
+  right: 0;
+  min-width: 170px;
+  border-radius: 18px;
+  overflow: hidden;
+  box-shadow: 0 8px 32px rgba(0,0,0,0.25);
+  background: rgba(20,20,40,0.95);
+  border: 1px solid rgba(255,255,255,0.12);
+  z-index: 300;
 }
 
-
-/* ── RENDER ACHIEVEMENTS ─────────────────────────────────── */
-/* Reads localStorage and displays all saved achievements */
-function renderAchievements() {
-  var section = document.getElementById("achievements-section");
-  var list    = document.getElementById("achievements-list");
-  var title   = document.getElementById("achievements-title");
-  if (!section || !list) return;
-
-  var items = [];
-  try { items = JSON.parse(localStorage.getItem(ACHIEVEMENTS_KEY) || "[]"); } catch(e) {}
-
-  if (items.length === 0) {
-    section.style.display = "none";
-    return;
-  }
-
-  section.style.display = "";
-  if (title) title.textContent = "🏅 Your Achievements (" + items.length + ")";
-
-  /* Build the HTML for each achievement card */
-  list.innerHTML = items.map(function(item) {
-    return (
-      '<div class="achievement-item">' +
-        '<div class="ach-text">' + escapeHtml(item.text) + '</div>' +
-        '<div class="ach-meta">Session ' + item.session + ' · ' + item.date + '</div>' +
-      '</div>'
-    );
-  }).join("");
+.dd-name {
+  padding: 12px 16px 2px;
+  color: #fff;
+  font-weight: 700;
+  font-size: 0.88rem;
 }
 
-
-/* ── CLEAR ACHIEVEMENTS ──────────────────────────────────── */
-function clearAchievements() {
-  localStorage.removeItem(ACHIEVEMENTS_KEY);
-  renderAchievements();
+.dd-username {
+  padding: 0 16px 10px;
+  color: rgba(255,255,255,0.45);
+  font-size: 0.78rem;
+  border-bottom: 1px solid rgba(255,255,255,0.1);
 }
 
-
-/* ── ESCAPE HTML ─────────────────────────────────────────── */
-/* Prevents user text from breaking the HTML (basic security) */
-function escapeHtml(str) {
-  return str.replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;");
+.dd-logout {
+  display: block;
+  width: 100%;
+  padding: 12px 16px;
+  background: none;
+  border: none;
+  text-align: left;
+  color: #fca5a5;
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  font-weight: 600;
+  font-size: 0.85rem;
+  cursor: pointer;
+  transition: background 0.2s;
 }
 
+.dd-logout:hover { background: rgba(239,68,68,0.15); }
 
-/* ── 7. BREATHING EXERCISE (4-7-8 technique) ─────────────── */
-/*
-   The 4-7-8 technique:
-   1. Breathe IN for 4 seconds
-   2. HOLD for 7 seconds
-   3. Breathe OUT for 8 seconds
-   Repeat. This is proven to reduce anxiety and calm the nervous system.
-
-   The circle in the HTML grows/shrinks using CSS transform scale().
-*/
-
-/* The three phases of one breathing cycle */
-var BREATH_PHASES = [
-  {
-    label:       "Breathe In",
-    duration:    4,            /* seconds */
-    color:       "#a8dadc",    /* blue-green — calming */
-    instruction: "Inhale slowly through your nose...",
-    scale:       1.4           /* circle grows to 140% */
-  },
-  {
-    label:       "Hold",
-    duration:    7,
-    color:       "#e2b4f0",    /* soft purple */
-    instruction: "Hold your breath gently...",
-    scale:       1.4           /* circle stays large */
-  },
-  {
-    label:       "Breathe Out",
-    duration:    8,
-    color:       "#fcb69f",    /* peach — warm */
-    instruction: "Exhale slowly through your mouth...",
-    scale:       1.0           /* circle shrinks back to normal */
-  }
-];
-
-/* Current state of the breathing exercise */
-var breath = {
-  active:   false, /* true while the exercise is running */
-  phase:    0,     /* index into BREATH_PHASES (0, 1, or 2) */
-  count:    4,     /* seconds remaining in the current phase */
-  interval: null   /* reference to setInterval */
-};
-
-/*
-   Update the breathing circle on screen.
-   Changes color, size (scale), label, instruction, and countdown.
-*/
-function updateBreathDisplay() {
-  var current = BREATH_PHASES[breath.phase];
-  var circle  = document.getElementById("breath-circle");
-  var label   = document.getElementById("breath-label");
-  var instr   = document.getElementById("breath-instruction");
-  var count   = document.getElementById("breath-count");
-
-  if (circle) {
-    circle.style.backgroundColor = current.color;
-    circle.style.transform       = "scale(" + current.scale + ")";
-    circle.textContent           = ""; /* hide the emoji while active */
-  }
-  if (label) label.textContent = current.label;
-  if (instr) instr.textContent = current.instruction;
-  if (count) count.textContent = breath.count;
+.auth-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 200;
+  background: rgba(0,0,0,0.55);
+  backdrop-filter: blur(6px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
 }
 
-/*
-   Start or stop the breathing exercise.
-   Called by the Start/Stop button in the HTML.
-*/
-function toggleBreathing() {
-  breath.active = !breath.active;
-  var btn = document.getElementById("breath-btn");
-
-  if (breath.active) {
-    /* Start the exercise from the beginning */
-    if (btn) btn.textContent = "⏹ Stop";
-    breath.phase = 0;
-    breath.count = BREATH_PHASES[0].duration;
-    updateBreathDisplay();
-
-    /* Tick every second */
-    breath.interval = setInterval(function() {
-      breath.count--;
-
-      if (breath.count <= 0) {
-        /* Move to the next phase (loop back to 0 after the last one) */
-        breath.phase = (breath.phase + 1) % BREATH_PHASES.length;
-        breath.count = BREATH_PHASES[breath.phase].duration;
-      }
-
-      updateBreathDisplay();
-    }, 1000);
-
-  } else {
-    /* Stop the exercise and reset everything */
-    if (btn) btn.textContent = "▶ Start Breathing";
-    clearInterval(breath.interval);
-
-    /* Reset the circle back to its default look */
-    var circle = document.getElementById("breath-circle");
-    if (circle) {
-      circle.style.transform       = "scale(1)";
-      circle.style.backgroundColor = "rgba(255,255,255,0.22)";
-      circle.textContent           = "🌬️";
-    }
-
-    /* Reset the text labels */
-    var label = document.getElementById("breath-label");
-    var instr = document.getElementById("breath-instruction");
-    var count = document.getElementById("breath-count");
-    if (label) label.textContent = "Press Start";
-    if (instr) instr.textContent = "4-7-8 breathing to reduce anxiety";
-    if (count) count.textContent = "";
-  }
+.auth-modal {
+  position: relative;
+  width: 100%;
+  max-width: 420px;
+  border-radius: 28px;
+  padding: 36px 32px 28px;
+  background: linear-gradient(135deg, #1a1a2e 0%, #16213e 80%);
+  border: 1px solid rgba(255,255,255,0.14);
+  box-shadow: 0 24px 60px rgba(0,0,0,0.4);
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  box-sizing: border-box;
 }
 
-
-/* ── 8. STUDY TIPS BY MOOD (student page) ────────────────── */
-/*
-   When the user clicks a mood in the Student page,
-   this function shows a colored box of study tips
-   tailored to that mood.
-*/
-
-var studyTips = {
-  happy: {
-    gradient: "linear-gradient(135deg,#ffecd2,#fcb69f)",
-    tips: [
-      "🔥 Great energy! Tackle your hardest subject first",
-      "📝 Write a summary of what you've already learned",
-      "🎯 Set ambitious goals — you're in the zone today",
-      "🤝 Study with a friend and quiz each other",
-      "💡 This is the best time to learn something new"
-    ]
-  },
-  sad: {
-    gradient: "linear-gradient(135deg,#1e3c72,#2a5298)",
-    tips: [
-      "🎧 Put on calm background music and just review notes",
-      "📖 Try passive reading — no pressure to memorize",
-      "✏️ Doodle diagrams or mind maps instead of reading",
-      "🧘 Give yourself a 10-min break between every topic",
-      "💬 Talk through concepts out loud"
-    ]
-  },
-  calm: {
-    gradient: "linear-gradient(135deg,#a8dadc,#457b9d)",
-    tips: [
-      "📚 Perfect time for deep reading and focused study",
-      "🗂️ Organize your notes and create neat summaries",
-      "🧠 Review difficult concepts while your mind is clear",
-      "📅 Plan your study schedule for the week",
-      "✍️ Write practice answers slowly and carefully"
-    ]
-  },
-  angry: {
-    gradient: "linear-gradient(135deg,#5c0000,#8b0000)",
-    tips: [
-      "🚶 Step away for 10 minutes before opening your books",
-      "💥 Channel the energy into intense practice problems",
-      "🌬️ Do 3 deep breaths before each study session",
-      "⏱️ Use short Focus Timer sessions — don't force long blocks",
-      "📵 Put your phone away — distractions make it worse"
-    ]
-  },
-  tired: {
-    gradient: "linear-gradient(135deg,#2c3e50,#4ca1af)",
-    tips: [
-      "⏱️ Use the Focus Timer: only 25 min focus, then a full break",
-      "☕ Have a light snack and water before studying",
-      "🔁 Review old material instead of learning new things",
-      "🎙️ Listen to recorded lectures instead of reading",
-      "🛌 A 20-min nap beats 2 hours of bad studying"
-    ]
-  }
-};
-
-/*
-   Called when the user clicks a mood button in the student page.
-   Highlights the selected button and shows the matching tips.
-*/
-function selectStudyMood(mood) {
-  /* Remove "active" class from all buttons, add it to the clicked one */
-  document.querySelectorAll(".mood-sel-btn").forEach(function(btn) {
-    btn.classList.toggle("active", btn.dataset.mood === mood);
-  });
-
-  var data   = studyTips[mood];
-  var result = document.getElementById("study-tips-result");
-  if (!result || !data) return;
-
-  /* Readable mood labels for the heading */
-  var moodLabels = {
-    happy: "Happy 😊",
-    sad:   "Sad 😔",
-    calm:  "Calm 😌",
-    angry: "Angry 😡",
-    tired: "Tired 😴"
-  };
-
-  /* Set the background gradient and fill in the tips */
-  result.style.background = data.gradient;
-  result.innerHTML =
-    '<h4>Study tips when you feel ' + moodLabels[mood] + ':</h4>' +
-    '<ul>' +
-      data.tips.map(function(tip) { return "<li>" + tip + "</li>"; }).join("") +
-    '</ul>';
-
-  /* Show the tips box (it's hidden until a mood is selected) */
-  result.classList.add("show");
+.auth-close {
+  position: absolute;
+  top: 14px;
+  right: 18px;
+  background: none;
+  border: none;
+  color: rgba(255,255,255,0.4);
+  font-size: 1.2rem;
+  cursor: pointer;
+  transition: color 0.2s;
 }
 
+.auth-close:hover { color: rgba(255,255,255,0.8); }
 
-/* ── 9. AUTH — LOGIN / SIGNUP ────────────────────────────── */
-/*
-   Authentication uses only the browser's localStorage — no server needed.
-   Two keys are used:
-   • "moodyra_users"   — stores all accounts: { username: {name, password} }
-   • "moodyra_session" — stores the current logged-in user: {name, username}
-
-   The modal has two modes: "login" and "signup".
-   switchAuthMode() toggles between them.
-*/
-
-/* localStorage keys */
-var USERS_KEY   = "moodyra_users";
-var SESSION_KEY = "moodyra_session";
-
-/* Current auth mode: "login" or "signup" */
-var authMode = "login";
-
-/* The logged-in user object, or null if logged out */
-var currentUser = null;
-
-
-/* ── Read / write users from localStorage ── */
-
-function getUsers() {
-  try { return JSON.parse(localStorage.getItem(USERS_KEY) || "{}"); }
-  catch(e) { return {}; }
+.auth-icon {
+  text-align: center;
+  font-size: 2.8rem;
 }
 
-function saveUsers(users) {
-  localStorage.setItem(USERS_KEY, JSON.stringify(users));
+.auth-modal-title {
+  font-family: 'Playfair Display', serif;
+  font-size: 1.6rem;
+  font-weight: 700;
+  color: #fff;
+  text-align: center;
+  margin: 0;
 }
 
-
-/* ── Open and close the modal ── */
-
-function openAuthModal() {
-  authMode = "login";
-  updateAuthModalUI();
-  clearAuthFields();
-  var overlay = document.getElementById("auth-overlay");
-  if (overlay) overlay.style.display = "flex";
+.auth-modal-sub {
+  color: rgba(255,255,255,0.55);
+  font-size: 0.85rem;
+  text-align: center;
+  margin: -6px 0 0;
 }
 
-function closeAuthModal() {
-  var overlay = document.getElementById("auth-overlay");
-  if (overlay) overlay.style.display = "none";
+.auth-input {
+  width: 100%;
+  padding: 13px 16px;
+  border-radius: 18px;
+  background: rgba(255,255,255,0.12);
+  border: 1px solid rgba(255,255,255,0.18);
+  color: #fff;
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  font-size: 0.9rem;
+  font-weight: 500;
+  box-sizing: border-box;
+  transition: border-color 0.2s;
 }
 
-/* Switch between Login ↔ Sign Up */
-function switchAuthMode() {
-  authMode = (authMode === "login") ? "signup" : "login";
-  updateAuthModalUI();
-  clearAuthFields();
+.auth-input::placeholder { color: rgba(255,255,255,0.38); }
+.auth-input:focus { outline: none; border-color: rgba(255,255,255,0.5); }
+
+.auth-error {
+  background: rgba(239,68,68,0.18);
+  color: #fca5a5;
+  border-radius: 14px;
+  padding: 10px 14px;
+  font-size: 0.83rem;
+  text-align: center;
+  margin: 0;
 }
 
-/* Update the modal title, icon, button text, etc. to match the mode */
-function updateAuthModalUI() {
-  var isLogin = (authMode === "login");
-
-  /* Icon and text */
-  document.getElementById("auth-icon").textContent     = isLogin ? "👋" : "✨";
-  document.getElementById("auth-title").textContent    = isLogin ? "Welcome back!" : "Create your account";
-  document.getElementById("auth-subtitle").textContent = isLogin
-    ? "Log in to track your mood journey"
-    : "Join Moodyra and start your wellness journey";
-  document.getElementById("auth-submit-text").textContent  = isLogin ? "Log In 🚀" : "Create Account ✨";
-  document.getElementById("auth-switch-label").textContent = isLogin ? "Don't have an account?" : "Already have an account?";
-  document.getElementById("auth-switch-btn").textContent   = isLogin ? "Sign up" : "Log in";
-
-  /* Show/hide the Name field (only needed for signup) */
-  var nameWrap = document.getElementById("auth-name-wrap");
-  if (nameWrap) nameWrap.style.display = isLogin ? "none" : "";
-
-  /* Hide any error from the previous attempt */
-  showAuthError("");
+.auth-submit-btn {
+  width: 100%;
+  padding: 14px;
+  font-size: 1rem;
+  border-radius: 18px;
+  margin-top: 2px;
 }
 
-/* Clear all input fields and hide error */
-function clearAuthFields() {
-  ["auth-name","auth-username","auth-password"].forEach(function(id) {
-    var el = document.getElementById(id);
-    if (el) el.value = "";
-  });
-  showAuthError("");
+.auth-switch-row {
+  text-align: center;
+  color: rgba(255,255,255,0.5);
+  font-size: 0.85rem;
+  margin: 0;
 }
 
-/* Show or hide the red error message */
-function showAuthError(msg) {
-  var el = document.getElementById("auth-error");
-  if (!el) return;
-  if (msg) {
-    el.textContent    = msg;
-    el.style.display  = "";
-  } else {
-    el.style.display  = "none";
-    el.textContent    = "";
-  }
+.auth-switch-btn {
+  background: none;
+  border: none;
+  color: #fff;
+  font-weight: 700;
+  font-size: 0.85rem;
+  cursor: pointer;
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  text-decoration: underline;
+  padding: 0;
+  margin-left: 4px;
 }
 
-
-/* ── Handle the submit button ── */
-
-function handleAuthSubmit() {
-  var username = (document.getElementById("auth-username").value || "").trim().toLowerCase();
-  var password = (document.getElementById("auth-password").value || "");
-  var name     = (document.getElementById("auth-name")     ? document.getElementById("auth-name").value.trim() : "");
-
-  /* Validate and perform login or signup */
-  var error = (authMode === "login")
-    ? authLogin(username, password)
-    : authSignup(name, username, password);
-
-  if (error) {
-    showAuthError(error);
-  } else {
-    closeAuthModal();
-  }
+.page-content {
+  max-width: 900px;
+  margin: 0 auto;
+  position: relative;
+  z-index: 10;
 }
 
+.center { text-align: center; }
 
-/* ── Login logic ── */
-
-function authLogin(username, password) {
-  if (!username || !password) return "Please fill in all fields.";
-  var users = getUsers();
-  var record = users[username];
-  if (!record) return "Account not found. Please sign up first.";
-  if (record.password !== password) return "Incorrect password. Please try again.";
-
-  /* Save session */
-  currentUser = { username: username, name: record.name };
-  localStorage.setItem(SESSION_KEY, JSON.stringify(currentUser));
-  updateNavAuth();
-  return null; /* null = success */
+.home-hero {
+  text-align: center;
+  padding: 40px 0 20px;
 }
 
-
-/* ── Signup logic ── */
-
-function authSignup(name, username, password) {
-  if (!name)            return "Please enter your name.";
-  if (username.length < 3) return "Username must be at least 3 characters.";
-  if (password.length < 6) return "Password must be at least 6 characters.";
-
-  var users = getUsers();
-  if (users[username])  return "Username already taken. Please choose another.";
-
-  /* Save the new account */
-  users[username] = { name: name, password: password };
-  saveUsers(users);
-
-  /* Auto-login after signup */
-  currentUser = { username: username, name: name };
-  localStorage.setItem(SESSION_KEY, JSON.stringify(currentUser));
-  updateNavAuth();
-  return null; /* null = success */
+.home-hero h1 {
+  font-size: clamp(2rem, 5vw, 3.8rem);
+  color: #444;
+  margin-bottom: 40px;
+  font-weight: 600;
 }
 
-
-/* ── Logout ── */
-
-function authLogout() {
-  currentUser = null;
-  localStorage.removeItem(SESSION_KEY);
-  updateNavAuth();
-  /* Hide the dropdown */
-  var dd = document.getElementById("user-dropdown");
-  if (dd) dd.style.display = "none";
+.mood-pills {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 14px;
+  margin-bottom: 60px;
 }
 
-
-/* ── Toggle the user dropdown menu ── */
-
-function toggleUserMenu() {
-  var dd = document.getElementById("user-dropdown");
-  if (!dd) return;
-  dd.style.display = (dd.style.display === "none" || !dd.style.display) ? "" : "none";
+.mood-pill {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 14px 24px;
+  background: rgba(255, 255, 255, 0.80);
+  backdrop-filter: blur(8px);
+  border: none;
+  border-radius: 50px;
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  font-size: 1.05rem;
+  font-weight: 600;
+  color: #444;
+  cursor: pointer;
+  box-shadow: 0 2px 10px rgba(0,0,0,0.08);
+  transition: transform 0.2s, box-shadow 0.2s;
 }
 
-/* Close dropdown when clicking anywhere outside it */
-document.addEventListener("click", function(e) {
-  var wrap = document.getElementById("nav-user-wrap");
-  if (wrap && !wrap.contains(e.target)) {
-    var dd = document.getElementById("user-dropdown");
-    if (dd) dd.style.display = "none";
-  }
-});
-
-
-/* ── Update the nav to show Login button or user avatar ── */
-
-function updateNavAuth() {
-  var loginBtn  = document.getElementById("nav-login-btn");
-  var userWrap  = document.getElementById("nav-user-wrap");
-  var initial   = document.getElementById("nav-user-initial");
-  var nameEl    = document.getElementById("nav-user-name");
-  var ddName    = document.getElementById("dd-name");
-  var ddUser    = document.getElementById("dd-username");
-
-  if (currentUser) {
-    /* Logged in — show avatar, hide Login button */
-    if (loginBtn) loginBtn.style.display = "none";
-    if (userWrap) userWrap.style.display = "";
-    if (initial)  initial.textContent    = currentUser.name.charAt(0).toUpperCase();
-    if (nameEl)   nameEl.textContent     = currentUser.name;
-    if (ddName)   ddName.textContent     = currentUser.name;
-    if (ddUser)   ddUser.textContent     = "@" + currentUser.username;
-  } else {
-    /* Logged out — show Login button, hide avatar */
-    if (loginBtn) loginBtn.style.display = "";
-    if (userWrap) userWrap.style.display = "none";
-  }
+.mood-pill:hover {
+  transform: scale(1.05);
+  box-shadow: 0 8px 24px rgba(0,0,0,0.14);
 }
 
-/* Load session from localStorage on page load */
-function loadSession() {
-  try { currentUser = JSON.parse(localStorage.getItem(SESSION_KEY) || "null"); }
-  catch(e) { currentUser = null; }
-  updateNavAuth();
+.mood-pill .mood-icon { font-size: 1.5rem; }
+
+.comfort-btn-main {
+  display: block;
+  margin: 0 auto 20px;
+  padding: 16px 36px;
+  background: rgba(255,255,255,0.25);
+  backdrop-filter: blur(8px);
+  border: 1px solid rgba(255,255,255,0.4);
+  border-radius: 50px;
+  font-family: 'Playfair Display', serif;
+  font-size: 1.2rem;
+  color: #555;
+  cursor: pointer;
+  transition: background 0.2s, transform 0.2s;
+  box-shadow: 0 2px 10px rgba(0,0,0,0.07);
 }
 
-
-/* ── 10. LANGUAGE & THEME TOGGLE ─────────────────────────── */
-
-var TRANSLATIONS = {
-  en: {
-    home: "Home",
-    about: "About",
-    students: "Students",
-    login: "👤 Login",
-    logout: "🚪 Log Out",
-    feelingToday: "How are you feeling today?",
-    happy: "Happy",
-    sad: "Sad",
-    calm: "Calm",
-    angry: "Angry",
-    tired: "Tired",
-    needComfort: "Make me feel better",
-    chooseBetter: "Choose something to feel better:",
-    studentSub: "Focus timer · Study tips · Exam stress relief",
-    moodHistory: "Your Mood History",
-  },
-  ar: {
-    home: "الرئيسية",
-    about: "عن المشروع",
-    students: "الطلاب",
-    login: "👤 تسجيل الدخول",
-    logout: "🚪 تسجيل الخروج",
-    feelingToday: "كيف حالك اليوم؟",
-    happy: "سعيد",
-    sad: "حزين",
-    calm: "هادئ",
-    angry: "غاضب",
-    tired: "متعب",
-    needComfort: "أحتاج دعماً",
-    chooseBetter: "اختر شيئاً لتشعر بتحسن:",
-    studentSub: "مؤقت التركيز · نصائح الدراسة · تخفيف ضغط الامتحانات",
-    moodHistory: "سجل مزاجك",
-  }
-};
-
-var COMFORT_ITEMS = {
-  en: [
-    "✨ You are stronger than you think",
-    "🎧 Listen to your favorite song",
-    "🌿 Take a deep breath",
-    "🍫 Eat something you love",
-    "📞 Talk to someone you trust",
-    "💖 This feeling will pass",
-  ],
-  ar: [
-    "✨ أنت أقوى مما تعتقد",
-    "🎧 استمع لأغنيتك المفضلة",
-    "🌿 خذ نفساً عميقاً",
-    "🍫 كل شيئاً تحبه",
-    "📞 تحدث مع شخص تثق به",
-    "💖 هذا الشعور سيمر",
-  ]
-};
-
-var currentLang = localStorage.getItem("moodyra_lang") || "en";
-var currentTheme = localStorage.getItem("moodyra_theme") || "dark";
-
-function applyLang(lang) {
-  currentLang = lang;
-  localStorage.setItem("moodyra_lang", lang);
-
-  /* Update all elements with data-i18n */
-  document.querySelectorAll("[data-i18n]").forEach(function(el) {
-    var key = el.getAttribute("data-i18n");
-    if (TRANSLATIONS[lang][key] !== undefined) {
-      el.textContent = TRANSLATIONS[lang][key];
-    }
-  });
-
-  /* Update comfort grid items */
-  var grid = document.getElementById("comfort-grid-items");
-  if (grid) {
-    grid.innerHTML = COMFORT_ITEMS[lang].map(function(item) {
-      return '<div class="comfort-item">' + item + '</div>';
-    }).join("");
-  }
-
-  /* Update lang button label */
-  var btn = document.getElementById("lang-btn");
-  if (btn) btn.textContent = lang === "en" ? "AR" : "EN";
-
-  /* Set direction */
-  document.documentElement.setAttribute("dir", lang === "ar" ? "rtl" : "ltr");
-  document.documentElement.setAttribute("lang", lang);
+.comfort-btn-main:hover {
+  background: rgba(255,255,255,0.45);
+  transform: scale(1.02);
 }
 
-function toggleLang() {
-  applyLang(currentLang === "en" ? "ar" : "en");
+.comfort-panel {
+  display: none;
+  margin: 16px auto;
+  max-width: 640px;
 }
 
-function applyTheme(theme) {
-  currentTheme = theme;
-  localStorage.setItem("moodyra_theme", theme);
-  if (theme === "light") {
-    document.body.classList.add("light-mode");
-  } else {
-    document.body.classList.remove("light-mode");
-  }
-  var btn = document.getElementById("theme-btn");
-  if (btn) btn.textContent = theme === "dark" ? "☀️" : "🌙";
+.comfort-panel.open { display: block; }
+
+.comfort-panel-inner { padding: 28px; }
+
+.comfort-panel p {
+  text-align: center;
+  color: #666;
+  font-size: 1rem;
+  margin-bottom: 18px;
 }
 
-function toggleTheme() {
-  applyTheme(currentTheme === "dark" ? "light" : "dark");
+.comfort-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
 }
 
+.comfort-item {
+  padding: 14px 18px;
+  background: rgba(255,255,255,0.45);
+  border-radius: 16px;
+  text-align: center;
+  font-weight: 600;
+  color: #555;
+  font-size: 0.95rem;
+  transition: background 0.2s;
+}
 
-/* ── 11. PAGE INITIALIZATION ─────────────────────────────── */
-/*
-   This block runs automatically when the page finishes loading.
-   DOMContentLoaded fires when the browser has read all the HTML
-   and built the elements — safe to start using getElementById etc.
-*/
-window.addEventListener("DOMContentLoaded", function() {
-  showPage("home");        /* show the home page first */
-  renderHistoryWidget();   /* show mood history if the user has any */
-  focusSetPhase("idle");   /* set the Focus Timer to its starting state */
-  renderAchievements();    /* load saved achievements from localStorage */
-  loadSession();           /* restore login state if user was logged in before */
-  applyLang(currentLang);  /* restore language preference */
-  applyTheme(currentTheme); /* restore theme preference */
-});
+.comfort-item:hover { background: rgba(255,255,255,0.70); }
+
+.student-card {
+  max-width: 480px;
+  margin: 30px auto 0;
+  padding: 20px 28px;
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  cursor: pointer;
+  transition: background 0.2s, transform 0.2s;
+  box-shadow: 0 4px 16px rgba(0,0,0,0.08);
+}
+
+.student-card:hover {
+  background: rgba(255,255,255,0.50);
+  transform: scale(1.02);
+}
+
+.student-card .s-icon { font-size: 2rem; }
+
+.student-card .s-text .s-title {
+  font-family: 'Playfair Display', serif;
+  font-size: 1.1rem;
+  font-weight: 700;
+  color: #444;
+}
+
+.student-card .s-text .s-sub {
+  font-size: 0.82rem;
+  color: #888;
+  margin-top: 2px;
+}
+
+.student-card .s-arrow {
+  margin-left: auto;
+  color: #aaa;
+  font-size: 1.3rem;
+}
+
+.history-widget {
+  max-width: 640px;
+  margin: 0 auto 30px;
+  padding: 24px 28px;
+}
+
+.history-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 14px;
+}
+
+.history-header h3 { font-size: 1.1rem; color: #444; }
+
+.history-clear {
+  font-size: 0.78rem;
+  color: #aaa;
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 4px 10px;
+  border-radius: 20px;
+  font-family: 'Plus Jakarta Sans', sans-serif;
+}
+
+.history-clear:hover { color: #e74c3c; background: rgba(231,76,60,0.06); }
+
+.history-top {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  background: rgba(255,255,255,0.55);
+  padding: 12px 16px;
+  border-radius: 16px;
+  margin-bottom: 14px;
+}
+
+.history-top .top-emoji  { font-size: 1.6rem; }
+.history-top .top-label  { font-size: 0.72rem; color: #888; font-weight: 600; }
+.history-top .top-name   { font-weight: 700; color: #333; font-size: 0.95rem; }
+.history-top .trophy     { margin-left: auto; font-size: 1.4rem; }
+
+.history-bubbles {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-bottom: 10px;
+}
+
+.history-bubble {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  padding: 6px 14px;
+  border-radius: 50px;
+  font-size: 0.82rem;
+  font-weight: 600;
+}
+
+.history-bubble .b-time { color: #999; font-weight: 400; font-size: 0.75rem; }
+
+.history-note { text-align: center; font-size: 0.72rem; color: #bbb; }
+
+.mood-header { text-align: center; margin-bottom: 30px; }
+
+.mood-header h1 {
+  font-size: clamp(2rem, 5vw, 3.5rem);
+  color: #fff;
+  margin-bottom: 10px;
+}
+
+.mood-header .subtitle {
+  font-size: 1.1rem;
+  color: rgba(255,255,255,0.80);
+  margin-bottom: 20px;
+}
+
+.back-btn {
+  display: inline-block;
+  padding: 9px 22px;
+  background: rgba(255,255,255,0.18);
+  border: 1px solid rgba(255,255,255,0.28);
+  border-radius: 50px;
+  color: #fff;
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  font-size: 0.9rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background 0.2s;
+  text-decoration: none;
+}
+
+.back-btn:hover { background: rgba(255,255,255,0.30); }
+
+.two-col {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 22px;
+  margin-bottom: 22px;
+}
+
+@media (max-width: 640px) {
+  .two-col        { grid-template-columns: 1fr; }
+  .comfort-grid   { grid-template-columns: 1fr; }
+  .music-grid     { grid-template-columns: 1fr 1fr; }
+}
+
+.card { padding: 28px; }
+
+.card h3 {
+  font-size: 1.25rem;
+  margin-bottom: 16px;
+}
+
+.card ul {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.card ul li {
+  padding: 11px 15px;
+  border-radius: 14px;
+  font-size: 0.95rem;
+  line-height: 1.5;
+}
+
+.journal-area {
+  width: 100%;
+  min-height: 120px;
+  padding: 14px;
+  border-radius: 16px;
+  border: 1px solid rgba(255,255,255,0.25);
+  background: rgba(255,255,255,0.12);
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  font-size: 0.95rem;
+  color: #fff;
+  resize: none;
+  outline: none;
+  margin-bottom: 14px;
+  transition: border-color 0.2s;
+}
+
+.journal-area::placeholder { color: rgba(255,255,255,0.45); }
+.journal-area:focus         { border-color: rgba(255,255,255,0.5); }
+
+.journal-area.light {
+  background: rgba(255,255,255,0.50);
+  color: #555;
+  border: 1px solid rgba(255,255,255,0.4);
+}
+
+.journal-area.light::placeholder { color: rgba(0,0,0,0.3); }
+
+.save-btn {
+  padding: 12px 30px;
+  border: none;
+  border-radius: 50px;
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  font-size: 1rem;
+  font-weight: 700;
+  cursor: pointer;
+  box-shadow: 0 4px 14px rgba(0,0,0,0.15);
+  transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.save-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 18px rgba(0,0,0,0.20);
+}
+
+.saved-msg {
+  display: none;
+  font-weight: 600;
+  font-size: 0.92rem;
+  margin-left: 14px;
+}
+
+.save-row {
+  display: flex;
+  align-items: center;
+}
+
+.saved-entries {
+  display: flex;
+  flex-direction: column;
+  gap: 9px;
+  margin-top: 14px;
+}
+
+.saved-entry {
+  padding: 11px 15px;
+  border-radius: 14px;
+  font-size: 0.9rem;
+  background: rgba(255,255,255,0.12);
+  color: rgba(255,255,255,0.85);
+}
+
+.saved-entry.light {
+  background: rgba(255,255,255,0.55);
+  color: #555;
+}
+
+.music-section {
+  padding: 26px 28px;
+  margin-bottom: 20px;
+}
+
+.music-section h3 {
+  font-size: 1.25rem;
+  margin-bottom: 16px;
+  color: #fff;
+}
+
+.music-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 12px;
+}
+
+.music-card {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 7px;
+  padding: 16px 10px;
+  border-radius: 18px;
+  background: rgba(255,255,255,0.10);
+  text-decoration: none;
+  cursor: pointer;
+  transition: background 0.2s, transform 0.2s;
+  text-align: center;
+}
+
+.music-card:hover {
+  background: rgba(255,255,255,0.22);
+  transform: translateY(-3px);
+}
+
+.music-card .mc-emoji { font-size: 2rem; }
+.music-card .mc-genre { font-size: 0.82rem; font-weight: 700; color: rgba(255,255,255,0.9); }
+.music-card .mc-play  { font-size: 0.72rem; color: rgba(255,255,255,0.55); }
+
+.music-card.light          { background: rgba(255,255,255,0.45); }
+.music-card.light:hover    { background: rgba(255,255,255,0.70); }
+.music-card.light .mc-genre { color: #c0392b; }
+.music-card.light .mc-play  { color: #888; }
+
+.student-header { text-align: center; margin-bottom: 28px; }
+
+.student-header h1 {
+  font-size: clamp(2rem, 5vw, 3.5rem);
+  color: #fff;
+  margin-bottom: 8px;
+}
+
+.student-header p { color: rgba(255,255,255,0.65); font-size: 1rem; }
+
+.section-title {
+  font-family: 'Playfair Display', serif;
+  font-size: 1.3rem;
+  color: #fff;
+  text-align: center;
+  margin-bottom: 16px;
+}
+
+.mood-selector {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  justify-content: center;
+  margin-bottom: 18px;
+}
+
+.mood-sel-btn {
+  padding: 10px 20px;
+  background: rgba(255,255,255,0.14);
+  border: none;
+  border-radius: 50px;
+  color: #fff;
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  font-weight: 600;
+  font-size: 0.92rem;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.mood-sel-btn:hover,
+.mood-sel-btn.active {
+  background: rgba(255,255,255,0.90);
+  color: #1a1a2e;
+}
+
+.tips-result {
+  display: none;
+  border-radius: 18px;
+  padding: 20px 24px;
+}
+
+.tips-result.show { display: block; }
+
+.tips-result h4 {
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  font-weight: 700;
+  color: #fff;
+  margin-bottom: 12px;
+  font-size: 0.95rem;
+}
+
+.tips-result ul                { list-style: none; display: flex; flex-direction: column; gap: 8px; }
+.tips-result ul li             { background: rgba(0,0,0,0.15); padding: 10px 14px; border-radius: 12px; color: rgba(255,255,255,0.9); font-size: 0.88rem; }
+
+.focus-timer-wrap {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 18px;
+  overflow: hidden;
+}
+
+.focus-confetti {
+  position: absolute;
+  top: 0; left: 0;
+  width: 100%; height: 100%;
+  pointer-events: none;
+  z-index: 10;
+}
+
+.confetti-piece {
+  position: absolute;
+  top: -12px;
+  width: 10px; height: 10px;
+  border-radius: 2px;
+  animation: confettiFall 2.2s ease-in forwards;
+}
+
+@keyframes confettiFall {
+  0%   { transform: translateY(0) rotate(0deg);    opacity: 1; }
+  100% { transform: translateY(500px) rotate(720deg); opacity: 0; }
+}
+
+.focus-btn-row {
+  display: flex;
+  gap: 10px;
+}
+
+.duration-btn {
+  padding: 8px 20px;
+  background: rgba(255,255,255,0.18);
+  border: none;
+  border-radius: 50px;
+  color: #fff;
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  font-size: 0.85rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.duration-btn.active {
+  background: #fff;
+  color: #1a1a2e;
+}
+
+.break-banner {
+  background: linear-gradient(135deg, #7c3aed, #a855f7);
+  color: #fff;
+  font-weight: 700;
+  font-size: 1rem;
+  padding: 10px 28px;
+  border-radius: 50px;
+  text-align: center;
+}
+
+.focus-timer-display {
+  font-family: 'Courier New', monospace;
+  font-size: 4.5rem;
+  font-weight: 700;
+  color: #fff;
+  letter-spacing: 3px;
+}
+
+.timer-sublabel {
+  font-size: 0.8rem;
+  color: rgba(255,255,255,0.55);
+  margin-top: -12px;
+}
+
+.timer-btns { display: flex; gap: 10px; }
+
+.timer-btn {
+  padding: 11px 26px;
+  background: #fff;
+  color: #1a1a2e;
+  border: none;
+  border-radius: 50px;
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  font-weight: 700;
+  font-size: 0.95rem;
+  cursor: pointer;
+  transition: transform 0.15s;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+}
+
+.timer-btn:hover { transform: scale(1.05); }
+
+.timer-btn.secondary {
+  background: rgba(255,255,255,0.20);
+  color: #fff;
+  box-shadow: none;
+}
+
+.sessions-row {
+  font-size: 0.88rem;
+  color: rgba(255,255,255,0.65);
+  min-height: 22px;
+  text-align: center;
+}
+
+.focus-done-panel {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 18px;
+}
+
+.focus-message-box {
+  background: linear-gradient(135deg, rgba(124,58,237,0.35), rgba(168,85,247,0.25));
+  border: 1px solid rgba(168,85,247,0.4);
+  border-radius: 20px;
+  padding: 20px 24px;
+  text-align: center;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.focus-message-box .msg-emoji { font-size: 2rem; display: block; margin-bottom: 8px; }
+.focus-message-box .msg-text  { color: #fff; font-size: 0.95rem; font-weight: 600; line-height: 1.5; }
+
+.achievement-section {
+  width: 100%;
+  background: rgba(255,255,255,0.07);
+  border-radius: 20px;
+  padding: 20px 22px;
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.achievement-section h4 {
+  color: #fff;
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  font-weight: 700;
+  font-size: 0.95rem;
+  margin: 0;
+}
+
+.achievement-hint {
+  color: rgba(255,255,255,0.5);
+  font-size: 0.8rem;
+  margin: -6px 0 0;
+}
+
+.focus-textarea {
+  width: 100%;
+  background: rgba(255,255,255,0.12);
+  border: 1px solid rgba(255,255,255,0.2);
+  border-radius: 14px;
+  color: #fff;
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  font-size: 0.9rem;
+  padding: 12px 14px;
+  resize: vertical;
+  box-sizing: border-box;
+}
+
+.focus-textarea::placeholder { color: rgba(255,255,255,0.35); }
+.focus-textarea:focus { outline: none; border-color: rgba(255,255,255,0.45); }
+
+.achievement-save-row {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  flex-wrap: wrap;
+}
+
+.break-pick-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+  padding-top: 4px;
+  border-top: 1px solid rgba(255,255,255,0.1);
+}
+
+.break-pick-label {
+  color: rgba(255,255,255,0.5);
+  font-size: 0.8rem;
+}
+
+.break-pick-btn {
+  padding: 6px 16px;
+  background: rgba(255,255,255,0.15);
+  border: none;
+  border-radius: 50px;
+  color: #fff;
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  font-size: 0.8rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.break-pick-btn.active {
+  background: rgba(124,58,237,0.8);
+}
+
+.skip-link {
+  background: none;
+  border: none;
+  color: rgba(255,255,255,0.45);
+  font-size: 0.78rem;
+  cursor: pointer;
+  text-decoration: underline;
+  padding: 0;
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  align-self: flex-start;
+}
+
+.skip-link:hover { color: rgba(255,255,255,0.75); }
+
+.break-done-panel {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+  padding: 24px;
+  background: linear-gradient(135deg, rgba(16,185,129,0.25), rgba(5,150,105,0.2));
+  border: 1px solid rgba(16,185,129,0.35);
+  border-radius: 20px;
+  width: 100%;
+  box-sizing: border-box;
+  text-align: center;
+}
+
+.break-done-title {
+  font-family: 'Playfair Display', serif;
+  font-size: 1.2rem;
+  font-weight: 700;
+  color: #fff;
+  margin: 0;
+}
+
+.break-done-sub {
+  color: rgba(255,255,255,0.65);
+  font-size: 0.85rem;
+  margin: 0 0 6px;
+}
+
+.achievements-section {
+  width: 100%;
+  border-top: 1px solid rgba(255,255,255,0.12);
+  padding-top: 18px;
+}
+
+.achievements-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 12px;
+}
+
+#achievements-title {
+  color: rgba(255,255,255,0.85);
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  font-weight: 700;
+  font-size: 0.9rem;
+}
+
+.clear-achievements-btn {
+  background: rgba(239,68,68,0.25);
+  border: none;
+  border-radius: 50px;
+  color: #fca5a5;
+  font-size: 0.75rem;
+  font-weight: 600;
+  padding: 5px 14px;
+  cursor: pointer;
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  transition: background 0.2s;
+}
+
+.clear-achievements-btn:hover { background: rgba(239,68,68,0.45); }
+
+.achievements-list {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.achievement-item {
+  background: rgba(255,255,255,0.08);
+  border-radius: 14px;
+  padding: 12px 16px;
+}
+
+.achievement-item .ach-text {
+  color: #fff;
+  font-size: 0.88rem;
+  margin-bottom: 4px;
+}
+
+.achievement-item .ach-meta {
+  color: rgba(255,255,255,0.4);
+  font-size: 0.75rem;
+}
+
+.breath-wrap {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 14px;
+  padding: 28px;
+}
+
+.breath-circle {
+  width: 120px;
+  height: 120px;
+  border-radius: 50%;
+  background: rgba(255,255,255,0.22);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 2.5rem;
+  transition: transform 1s ease, background-color 1s ease;
+}
+
+.breath-label {
+  font-family: 'Playfair Display', serif;
+  font-size: 1.2rem;
+  font-weight: 700;
+  color: #fff;
+}
+
+.breath-instruction {
+  font-size: 0.82rem;
+  color: rgba(255,255,255,0.60);
+  text-align: center;
+}
+
+.breath-count {
+  font-size: 2rem;
+  font-weight: 700;
+  color: #fff;
+  min-height: 44px;
+}
+
+.exam-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 16px;
+  margin-bottom: 22px;
+}
+
+@media (max-width: 640px) {
+  .exam-grid  { grid-template-columns: 1fr; }
+  .music-grid { grid-template-columns: 1fr 1fr; }
+  .two-col    { grid-template-columns: 1fr; }
+}
+
+.exam-card {
+  background: rgba(255,255,255,0.10);
+  border-radius: 18px;
+  padding: 20px 16px;
+}
+
+.exam-card .e-icon { font-size: 1.8rem; margin-bottom: 8px; }
+.exam-card h4      { font-family:'Plus Jakarta Sans',sans-serif; font-weight:700; color:#fff; font-size:0.88rem; margin-bottom:5px; }
+.exam-card p       { color:rgba(255,255,255,0.65); font-size:0.80rem; line-height:1.5; }
+
+.affirmations-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 11px;
+}
+
+.affirmation {
+  background: rgba(255,255,255,0.10);
+  padding: 15px 18px;
+  border-radius: 16px;
+  color: #fff;
+  font-weight: 600;
+  font-size: 0.9rem;
+  text-align: center;
+}
+
+.chatgpt-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 12px;
+  margin-bottom: 18px;
+}
+
+.chatgpt-card {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  padding: 18px 12px;
+  background: rgba(255,255,255,0.10);
+  border-radius: 18px;
+  text-decoration: none;
+  color: #fff;
+  font-size: 0.88rem;
+  font-weight: 600;
+  text-align: center;
+  transition: background 0.2s, transform 0.2s;
+}
+
+.chatgpt-card:hover {
+  background: rgba(255,255,255,0.20);
+  transform: translateY(-3px);
+}
+
+.cg-emoji { font-size: 1.8rem; }
+
+.open-chatgpt {
+  display: inline-block;
+  margin-top: 4px;
+  padding: 10px 28px;
+  background: rgba(255,255,255,0.18);
+  border-radius: 50px;
+  color: #fff;
+  font-weight: 600;
+  font-size: 0.9rem;
+  text-decoration: none;
+  transition: background 0.2s;
+}
+
+.open-chatgpt:hover { background: rgba(255,255,255,0.30); }
+
+.text-center { text-align: center; }
+
+.about-wrap {
+  max-width: 700px;
+  margin: 0 auto;
+  text-align: center;
+  padding-top: 20px;
+}
+
+.about-wrap h1 {
+  font-size: clamp(2rem, 5vw, 3rem);
+  color: #444;
+  margin-bottom: 10px;
+}
+
+.about-subtitle {
+  color: #666;
+  font-size: 1.1rem;
+  margin-bottom: 40px;
+}
+
+.about-cards {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 20px;
+  margin-bottom: 30px;
+}
+
+@media (max-width: 640px) {
+  .about-cards { grid-template-columns: 1fr; }
+}
+
+.about-card {
+  padding: 28px 22px;
+  text-align: left;
+}
+
+.ac-icon {
+  font-size: 2rem;
+  margin-bottom: 12px;
+}
+
+.about-card h3 {
+  font-size: 1.15rem;
+  color: #333;
+  margin-bottom: 8px;
+}
+
+.about-card p {
+  font-size: 0.9rem;
+  color: #666;
+  line-height: 1.6;
+}
+
+.about-team {
+  text-align: center;
+  margin-top: 36px;
+  padding: 36px 24px;
+  background: rgba(255,255,255,0.55);
+  border-radius: 28px;
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255,255,255,0.7);
+}
+
+.about-team-title {
+  font-family: 'Playfair Display', serif;
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: #333;
+  margin-bottom: 6px;
+}
+
+.about-team-sub {
+  color: #888;
+  font-size: 0.85rem;
+  margin-bottom: 28px;
+}
+
+.about-team-members {
+  display: flex;
+  justify-content: center;
+  gap: 40px;
+  flex-wrap: wrap;
+}
+
+.team-member {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+}
+
+.team-avatar {
+  width: 66px;
+  height: 66px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #f472b6, #a855f7);
+  color: #fff;
+  font-size: 1.7rem;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 6px 20px rgba(168,85,247,0.35);
+}
+
+.team-name {
+  font-weight: 700;
+  color: #333;
+  font-size: 1rem;
+}
+
+.mb-20 { margin-bottom: 20px; }
+.mb-24 { margin-bottom: 24px; }
