@@ -1,96 +1,44 @@
-/* ============================================================
-   MOODYRA — style.css
-   This file controls EVERYTHING visual:
-   colors, fonts, sizes, spacing, layout, and animations.
-
-   TABLE OF CONTENTS
-   ─────────────────
-   1.  Google Fonts import
-   2.  Reset & base styles
-   3.  Page system (show / hide)
-   4.  Background gradients (one per mood)
-   5.  Glass card effect
-   6.  Floating background orbs (animated blobs)
-   7.  Navigation bar
-   8.  Content wrapper
-   9.  Home page
-   10. Mood pages layout (quotes, journal, music)
-   11. Music cards
-   12. Student page
-   13. About page
-   14. Helper spacing utilities
-   ============================================================ */
-
-
-/* ── 1. GOOGLE FONTS ──────────────────────────────────────── */
-/*
-   We load two fonts from Google:
-   • Playfair Display — elegant serif, used for headings
-   • Plus Jakarta Sans — clean modern, used for body text
-*/
 @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700;900&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap');
 
-
-/* ── 2. RESET & BASE STYLES ──────────────────────────────── */
-/*
-   Browsers add default margin and padding to elements.
-   We remove all of that so our design looks the same everywhere.
-*/
 * {
   margin: 0;
   padding: 0;
-  box-sizing: border-box; /* padding is included inside element width */
+  box-sizing: border-box;
 }
 
-/* Apply the body font and prevent horizontal scrolling */
 body {
   font-family: 'Plus Jakarta Sans', sans-serif;
   min-height: 100vh;
   overflow-x: hidden;
 }
 
-/* All heading tags use the serif (decorative) font */
 h1, h2, h3, h4 {
   font-family: 'Playfair Display', serif;
 }
 
-
-/* ── 3. PAGE SYSTEM ──────────────────────────────────────── */
-/*
-   All pages are hidden by default using display:none.
-   When JavaScript adds the class "active" to a page,
-   it becomes visible. Only one page is active at a time.
-*/
 .page {
-  display: none;           /* hidden by default */
-  min-height: 100vh;       /* at least full screen height */
-  padding: 90px 20px 60px; /* 90px top = space below the fixed navbar */
+  display: none;
+  min-height: 100vh;
+  padding: 90px 20px 60px;
   transition: background 0.8s ease;
 }
 
-/* The active page is shown */
 .page.active {
   display: block;
 }
 
-
-/* ── 4. BACKGROUND GRADIENTS ─────────────────────────────── */
-
-/* Home & About pages — slow animated pastel gradient */
 .bg-home {
   background: linear-gradient(-45deg, #fddde6, #e0c3fc, #c2e9fb, #fddde6);
   background-size: 300% 300%;
   animation: gradientShift 12s ease infinite;
 }
 
-/* The gradient slowly moves its colors (creates a living effect) */
 @keyframes gradientShift {
   0%   { background-position: 0% 50%; }
   50%  { background-position: 100% 50%; }
   100% { background-position: 0% 50%; }
 }
 
-/* Fixed gradients for each mood page */
 .bg-happy   { background: linear-gradient(135deg, #ffecd2 0%, #fcb69f 100%); }
 .bg-sad     { background: linear-gradient(to bottom, #1e3c72 0%, #2a5298 100%); }
 .bg-calm    { background: linear-gradient(to bottom, #a8dadc 0%, #457b9d 100%); }
@@ -98,25 +46,14 @@ h1, h2, h3, h4 {
 .bg-tired   { background: linear-gradient(to bottom, #2c3e50 0%, #4ca1af 100%); }
 .bg-student { background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%); }
 
-
-/* ── 5. GLASS CARD EFFECT ────────────────────────────────── */
-/*
-   The "frosted glass" look is created by:
-   • A semi-transparent white background (rgba)
-   • backdrop-filter: blur — blurs whatever is behind the card
-   • A faint white border for the glass edge
-*/
-
-/* Light glass — used on light backgrounds (home, about, happy) */
 .glass {
   background: rgba(255, 255, 255, 0.18);
   backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px); /* Safari support */
+  -webkit-backdrop-filter: blur(12px);
   border: 1px solid rgba(255, 255, 255, 0.28);
   border-radius: 24px;
 }
 
-/* Dark glass — used on dark backgrounds (sad, calm, angry, tired, student) */
 .glass-dark {
   background: rgba(255, 255, 255, 0.10);
   backdrop-filter: blur(12px);
@@ -125,22 +62,14 @@ h1, h2, h3, h4 {
   border-radius: 24px;
 }
 
-
-/* ── 6. FLOATING ORBS ────────────────────────────────────── */
-/*
-   The colored blobs that float around in the background.
-   They use position:fixed so they stay in place while scrolling.
-   pointer-events:none means they don't block any clicks.
-*/
 .orbs-container {
   position: fixed;
-  inset: 0; /* shorthand for top:0, right:0, bottom:0, left:0 */
+  inset: 0;
   overflow: hidden;
-  z-index: 0;           /* behind all content */
-  pointer-events: none; /* clicks pass through */
+  z-index: 0;
+  pointer-events: none;
 }
 
-/* Every orb is a blurred circle */
 .orb {
   position: absolute;
   border-radius: 50%;
@@ -148,7 +77,6 @@ h1, h2, h3, h4 {
   animation: orbFloat linear infinite;
 }
 
-/* The floating animation — moves the orb gently in different directions */
 @keyframes orbFloat {
   0%   { transform: translate(0, 0) scale(1); }
   25%  { transform: translate(30px, -25px) scale(1.08); }
@@ -157,7 +85,6 @@ h1, h2, h3, h4 {
   100% { transform: translate(0, 0) scale(1); }
 }
 
-/* Individual orb: size, position, color, speed */
 .orb-1 { width:300px; height:300px; left:10%; top:15%; background:rgba(255,182,193,0.35); animation-duration:18s; }
 .orb-2 { width:200px; height:200px; left:75%; top:10%; background:rgba(176,196,255,0.35); animation-duration:22s; animation-delay:3s; }
 .orb-3 { width:250px; height:250px; left:55%; top:60%; background:rgba(200,162,255,0.30); animation-duration:20s; animation-delay:6s; }
@@ -165,25 +92,22 @@ h1, h2, h3, h4 {
 .orb-5 { width:220px; height:220px; left:20%; top:75%; background:rgba(152,230,200,0.28); animation-duration:19s; animation-delay:8s; }
 .orb-6 { width:150px; height:150px; left:45%; top:25%; background:rgba(255,200,220,0.30); animation-duration:16s; animation-delay:4s; }
 
-
-/* ── 7. NAVIGATION BAR ───────────────────────────────────── */
 nav {
-  position: fixed;     /* always at the top even when scrolling */
+  position: fixed;
   top: 0;
   left: 0;
   right: 0;
-  z-index: 999;        /* on top of everything */
+  z-index: 999;
   background: rgba(255, 255, 255, 0.22);
   backdrop-filter: blur(12px);
   -webkit-backdrop-filter: blur(12px);
   border-bottom: 1px solid rgba(255, 255, 255, 0.3);
   padding: 14px 32px;
   display: flex;
-  justify-content: space-between; /* logo left, links right */
+  justify-content: space-between;
   align-items: center;
 }
 
-/* Logo area: image + "MOODYRA" text */
 .nav-logo {
   display: flex;
   align-items: center;
@@ -204,14 +128,12 @@ nav {
   letter-spacing: 1px;
 }
 
-/* Right-side navigation links container */
 .nav-links {
   display: flex;
   gap: 6px;
   align-items: center;
 }
 
-/* Each nav button (Home, About) */
 .nav-links button {
   padding: 8px 18px;
   border: none;
@@ -229,7 +151,6 @@ nav {
   background: rgba(255, 255, 255, 0.45);
 }
 
-/* The Students button has a slight background to stand out */
 .nav-links .btn-student {
   background: rgba(255, 255, 255, 0.25);
   display: flex;
@@ -241,9 +162,6 @@ nav {
   background: rgba(255, 255, 255, 0.5);
 }
 
-/* ── AUTH NAV ELEMENTS ───────────────────────────────────── */
-
-/* 👤 Login button in the nav */
 .nav-login-btn {
   padding: 8px 18px;
   border: none;
@@ -262,7 +180,6 @@ nav {
 
 .nav-login-btn:hover { background: rgba(255,255,255,0.5); }
 
-/* ── Toggle buttons (AR/EN and 🌙/☀️) ────────────────────── */
 .nav-toggle-btn {
   padding: 6px 13px;
   border: 1.5px solid rgba(255,255,255,0.3);
@@ -282,66 +199,8 @@ nav {
   transform: scale(1.06);
 }
 
-.nav-theme-btn {
-  width: 36px;
-  height: 36px;
-  padding: 0;
-  font-size: 16px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
-/* ── LIGHT MODE ─────────────────────────────────────────── */
-body.light-mode {
-  color: #1a1a2e;
-}
-
-body.light-mode nav {
-  background: rgba(255,255,255,0.72) !important;
-  border-bottom: 1px solid rgba(0,0,0,0.07);
-  box-shadow: 0 2px 16px rgba(0,0,0,0.06);
-}
-
-body.light-mode .glass,
-body.light-mode .glass-dark {
-  background: rgba(255,255,255,0.60) !important;
-  border: 1px solid rgba(0,0,0,0.08) !important;
-  color: #1a1a2e;
-}
-
-body.light-mode .bg-home,
-body.light-mode .bg-about {
-  background: linear-gradient(-45deg, #f9c6d0, #d4b3f0, #b3d9f5, #c8f7c5) !important;
-}
-
-body.light-mode .bg-sad    { background: linear-gradient(to bottom,#b8cff5,#d6e4ff) !important; }
-body.light-mode .bg-calm   { background: linear-gradient(to bottom,#c8f0f2,#a8dce0) !important; }
-body.light-mode .bg-angry  { background: linear-gradient(to bottom,#f5b8b8,#f0d0d0) !important; }
-body.light-mode .bg-tired  { background: linear-gradient(to bottom,#d8dce8,#c0cce0) !important; }
-body.light-mode .bg-happy  { background: linear-gradient(to bottom,#fff3e0,#ffe0cc) !important; }
-
-body.light-mode .section-title,
-body.light-mode h1, body.light-mode h2, body.light-mode h3 {
-  color: #1a1a2e !important;
-  -webkit-text-fill-color: unset !important;
-  background: none !important;
-}
-
-body.light-mode .subtitle   { color: #555 !important; }
-body.light-mode p           { color: #333 !important; }
-body.light-mode .nav-links button,
-body.light-mode .nav-login-btn,
-body.light-mode .nav-toggle-btn { color: #1a1a2e !important; }
-
-body.light-mode .student-bg {
-  background: linear-gradient(135deg,#e8e8f8 0%,#d0d8f0 50%,#b8ccf0 100%) !important;
-}
-
-/* Wrapper for the user avatar button + dropdown */
 .nav-user-wrap { position: relative; }
 
-/* The user avatar button (shows initial + name) */
 .nav-user-btn {
   display: flex;
   align-items: center;
@@ -360,7 +219,6 @@ body.light-mode .student-bg {
 
 .nav-user-btn:hover { background: rgba(255,255,255,0.45); }
 
-/* Coloured circle showing the first letter of the user's name */
 .nav-user-initial {
   width: 30px;
   height: 30px;
@@ -374,7 +232,6 @@ body.light-mode .student-bg {
   justify-content: center;
 }
 
-/* Dropdown card */
 .user-dropdown {
   position: absolute;
   top: 46px;
@@ -419,9 +276,6 @@ body.light-mode .student-bg {
 
 .dd-logout:hover { background: rgba(239,68,68,0.15); }
 
-/* ── AUTH MODAL ──────────────────────────────────────────── */
-
-/* Dark blurred overlay behind the modal */
 .auth-overlay {
   position: fixed;
   inset: 0;
@@ -434,7 +288,6 @@ body.light-mode .student-bg {
   padding: 20px;
 }
 
-/* The modal card itself */
 .auth-modal {
   position: relative;
   width: 100%;
@@ -450,7 +303,6 @@ body.light-mode .student-bg {
   box-sizing: border-box;
 }
 
-/* ✕ close button */
 .auth-close {
   position: absolute;
   top: 14px;
@@ -465,13 +317,11 @@ body.light-mode .student-bg {
 
 .auth-close:hover { color: rgba(255,255,255,0.8); }
 
-/* Big emoji at the top */
 .auth-icon {
   text-align: center;
   font-size: 2.8rem;
 }
 
-/* Modal heading */
 .auth-modal-title {
   font-family: 'Playfair Display', serif;
   font-size: 1.6rem;
@@ -481,7 +331,6 @@ body.light-mode .student-bg {
   margin: 0;
 }
 
-/* Subtitle below heading */
 .auth-modal-sub {
   color: rgba(255,255,255,0.55);
   font-size: 0.85rem;
@@ -489,7 +338,6 @@ body.light-mode .student-bg {
   margin: -6px 0 0;
 }
 
-/* All text inputs in the modal */
 .auth-input {
   width: 100%;
   padding: 13px 16px;
@@ -507,7 +355,6 @@ body.light-mode .student-bg {
 .auth-input::placeholder { color: rgba(255,255,255,0.38); }
 .auth-input:focus { outline: none; border-color: rgba(255,255,255,0.5); }
 
-/* Red error message */
 .auth-error {
   background: rgba(239,68,68,0.18);
   color: #fca5a5;
@@ -518,7 +365,6 @@ body.light-mode .student-bg {
   margin: 0;
 }
 
-/* Submit button — reuses .timer-btn but stretched full-width */
 .auth-submit-btn {
   width: 100%;
   padding: 14px;
@@ -527,7 +373,6 @@ body.light-mode .student-bg {
   margin-top: 2px;
 }
 
-/* "Don't have an account? Sign up" row */
 .auth-switch-row {
   text-align: center;
   color: rgba(255,255,255,0.5);
@@ -535,7 +380,6 @@ body.light-mode .student-bg {
   margin: 0;
 }
 
-/* The "Sign up" / "Log in" link button */
 .auth-switch-btn {
   background: none;
   border: none;
@@ -549,37 +393,27 @@ body.light-mode .student-bg {
   margin-left: 4px;
 }
 
-
-/* ── 8. CONTENT WRAPPER ──────────────────────────────────── */
-/*
-   Centers content and puts it above the orbs (z-index: 10)
-*/
 .page-content {
   max-width: 900px;
-  margin: 0 auto;    /* center horizontally */
+  margin: 0 auto;
   position: relative;
-  z-index: 10;       /* above the orbs (z-index: 0) */
+  z-index: 10;
 }
 
 .center { text-align: center; }
 
-
-/* ── 9. HOME PAGE ────────────────────────────────────────── */
-
-/* Hero area (the "How are you feeling?" heading + mood buttons) */
 .home-hero {
   text-align: center;
   padding: 40px 0 20px;
 }
 
 .home-hero h1 {
-  font-size: clamp(2rem, 5vw, 3.8rem); /* responsive: smaller on phones */
+  font-size: clamp(2rem, 5vw, 3.8rem);
   color: #444;
   margin-bottom: 40px;
   font-weight: 600;
 }
 
-/* The row of five mood buttons */
 .mood-pills {
   display: flex;
   flex-wrap: wrap;
@@ -588,7 +422,6 @@ body.light-mode .student-bg {
   margin-bottom: 60px;
 }
 
-/* Each mood pill button */
 .mood-pill {
   display: flex;
   align-items: center;
@@ -612,10 +445,8 @@ body.light-mode .student-bg {
   box-shadow: 0 8px 24px rgba(0,0,0,0.14);
 }
 
-/* The emoji inside each mood pill */
 .mood-pill .mood-icon { font-size: 1.5rem; }
 
-/* "Make me feel better" button */
 .comfort-btn-main {
   display: block;
   margin: 0 auto 20px;
@@ -637,14 +468,12 @@ body.light-mode .student-bg {
   transform: scale(1.02);
 }
 
-/* The comfort panel: hidden by default, shown when button is clicked */
 .comfort-panel {
   display: none;
   margin: 16px auto;
   max-width: 640px;
 }
 
-/* JavaScript adds class "open" to show the panel */
 .comfort-panel.open { display: block; }
 
 .comfort-panel-inner { padding: 28px; }
@@ -656,7 +485,6 @@ body.light-mode .student-bg {
   margin-bottom: 18px;
 }
 
-/* 2-column grid for the comfort tips */
 .comfort-grid {
   display: grid;
   grid-template-columns: 1fr 1fr;
@@ -676,7 +504,6 @@ body.light-mode .student-bg {
 
 .comfort-item:hover { background: rgba(255,255,255,0.70); }
 
-/* Student Mode card at the bottom of the home page */
 .student-card {
   max-width: 480px;
   margin: 30px auto 0;
@@ -709,14 +536,12 @@ body.light-mode .student-bg {
   margin-top: 2px;
 }
 
-/* Arrow on the right side of the card */
 .student-card .s-arrow {
   margin-left: auto;
   color: #aaa;
   font-size: 1.3rem;
 }
 
-/* Mood History Widget (appears when user has visited moods before) */
 .history-widget {
   max-width: 640px;
   margin: 0 auto 30px;
@@ -745,7 +570,6 @@ body.light-mode .student-bg {
 
 .history-clear:hover { color: #e74c3c; background: rgba(231,76,60,0.06); }
 
-/* The "most common mood" badge at the top of the history widget */
 .history-top {
   display: flex;
   align-items: center;
@@ -761,7 +585,6 @@ body.light-mode .student-bg {
 .history-top .top-name   { font-weight: 700; color: #333; font-size: 0.95rem; }
 .history-top .trophy     { margin-left: auto; font-size: 1.4rem; }
 
-/* Row of recent mood visit bubbles */
 .history-bubbles {
   display: flex;
   flex-wrap: wrap;
@@ -783,10 +606,6 @@ body.light-mode .student-bg {
 
 .history-note { text-align: center; font-size: 0.72rem; color: #bbb; }
 
-
-/* ── 10. MOOD PAGE LAYOUT ─────────────────────────────────── */
-
-/* Header for each mood page (title + subtitle + back button) */
 .mood-header { text-align: center; margin-bottom: 30px; }
 
 .mood-header h1 {
@@ -801,7 +620,6 @@ body.light-mode .student-bg {
   margin-bottom: 20px;
 }
 
-/* Back button used on all mood pages */
 .back-btn {
   display: inline-block;
   padding: 9px 22px;
@@ -819,7 +637,6 @@ body.light-mode .student-bg {
 
 .back-btn:hover { background: rgba(255,255,255,0.30); }
 
-/* Two-column grid layout for the cards */
 .two-col {
   display: grid;
   grid-template-columns: 1fr 1fr;
@@ -827,14 +644,12 @@ body.light-mode .student-bg {
   margin-bottom: 22px;
 }
 
-/* On small screens, stack cards vertically */
 @media (max-width: 640px) {
   .two-col        { grid-template-columns: 1fr; }
   .comfort-grid   { grid-template-columns: 1fr; }
   .music-grid     { grid-template-columns: 1fr 1fr; }
 }
 
-/* Card: used inside .glass or .glass-dark */
 .card { padding: 28px; }
 
 .card h3 {
@@ -842,7 +657,6 @@ body.light-mode .student-bg {
   margin-bottom: 16px;
 }
 
-/* Lists inside cards (quotes, tips) */
 .card ul {
   list-style: none;
   display: flex;
@@ -857,7 +671,6 @@ body.light-mode .student-bg {
   line-height: 1.5;
 }
 
-/* Journal textarea where users write their thoughts */
 .journal-area {
   width: 100%;
   min-height: 120px;
@@ -868,7 +681,7 @@ body.light-mode .student-bg {
   font-family: 'Plus Jakarta Sans', sans-serif;
   font-size: 0.95rem;
   color: #fff;
-  resize: none;     /* prevent manual resize */
+  resize: none;
   outline: none;
   margin-bottom: 14px;
   transition: border-color 0.2s;
@@ -877,7 +690,6 @@ body.light-mode .student-bg {
 .journal-area::placeholder { color: rgba(255,255,255,0.45); }
 .journal-area:focus         { border-color: rgba(255,255,255,0.5); }
 
-/* Happy page uses a lighter textarea (white background) */
 .journal-area.light {
   background: rgba(255,255,255,0.50);
   color: #555;
@@ -886,7 +698,6 @@ body.light-mode .student-bg {
 
 .journal-area.light::placeholder { color: rgba(0,0,0,0.3); }
 
-/* Save button */
 .save-btn {
   padding: 12px 30px;
   border: none;
@@ -904,7 +715,6 @@ body.light-mode .student-bg {
   box-shadow: 0 6px 18px rgba(0,0,0,0.20);
 }
 
-/* "Saved!" confirmation text — hidden until after a save */
 .saved-msg {
   display: none;
   font-weight: 600;
@@ -912,13 +722,11 @@ body.light-mode .student-bg {
   margin-left: 14px;
 }
 
-/* Row that holds the save button + saved message side by side */
 .save-row {
   display: flex;
   align-items: center;
 }
 
-/* List of saved journal entries */
 .saved-entries {
   display: flex;
   flex-direction: column;
@@ -926,7 +734,6 @@ body.light-mode .student-bg {
   margin-top: 14px;
 }
 
-/* Each saved entry bubble */
 .saved-entry {
   padding: 11px 15px;
   border-radius: 14px;
@@ -935,14 +742,11 @@ body.light-mode .student-bg {
   color: rgba(255,255,255,0.85);
 }
 
-/* Happy page entries are lighter */
 .saved-entry.light {
   background: rgba(255,255,255,0.55);
   color: #555;
 }
 
-
-/* ── 11. MUSIC SECTION ───────────────────────────────────── */
 .music-section {
   padding: 26px 28px;
   margin-bottom: 20px;
@@ -954,14 +758,12 @@ body.light-mode .student-bg {
   color: #fff;
 }
 
-/* 4-column grid for music cards */
 .music-grid {
   display: grid;
   grid-template-columns: repeat(4, 1fr);
   gap: 12px;
 }
 
-/* Each music card is a link to YouTube */
 .music-card {
   display: flex;
   flex-direction: column;
@@ -970,7 +772,7 @@ body.light-mode .student-bg {
   padding: 16px 10px;
   border-radius: 18px;
   background: rgba(255,255,255,0.10);
-  text-decoration: none; /* remove underline on links */
+  text-decoration: none;
   cursor: pointer;
   transition: background 0.2s, transform 0.2s;
   text-align: center;
@@ -985,16 +787,11 @@ body.light-mode .student-bg {
 .music-card .mc-genre { font-size: 0.82rem; font-weight: 700; color: rgba(255,255,255,0.9); }
 .music-card .mc-play  { font-size: 0.72rem; color: rgba(255,255,255,0.55); }
 
-/* Happy page music cards use lighter colors */
 .music-card.light          { background: rgba(255,255,255,0.45); }
 .music-card.light:hover    { background: rgba(255,255,255,0.70); }
 .music-card.light .mc-genre { color: #c0392b; }
 .music-card.light .mc-play  { color: #888; }
 
-
-/* ── 12. STUDENT PAGE ────────────────────────────────────── */
-
-/* Page header */
 .student-header { text-align: center; margin-bottom: 28px; }
 
 .student-header h1 {
@@ -1005,7 +802,6 @@ body.light-mode .student-bg {
 
 .student-header p { color: rgba(255,255,255,0.65); font-size: 1rem; }
 
-/* Section headings used inside student page cards */
 .section-title {
   font-family: 'Playfair Display', serif;
   font-size: 1.3rem;
@@ -1014,7 +810,6 @@ body.light-mode .student-bg {
   margin-bottom: 16px;
 }
 
-/* Row of mood buttons for study tips (Happy/Sad/Calm/Angry/Tired) */
 .mood-selector {
   display: flex;
   flex-wrap: wrap;
@@ -1036,16 +831,14 @@ body.light-mode .student-bg {
   transition: background 0.2s;
 }
 
-/* Active (selected) mood button has a white background */
 .mood-sel-btn:hover,
 .mood-sel-btn.active {
   background: rgba(255,255,255,0.90);
   color: #1a1a2e;
 }
 
-/* The tips box that appears after clicking a study mood */
 .tips-result {
-  display: none; /* hidden until a mood is selected */
+  display: none;
   border-radius: 18px;
   padding: 20px 24px;
 }
@@ -1063,28 +856,23 @@ body.light-mode .student-bg {
 .tips-result ul                { list-style: none; display: flex; flex-direction: column; gap: 8px; }
 .tips-result ul li             { background: rgba(0,0,0,0.15); padding: 10px 14px; border-radius: 12px; color: rgba(255,255,255,0.9); font-size: 0.88rem; }
 
-/* ── FOCUS TIMER ─────────────────────────────────────────── */
-
-/* Outer card wrapper — centres everything and adds relative for confetti */
 .focus-timer-wrap {
   position: relative;
   display: flex;
   flex-direction: column;
   align-items: center;
   gap: 18px;
-  overflow: hidden; /* confetti stays inside */
+  overflow: hidden;
 }
 
-/* Confetti container — JS will fill this with animated divs */
 .focus-confetti {
   position: absolute;
   top: 0; left: 0;
   width: 100%; height: 100%;
-  pointer-events: none; /* clicks pass through */
+  pointer-events: none;
   z-index: 10;
 }
 
-/* Each individual confetti piece (created by launchConfetti() in JS) */
 .confetti-piece {
   position: absolute;
   top: -12px;
@@ -1098,13 +886,11 @@ body.light-mode .student-bg {
   100% { transform: translateY(500px) rotate(720deg); opacity: 0; }
 }
 
-/* Focus duration picker — 25 min / 45 min buttons */
 .focus-btn-row {
   display: flex;
   gap: 10px;
 }
 
-/* Duration toggle buttons (e.g. ⏱ 25 min) */
 .duration-btn {
   padding: 8px 20px;
   background: rgba(255,255,255,0.18);
@@ -1118,13 +904,11 @@ body.light-mode .student-bg {
   transition: background 0.2s;
 }
 
-/* The selected duration button looks white */
 .duration-btn.active {
   background: #fff;
   color: #1a1a2e;
 }
 
-/* Purple break banner — shows "☕ Break Time — 5 minutes" during break */
 .break-banner {
   background: linear-gradient(135deg, #7c3aed, #a855f7);
   color: #fff;
@@ -1135,7 +919,6 @@ body.light-mode .student-bg {
   text-align: center;
 }
 
-/* Big countdown number: "25:00" / "05:00" etc. */
 .focus-timer-display {
   font-family: 'Courier New', monospace;
   font-size: 4.5rem;
@@ -1144,17 +927,14 @@ body.light-mode .student-bg {
   letter-spacing: 3px;
 }
 
-/* Small label under the timer */
 .timer-sublabel {
   font-size: 0.8rem;
   color: rgba(255,255,255,0.55);
   margin-top: -12px;
 }
 
-/* Row of action buttons: Start / Pause / Reset */
 .timer-btns { display: flex; gap: 10px; }
 
-/* Primary button: white with dark text */
 .timer-btn {
   padding: 11px 26px;
   background: #fff;
@@ -1171,14 +951,12 @@ body.light-mode .student-bg {
 
 .timer-btn:hover { transform: scale(1.05); }
 
-/* Secondary button (Reset): semi-transparent */
 .timer-btn.secondary {
   background: rgba(255,255,255,0.20);
   color: #fff;
   box-shadow: none;
 }
 
-/* Session counter — shows 🌟 per completed session */
 .sessions-row {
   font-size: 0.88rem;
   color: rgba(255,255,255,0.65);
@@ -1186,7 +964,6 @@ body.light-mode .student-bg {
   text-align: center;
 }
 
-/* Post-focus panel — motivational message + achievement input */
 .focus-done-panel {
   width: 100%;
   display: flex;
@@ -1195,7 +972,6 @@ body.light-mode .student-bg {
   gap: 18px;
 }
 
-/* Colourful card showing the random motivational message */
 .focus-message-box {
   background: linear-gradient(135deg, rgba(124,58,237,0.35), rgba(168,85,247,0.25));
   border: 1px solid rgba(168,85,247,0.4);
@@ -1209,7 +985,6 @@ body.light-mode .student-bg {
 .focus-message-box .msg-emoji { font-size: 2rem; display: block; margin-bottom: 8px; }
 .focus-message-box .msg-text  { color: #fff; font-size: 0.95rem; font-weight: 600; line-height: 1.5; }
 
-/* Achievement input section */
 .achievement-section {
   width: 100%;
   background: rgba(255,255,255,0.07);
@@ -1229,14 +1004,12 @@ body.light-mode .student-bg {
   margin: 0;
 }
 
-/* Small grey hint below the heading */
 .achievement-hint {
   color: rgba(255,255,255,0.5);
   font-size: 0.8rem;
   margin: -6px 0 0;
 }
 
-/* The textarea where user types their achievement */
 .focus-textarea {
   width: 100%;
   background: rgba(255,255,255,0.12);
@@ -1253,7 +1026,6 @@ body.light-mode .student-bg {
 .focus-textarea::placeholder { color: rgba(255,255,255,0.35); }
 .focus-textarea:focus { outline: none; border-color: rgba(255,255,255,0.45); }
 
-/* Row: Save button + confirmation message */
 .achievement-save-row {
   display: flex;
   align-items: center;
@@ -1261,7 +1033,6 @@ body.light-mode .student-bg {
   flex-wrap: wrap;
 }
 
-/* Break duration picker row */
 .break-pick-row {
   display: flex;
   align-items: center;
@@ -1276,7 +1047,6 @@ body.light-mode .student-bg {
   font-size: 0.8rem;
 }
 
-/* Break duration toggle buttons (☕ 5 min / 🛋️ 10 min) */
 .break-pick-btn {
   padding: 6px 16px;
   background: rgba(255,255,255,0.15);
@@ -1294,7 +1064,6 @@ body.light-mode .student-bg {
   background: rgba(124,58,237,0.8);
 }
 
-/* "Skip → start break now" text link */
 .skip-link {
   background: none;
   border: none;
@@ -1309,7 +1078,6 @@ body.light-mode .student-bg {
 
 .skip-link:hover { color: rgba(255,255,255,0.75); }
 
-/* Break-done panel — shown when break finishes */
 .break-done-panel {
   display: flex;
   flex-direction: column;
@@ -1338,14 +1106,12 @@ body.light-mode .student-bg {
   margin: 0 0 6px;
 }
 
-/* Achievements section at the bottom of the timer */
 .achievements-section {
   width: 100%;
   border-top: 1px solid rgba(255,255,255,0.12);
   padding-top: 18px;
 }
 
-/* Header row: title on left, Clear-all button on right */
 .achievements-header {
   display: flex;
   justify-content: space-between;
@@ -1360,7 +1126,6 @@ body.light-mode .student-bg {
   font-size: 0.9rem;
 }
 
-/* "Clear all" button — small, red-tinted */
 .clear-achievements-btn {
   background: rgba(239,68,68,0.25);
   border: none;
@@ -1376,14 +1141,12 @@ body.light-mode .student-bg {
 
 .clear-achievements-btn:hover { background: rgba(239,68,68,0.45); }
 
-/* The list of saved achievements */
 .achievements-list {
   display: flex;
   flex-direction: column;
   gap: 10px;
 }
 
-/* One saved achievement card */
 .achievement-item {
   background: rgba(255,255,255,0.08);
   border-radius: 14px;
@@ -1401,7 +1164,6 @@ body.light-mode .student-bg {
   font-size: 0.75rem;
 }
 
-/* Breathing exercise wrapper */
 .breath-wrap {
   display: flex;
   flex-direction: column;
@@ -1410,7 +1172,6 @@ body.light-mode .student-bg {
   padding: 28px;
 }
 
-/* The animated circle that grows/shrinks */
 .breath-circle {
   width: 120px;
   height: 120px;
@@ -1420,10 +1181,9 @@ body.light-mode .student-bg {
   align-items: center;
   justify-content: center;
   font-size: 2.5rem;
-  transition: transform 1s ease, background-color 1s ease; /* smooth animation */
+  transition: transform 1s ease, background-color 1s ease;
 }
 
-/* Phase label: "Breathe In" / "Hold" / "Breathe Out" */
 .breath-label {
   font-family: 'Playfair Display', serif;
   font-size: 1.2rem;
@@ -1437,7 +1197,6 @@ body.light-mode .student-bg {
   text-align: center;
 }
 
-/* Countdown number shown during breathing */
 .breath-count {
   font-size: 2rem;
   font-weight: 700;
@@ -1445,7 +1204,6 @@ body.light-mode .student-bg {
   min-height: 44px;
 }
 
-/* 3-column grid for exam tips */
 .exam-grid {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
@@ -1469,7 +1227,6 @@ body.light-mode .student-bg {
 .exam-card h4      { font-family:'Plus Jakarta Sans',sans-serif; font-weight:700; color:#fff; font-size:0.88rem; margin-bottom:5px; }
 .exam-card p       { color:rgba(255,255,255,0.65); font-size:0.80rem; line-height:1.5; }
 
-/* 2-column affirmations grid */
 .affirmations-grid {
   display: grid;
   grid-template-columns: 1fr 1fr;
@@ -1486,7 +1243,6 @@ body.light-mode .student-bg {
   text-align: center;
 }
 
-/* ChatGPT shortcut cards */
 .chatgpt-grid {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
@@ -1517,7 +1273,6 @@ body.light-mode .student-bg {
 
 .cg-emoji { font-size: 1.8rem; }
 
-/* "Open ChatGPT" link button */
 .open-chatgpt {
   display: inline-block;
   margin-top: 4px;
@@ -1533,11 +1288,8 @@ body.light-mode .student-bg {
 
 .open-chatgpt:hover { background: rgba(255,255,255,0.30); }
 
-/* Text center helper */
 .text-center { text-align: center; }
 
-
-/* ── 13. ABOUT PAGE ──────────────────────────────────────── */
 .about-wrap {
   max-width: 700px;
   margin: 0 auto;
@@ -1557,7 +1309,6 @@ body.light-mode .student-bg {
   margin-bottom: 40px;
 }
 
-/* 2-column grid for about cards */
 .about-cards {
   display: grid;
   grid-template-columns: 1fr 1fr;
@@ -1591,7 +1342,6 @@ body.light-mode .student-bg {
   line-height: 1.6;
 }
 
-/* Team section inside About page */
 .about-team {
   text-align: center;
   margin-top: 36px;
@@ -1630,7 +1380,6 @@ body.light-mode .student-bg {
   gap: 12px;
 }
 
-/* Coloured circle with the member's initial */
 .team-avatar {
   width: 66px;
   height: 66px;
@@ -1651,11 +1400,5 @@ body.light-mode .student-bg {
   font-size: 1rem;
 }
 
-
-/* ── 14. SPACING HELPERS ─────────────────────────────────── */
-/*
-   These classes add bottom margin quickly, like:
-   class="mb-24" adds 24px of space below the element
-*/
 .mb-20 { margin-bottom: 20px; }
 .mb-24 { margin-bottom: 24px; }
