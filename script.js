@@ -386,9 +386,11 @@ function timeAgo(timestamp) {
 function getTopMood(history) {
   var counts = {};
 
+
   history.forEach(function(entry) {
     counts[entry.mood] = (counts[entry.mood] || 0) + 1;
   });
+
 
   var topMood  = null;
   var topCount = 0;
@@ -408,6 +410,7 @@ function renderHistoryWidget() {
 
   var history = getMoodHistory();
 
+
   if (history.length === 0) {
     widget.style.display = "none";
     return;
@@ -417,9 +420,11 @@ function renderHistoryWidget() {
 
   var isAr = (currentLang === "ar");
 
+
   function moodLabel(moodId) {
     return (TRANSLATIONS[currentLang] && TRANSLATIONS[currentLang][moodId]) || moodId;
   }
+
 
   var topMood = getTopMood(history);
   var topHtml = "";
@@ -438,6 +443,7 @@ function renderHistoryWidget() {
       '</div>';
   }
 
+
   var recent     = history.slice(0, 10);
   var bubblesHtml = recent.map(function(entry) {
     var meta = MOOD_META[entry.mood] || { emoji: "🌀", color: "#ccc" };
@@ -451,6 +457,7 @@ function renderHistoryWidget() {
       '</div>'
     );
   }).join("");
+
 
   widget.innerHTML =
     '<div class="history-header">' +
@@ -468,10 +475,12 @@ function showPage(pageId) {
     page.classList.remove("active");
   });
 
+
   var target = document.getElementById("page-" + pageId);
   if (target) {
     target.classList.add("active");
   }
+
 
   window.scrollTo(0, 0);
 }
@@ -493,6 +502,7 @@ function fillMoodPage(mood) {
     return isLight ? "background:rgba(255,255,255,0.40)" : "background:rgba(255,255,255,0.12)";
   }
 
+
   var h1El        = page.querySelector("h1");
   var subtitleEl  = page.querySelector(".subtitle");
   var backBtnEl   = page.querySelector(".back-btn");
@@ -501,6 +511,7 @@ function fillMoodPage(mood) {
   if (subtitleEl  && data.subtitle)   subtitleEl.textContent  = data.subtitle;
   if (backBtnEl   && data.backBtn)    backBtnEl.textContent   = data.backBtn;
   if (musicTitleEl && data.musicTitle) musicTitleEl.textContent = data.musicTitle;
+
 
   var quotesTitle = page.querySelector(".quotes-title");
   var quotesList  = page.querySelector(".quotes-list");
@@ -511,6 +522,7 @@ function fillMoodPage(mood) {
     }).join("");
   }
 
+
   var tipsTitle = page.querySelector(".tips-title");
   var tipsList  = page.querySelector(".tips-list");
   if (tipsTitle) tipsTitle.textContent = data.tipsTitle;
@@ -520,6 +532,7 @@ function fillMoodPage(mood) {
     }).join("");
   }
 
+
   var musicGrid = page.querySelector(".music-grid");
   if (musicGrid) {
     var playLabel = currentLang === "ar" ? "▶ شغّل على يوتيوب" : "▶ Play on YouTube";
@@ -527,7 +540,7 @@ function fillMoodPage(mood) {
       var cardClass = "music-card" + (isLight ? " light" : "");
       return (
         '<a class="' + cardClass + '" ' +
-           'href="https:
+           'href="https://www.youtube.com/results?search_query=' + encodeURIComponent(m.query) + '" ' +
            'target="_blank" rel="noopener noreferrer">' +
           '<span class="mc-emoji">' + m.emoji    + '</span>' +
           '<span class="mc-genre">' + m.genre    + '</span>' +
@@ -536,6 +549,7 @@ function fillMoodPage(mood) {
       );
     }).join("");
   }
+
 
   var journalTitle  = page.querySelector(".journal-title");
   var journalArea   = page.querySelector(".journal-area");
@@ -549,9 +563,11 @@ function fillMoodPage(mood) {
   if (saveBtn)       saveBtn.textContent       = data.saveBtnText;
   if (memoriesTitle) memoriesTitle.textContent = data.savedMemoriesTitle;
 
+
   if (journalArea)  journalArea.value         = "";
   if (savedMsg)     savedMsg.style.display    = "none";
   if (savedEntries) savedEntries.innerHTML    = "";
+
 
   if (saveBtn && journalArea && savedMsg && savedEntries) {
 
@@ -559,15 +575,19 @@ function fillMoodPage(mood) {
       var text = journalArea.value.trim();
       if (!text) return;
 
+
       var entry       = document.createElement("div");
       entry.className = "saved-entry" + (isLight ? " light" : "");
       entry.textContent = "• " + text;
       savedEntries.insertBefore(entry, savedEntries.firstChild);
 
+
       var memoriesSection = page.querySelector(".memories-section");
       if (memoriesSection) memoriesSection.style.display = "block";
 
+
       journalArea.value = "";
+
 
       savedMsg.textContent    = data.savedText;
       savedMsg.style.display  = "inline";
@@ -668,6 +688,7 @@ function launchConfetti() {
   var container = document.getElementById("focus-confetti");
   if (!container) return;
 
+
   container.innerHTML = "";
 
   for (var i = 0; i < 40; i++) {
@@ -681,6 +702,7 @@ function launchConfetti() {
     container.appendChild(piece);
   }
 
+
   setTimeout(function() {
     if (container) container.innerHTML = "";
   }, 3000);
@@ -688,6 +710,7 @@ function launchConfetti() {
 
 function focusSetPhase(phase) {
   focus.phase = phase;
+
 
   var durationRow  = document.getElementById("focus-duration-row");
   var breakBanner  = document.getElementById("break-banner");
@@ -697,6 +720,7 @@ function focusSetPhase(phase) {
   var resetBtn     = document.getElementById("focus-reset-btn");
   var donePanel    = document.getElementById("focus-done-panel");
   var breakDonePanel = document.getElementById("break-done-panel");
+
 
   if (durationRow)    durationRow.style.display    = "none";
   if (breakBanner)    breakBanner.style.display    = "none";
@@ -787,6 +811,7 @@ function setFocusDuration(mins) {
   focus.timeLeft = mins * 60;
   updateFocusDisplay();
 
+
   var btn25 = document.getElementById("fd-25");
   var btn45 = document.getElementById("fd-45");
   if (btn25) btn25.classList.toggle("active", mins === 25);
@@ -798,6 +823,7 @@ function setFocusDuration(mins) {
 
 function setBreakDuration(mins) {
   focus.breakDuration = mins * 60;
+
 
   var bd5  = document.getElementById("bd-5");
   var bd10 = document.getElementById("bd-10");
@@ -854,8 +880,10 @@ function saveAchievement() {
     return;
   }
 
+
   var existing = [];
   try { existing = JSON.parse(localStorage.getItem(ACHIEVEMENTS_KEY) || "[]"); } catch(e) {}
+
 
   existing.unshift({
     text:    text,
@@ -863,13 +891,17 @@ function saveAchievement() {
     session: focus.sessions
   });
 
+
   localStorage.setItem(ACHIEVEMENTS_KEY, JSON.stringify(existing));
+
 
   playSuccess();
   var flash = document.getElementById("saved-flash");
   if (flash) flash.style.display = "";
 
+
   setTimeout(startBreakTimer, 1200);
+
 
   renderAchievements();
 }
@@ -927,6 +959,7 @@ function renderAchievements() {
 
   section.style.display = "";
   if (title) title.textContent = "🏅 Your Achievements (" + items.length + ")";
+
 
   list.innerHTML = items.map(function(item) {
     return (
@@ -1006,6 +1039,7 @@ function toggleBreathing() {
     breath.count = BREATH_PHASES[0].duration;
     updateBreathDisplay();
 
+
     breath.interval = setInterval(function() {
       breath.count--;
 
@@ -1023,12 +1057,14 @@ function toggleBreathing() {
     if (btn) btn.textContent = TRANSLATIONS[currentLang].breathStart;
     clearInterval(breath.interval);
 
+
     var circle = document.getElementById("breath-circle");
     if (circle) {
       circle.style.transform       = "scale(1)";
       circle.style.backgroundColor = "rgba(255,255,255,0.22)";
       circle.textContent           = "🌬️";
     }
+
 
     var label = document.getElementById("breath-label");
     var instr = document.getElementById("breath-instruction");
@@ -1221,6 +1257,7 @@ function switchAuthMode() {
 function updateAuthModalUI() {
   var isLogin = (authMode === "login");
 
+
   document.getElementById("auth-icon").textContent     = isLogin ? "👋" : "✨";
   document.getElementById("auth-title").textContent    = isLogin ? "Welcome back!" : "Create your account";
   document.getElementById("auth-subtitle").textContent = isLogin
@@ -1230,8 +1267,10 @@ function updateAuthModalUI() {
   document.getElementById("auth-switch-label").textContent = isLogin ? "Don't have an account?" : "Already have an account?";
   document.getElementById("auth-switch-btn").textContent   = isLogin ? "Sign up" : "Log in";
 
+
   var nameWrap = document.getElementById("auth-name-wrap");
   if (nameWrap) nameWrap.style.display = isLogin ? "none" : "";
+
 
   showAuthError("");
 }
@@ -1261,6 +1300,7 @@ function handleAuthSubmit() {
   var password = (document.getElementById("auth-password").value || "");
   var name     = (document.getElementById("auth-name")     ? document.getElementById("auth-name").value.trim() : "");
 
+
   var error = (authMode === "login")
     ? authLogin(username, password)
     : authSignup(name, username, password);
@@ -1279,6 +1319,7 @@ function authLogin(username, password) {
   if (!record) return "Account not found. Please sign up first.";
   if (record.password !== password) return "Incorrect password. Please try again.";
 
+
   currentUser = { username: username, name: record.name };
   localStorage.setItem(SESSION_KEY, JSON.stringify(currentUser));
   updateNavAuth();
@@ -1293,8 +1334,10 @@ function authSignup(name, username, password) {
   var users = getUsers();
   if (users[username])  return "Username already taken. Please choose another.";
 
+
   users[username] = { name: name, password: password };
   saveUsers(users);
+
 
   currentUser = { username: username, name: name };
   localStorage.setItem(SESSION_KEY, JSON.stringify(currentUser));
@@ -1514,12 +1557,14 @@ function applyLang(lang) {
   currentLang = lang;
   localStorage.setItem("moodyra_lang", lang);
 
+
   document.querySelectorAll("[data-i18n]").forEach(function(el) {
     var key = el.getAttribute("data-i18n");
     if (TRANSLATIONS[lang][key] !== undefined) {
       el.textContent = TRANSLATIONS[lang][key];
     }
   });
+
 
   var grid = document.getElementById("comfort-grid-items");
   if (grid) {
@@ -1528,11 +1573,14 @@ function applyLang(lang) {
     }).join("");
   }
 
+
   var btn = document.getElementById("lang-btn");
   if (btn) btn.textContent = lang === "en" ? "AR" : "EN";
 
+
   document.documentElement.setAttribute("dir", lang === "ar" ? "rtl" : "ltr");
   document.documentElement.setAttribute("lang", lang);
+
 
   var moodEmojis = { happy:"😊", sad:"😔", calm:"😌", angry:"😡", tired:"😴" };
   document.querySelectorAll(".mood-sel-btn").forEach(function(btn) {
@@ -1542,7 +1590,9 @@ function applyLang(lang) {
     }
   });
 
+
   renderHistoryWidget();
+
 
   ["happy","sad","calm","angry","tired"].forEach(function(m) {
     var pg = document.getElementById("page-" + m);
@@ -1550,6 +1600,7 @@ function applyLang(lang) {
       fillMoodPage(m);
     }
   });
+
 
   var breathBtn   = document.getElementById("breath-btn");
   var breathLabel = document.getElementById("breath-label");
