@@ -4,9 +4,8 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Moodyra — Feel Your Mood</title>
-  <link rel="stylesheet" href="style.css" />
+  <link rel="stylesheet" href="MOODYRA-style.css" />
 </head>
-
 <body>
 
 <!-- ============================================================
@@ -303,16 +302,16 @@
   <div class="page-content">
 
     <div class="student-header">
-      <h1>Student Mode 📚</h1>
-      <p>Your study companion — tools and tips to study smarter 🎓</p>
+      <h1 data-i18n="studentTitle">Student Mode 📚</h1>
+      <p data-i18n="studentDesc">Your study companion — tools and tips to study smarter 🎓</p>
       <br/>
-      <button class="back-btn" onclick="showPage('home')">⬅ Back to Home</button>
+      <button class="back-btn" onclick="showPage('home')" data-i18n="backHome">⬅ Back to Home</button>
     </div>
 
     <!-- ── STUDY TIPS BY MOOD ──────────────────────────── -->
     <div class="glass-dark card mb-24">
-      <h3 class="section-title">📖 Study Tips Based on Your Mood</h3>
-      <p style="text-align:center;color:rgba(255,255,255,0.6);font-size:0.85rem;margin-bottom:16px;">
+      <h3 class="section-title" data-i18n="studyTipsTitle">📖 Study Tips Based on Your Mood</h3>
+      <p style="text-align:center;color:rgba(255,255,255,0.6);font-size:0.85rem;margin-bottom:16px;" data-i18n="studyTipsSub">
         How are you feeling right now? Pick your mood for personalized study advice.
       </p>
       <div class="mood-selector">
@@ -340,7 +339,7 @@
       <!-- Confetti particles are injected here by JavaScript -->
       <div id="focus-confetti" class="focus-confetti"></div>
 
-      <h3 class="section-title">🎯 Focus Timer</h3>
+      <h3 class="section-title" data-i18n="focusTimerTitle">🎯 Focus Timer</h3>
 
       <!-- DURATION PICKER — shown only when idle -->
       <div id="focus-duration-row" class="focus-btn-row">
@@ -419,54 +418,54 @@
     <!-- ── BREATHING EXERCISE ──────────────────────────── -->
     <div class="glass-dark card mb-24">
       <div class="breath-wrap">
-        <h3 class="section-title" style="margin-bottom:4px;">🫁 Breathing Exercise</h3>
-        <p style="color:rgba(255,255,255,0.6);font-size:0.8rem;text-align:center;">
+        <h3 class="section-title" style="margin-bottom:4px;" data-i18n="breathingTitle">🫁 Breathing Exercise</h3>
+        <p style="color:rgba(255,255,255,0.6);font-size:0.8rem;text-align:center;" data-i18n="breathingSub">
           4-7-8 breathing technique to reduce exam anxiety
         </p>
         <div id="breath-circle" class="breath-circle">🌬️</div>
-        <p id="breath-label"       class="breath-label">Press Start</p>
+        <p id="breath-label"       class="breath-label" data-i18n="breathIdle">Press Start</p>
         <p id="breath-instruction" class="breath-instruction">4-7-8 breathing to reduce anxiety</p>
         <p id="breath-count"       class="breath-count"></p>
-        <button id="breath-btn" class="timer-btn" onclick="toggleBreathing()">▶ Start Breathing</button>
+        <button id="breath-btn" class="timer-btn" onclick="toggleBreathing()" data-i18n="breathStart">▶ Start Breathing</button>
       </div>
     </div>
 
     <!-- ── EXAM STRESS RELIEF TIPS ─────────────────────── -->
-    <h2 class="section-title mb-20">💡 Exam Stress Relief Tips</h2>
+    <h2 class="section-title mb-20" data-i18n="examTipsTitle">💡 Exam Stress Relief Tips</h2>
     <div class="exam-grid mb-24">
-      <div class="exam-card"><div class="e-icon">📖</div><h4>Review, don't re-read</h4><p>Close your book and try to recall key points first. Only look when you're stuck.</p></div>
-      <div class="exam-card"><div class="e-icon">🧩</div><h4>Practice past papers</h4><p>Past exam questions are the best predictor of what's coming. Time yourself.</p></div>
-      <div class="exam-card"><div class="e-icon">🗣️</div><h4>Teach it out loud</h4><p>Explain the topic as if teaching a friend. If you can teach it, you know it.</p></div>
-      <div class="exam-card"><div class="e-icon">💤</div><h4>Sleep before the exam</h4><p>Memory consolidates during sleep. A rested brain outperforms an all-nighter.</p></div>
-      <div class="exam-card"><div class="e-icon">🥤</div><h4>Stay hydrated</h4><p>Dehydration reduces focus by up to 20%. Keep a water bottle at your desk.</p></div>
-      <div class="exam-card"><div class="e-icon">✅</div><h4>Done is better than perfect</h4><p>Attempt every question. A partial answer is always better than a blank.</p></div>
+      <div class="exam-card"><div class="e-icon">📖</div><h4 data-i18n="examCard1Title">Review, don't re-read</h4><p data-i18n="examCard1Desc">Close your book and try to recall key points first. Only look when you're stuck.</p></div>
+      <div class="exam-card"><div class="e-icon">🧩</div><h4 data-i18n="examCard2Title">Practice past papers</h4><p data-i18n="examCard2Desc">Past exam questions are the best predictor of what's coming. Time yourself.</p></div>
+      <div class="exam-card"><div class="e-icon">🗣️</div><h4 data-i18n="examCard3Title">Teach it out loud</h4><p data-i18n="examCard3Desc">Explain the topic as if teaching a friend. If you can teach it, you know it.</p></div>
+      <div class="exam-card"><div class="e-icon">💤</div><h4 data-i18n="examCard4Title">Sleep before the exam</h4><p data-i18n="examCard4Desc">Memory consolidates during sleep. A rested brain outperforms an all-nighter.</p></div>
+      <div class="exam-card"><div class="e-icon">🥤</div><h4 data-i18n="examCard5Title">Stay hydrated</h4><p data-i18n="examCard5Desc">Dehydration reduces focus by up to 20%. Keep a water bottle at your desk.</p></div>
+      <div class="exam-card"><div class="e-icon">✅</div><h4 data-i18n="examCard6Title">Done is better than perfect</h4><p data-i18n="examCard6Desc">Attempt every question. A partial answer is always better than a blank.</p></div>
     </div>
 
     <!-- ── MOTIVATIONAL AFFIRMATIONS ──────────────────── -->
     <div class="glass-dark card mb-24">
-      <h3 class="section-title">🌟 You've Got This</h3>
+      <h3 class="section-title" data-i18n="affirmTitle">🌟 You've Got This</h3>
       <div class="affirmations-grid">
-        <div class="affirmation">I am prepared and capable 💪</div>
-        <div class="affirmation">Every study session counts ✅</div>
-        <div class="affirmation">Mistakes help me learn faster 🧠</div>
-        <div class="affirmation">I deserve rest and success 🌙</div>
-        <div class="affirmation">One step at a time is enough 🚶</div>
-        <div class="affirmation">My effort will pay off 🌱</div>
+        <div class="affirmation" data-i18n="affirm1">I am prepared and capable 💪</div>
+        <div class="affirmation" data-i18n="affirm2">Every study session counts ✅</div>
+        <div class="affirmation" data-i18n="affirm3">Mistakes help me learn faster 🧠</div>
+        <div class="affirmation" data-i18n="affirm4">I deserve rest and success 🌙</div>
+        <div class="affirmation" data-i18n="affirm5">One step at a time is enough 🚶</div>
+        <div class="affirmation" data-i18n="affirm6">My effort will pay off 🌱</div>
       </div>
     </div>
 
     <!-- ── CHATGPT SHORTCUTS ───────────────────────────── -->
     <div class="glass-dark card mb-24 text-center">
-      <h3 class="section-title">🤖 Ask ChatGPT</h3>
-      <p style="color:rgba(255,255,255,0.65);font-size:0.88rem;margin-bottom:18px;">
+      <h3 class="section-title" data-i18n="chatgptTitle">🤖 Ask ChatGPT</h3>
+      <p style="color:rgba(255,255,255,0.65);font-size:0.88rem;margin-bottom:18px;" data-i18n="chatgptDesc">
         Have a question? Want to summarize a topic? Open ChatGPT directly
       </p>
       <div class="chatgpt-grid">
-        <a class="chatgpt-card" href="https://chat.openai.com/?q=Explain+this+topic+in+a+simple+way%3A+" target="_blank"><span class="cg-emoji">💡</span><span>Explain this topic to me</span></a>
-        <a class="chatgpt-card" href="https://chat.openai.com/?q=Summarize+this+text+in+clear+bullet+points%3A+" target="_blank"><span class="cg-emoji">📝</span><span>Summarize this text</span></a>
-        <a class="chatgpt-card" href="https://chat.openai.com/?q=Give+me+5+review+questions+about+this+topic%3A+" target="_blank"><span class="cg-emoji">❓</span><span>Give me review questions</span></a>
+        <a class="chatgpt-card" href="https://chat.openai.com/?q=Explain+this+topic+in+a+simple+way%3A+" target="_blank"><span class="cg-emoji">💡</span><span data-i18n="chatgptSC1">Explain this topic to me</span></a>
+        <a class="chatgpt-card" href="https://chat.openai.com/?q=Summarize+this+text+in+clear+bullet+points%3A+" target="_blank"><span class="cg-emoji">📝</span><span data-i18n="chatgptSC2">Summarize this text</span></a>
+        <a class="chatgpt-card" href="https://chat.openai.com/?q=Give+me+5+review+questions+about+this+topic%3A+" target="_blank"><span class="cg-emoji">❓</span><span data-i18n="chatgptSC3">Give me review questions</span></a>
       </div>
-      <a class="open-chatgpt" href="https://chat.openai.com" target="_blank">🤖 Open ChatGPT ↗</a>
+      <a class="open-chatgpt" href="https://chat.openai.com" target="_blank" data-i18n="chatgptBtn">🤖 Open ChatGPT ↗</a>
     </div>
 
   </div>
@@ -484,19 +483,19 @@
   </div>
   <div class="page-content">
     <div class="about-wrap">
-      <h1>About Moodyra 🌈</h1>
-      <p class="about-subtitle">A mood-based wellness website for students</p>
+      <h1 data-i18n="aboutTitle">About Moodyra 🌈</h1>
+      <p class="about-subtitle" data-i18n="aboutSub">A mood-based wellness website for students</p>
       <div class="about-cards">
-        <div class="glass about-card"><div class="ac-icon">🎯</div><h3>Our Goal</h3><p>Help students recognize and manage their emotions through personalized content, music, and study tools.</p></div>
-        <div class="glass about-card"><div class="ac-icon">🌈</div><h3>5 Moods</h3><p>Each mood — Happy, Sad, Calm, Angry, Tired — has its own page with matching colors, quotes, and music.</p></div>
-        <div class="glass about-card"><div class="ac-icon">📚</div><h3>Student Tools</h3><p>Focus timer, breathing exercises, study tips by mood, and quick access to ChatGPT for study help.</p></div>
-        <div class="glass about-card"><div class="ac-icon">🔒</div><h3>Privacy First</h3><p>Everything is saved in your browser only. No account needed, no data sent to any server.</p></div>
+        <div class="glass about-card"><div class="ac-icon">🎯</div><h3 data-i18n="goalTitle">Our Goal</h3><p data-i18n="goalDesc">Help students recognize and manage their emotions through personalized content, music, and study tools.</p></div>
+        <div class="glass about-card"><div class="ac-icon">🌈</div><h3 data-i18n="fiveMoodsTitle">5 Moods</h3><p data-i18n="fiveMoodsDesc">Each mood — Happy, Sad, Calm, Angry, Tired — has its own page with matching colors, quotes, and music.</p></div>
+        <div class="glass about-card"><div class="ac-icon">📚</div><h3 data-i18n="toolsTitle">Student Tools</h3><p data-i18n="toolsDesc">Focus timer, breathing exercises, study tips by mood, and quick access to ChatGPT for study help.</p></div>
+        <div class="glass about-card"><div class="ac-icon">🔒</div><h3 data-i18n="privacyTitle">Privacy First</h3><p data-i18n="privacyDesc">Everything is saved in your browser only. No account needed, no data sent to any server.</p></div>
       </div>
 
       <!-- Team section -->
       <div class="about-team">
-        <h2 class="about-team-title">👩‍💻 Meet the Team</h2>
-        <p class="about-team-sub">Made with ❤️ for a university wellness project</p>
+        <h2 class="about-team-title" data-i18n="meetTeam">👩‍💻 Meet the Team</h2>
+        <p class="about-team-sub" data-i18n="teamSub">Made with ❤️ for a university wellness project</p>
         <div class="about-team-members">
           <div class="team-member">
             <div class="team-avatar">N</div>
@@ -509,12 +508,12 @@
         </div>
       </div>
 
-      <button class="back-btn" style="margin-top:30px;" onclick="showPage('home')">⬅ Back to Home</button>
+      <button class="back-btn" style="margin-top:30px;" onclick="showPage('home')" data-i18n="backHome">⬅ Back to Home</button>
     </div>
   </div>
 </div>
 
 
-<script src="script.js"></script>
+<script src="MOODYRA-script.js"></script>
 </body>
 </html>
